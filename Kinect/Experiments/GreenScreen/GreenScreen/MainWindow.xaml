@@ -1,0 +1,30 @@
+﻿<Window x:Class="GreenScreen.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GreenScreen" 
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525"
+        Loaded="MainWindow_OnLoaded">
+    <Grid>
+        <DockPanel HorizontalAlignment="Stretch" LastChildFill="False" Margin="5,0,4.667,-0.333" VerticalAlignment="Top" Height="321">
+            <Menu DockPanel.Dock="Top" HorizontalContentAlignment="Stretch">
+                <MenuItem Header="_File">
+                    <MenuItem Header="E_xit" Click="Exit_OnClick">
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Source">
+                    <RadioButton IsChecked="True">Color</RadioButton>
+                    <RadioButton IsChecked="False">Infrared</RadioButton>
+                    <RadioButton IsChecked="False">Depth</RadioButton>
+                </MenuItem>
+                <MenuItem Header="_GreenScreen">
+                    <ToggleButton IsChecked="True">Use GreenScreen</ToggleButton>
+                </MenuItem>
+            </Menu>
+            <Image DockPanel.Dock="Bottom" x:Name="MyImage" Stretch="Fill"/>
+        </DockPanel>
+    </Grid>
+
+</Window>
