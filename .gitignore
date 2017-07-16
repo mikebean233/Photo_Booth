@@ -59,6 +59,7 @@ artifacts/
 *.obj
 *.pch
 *.pdb
+*.exe
 *.pgc
 *.pgd
 *.rsp
