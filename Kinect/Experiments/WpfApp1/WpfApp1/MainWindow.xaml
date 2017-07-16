@@ -18,12 +18,12 @@
         <Button Content="Close" HorizontalAlignment="Left" Margin="810,255,0,0" VerticalAlignment="Top" Width="163" Height="89" Click="Close_Click"/>
 
         <Button Content="SaveIfrared" HorizontalAlignment="Left" Height="92" Margin="80,602,0,0" VerticalAlignment="Top" Width="163" Click="InfraredSave_Click"/>
-        <Image x:Name="colorPreview" HorizontalAlignment="Left" Height="512" Margin="10,10,0,0" VerticalAlignment="Top" Width="592"/>
+        <Image x:Name="infraredPreview" HorizontalAlignment="Left" Height="512" Margin="10,10,0,0" VerticalAlignment="Top" Width="592"/>
 
         <Button Content="SaveDepth" HorizontalAlignment="Left" Height="92" Margin="997,491,0,0" VerticalAlignment="Top" Width="163" Click="DepthSave_OnClick"/>
         <Image x:Name="depthPreview" HorizontalAlignment="Left" Height="512" Margin="764,602,0,0" VerticalAlignment="Top" Width="592"/>
 
         <Button Content="SaveVisible" HorizontalAlignment="Left" Height="92" Margin="269,602,0,0" VerticalAlignment="Top" Width="163" Click="ColorSave_OnClick"/>
-        <Image x:Name="visiblePreview" HorizontalAlignment="Left" Height="512" Margin="10,708,0,0" VerticalAlignment="Top" Width="592"/>
+        <Image x:Name="colorPreview" HorizontalAlignment="Left" Height="512" Margin="10,708,0,0" VerticalAlignment="Top" Width="592"/>
     </Grid>
 </Window>
