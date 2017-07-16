@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Kinect;
 using System.Drawing;
+using System.Net.Configuration;
 using System.Security.Permissions;
 using System.Windows.Interop;
 
@@ -25,7 +26,6 @@ namespace WpfApp1
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window
-
 	{
 		private KinectSensor sensor;
 		
@@ -60,6 +60,7 @@ namespace WpfApp1
 				colorPreview.Source = GetBitmapSourceFromFrame(colorFrame);
 				colorFrame.Dispose();
 			}
+
 			// Infrared
 			if (infraredFrame != null)
 			{
@@ -81,7 +82,10 @@ namespace WpfApp1
 
 			int width = kFrame.FrameDescription().Width;
 			int height = kFrame.FrameDescription().Height;
-			ushort[] shortPixels = new ushort[width * height];
+			int minDepth = (frame is DepthFrame) ? (frame as DepthFrame).DepthMinReliableDistance : 0;
+			int maxDepth = (frame is DepthFrame) ? (frame as DepthFrame).DepthMaxReliableDistance : 0;
+			
+			UInt16[] shortPixels = new UInt16[width * height];
 			byte[] bytePixels = kFrame.getPixelArray();
 
 			if (frame is ColorFrame)
@@ -91,14 +95,17 @@ namespace WpfApp1
 			else
 			{
 				kFrame.CopyFrameDataToArray(shortPixels);
-				int outIndex = 0;
-				for (int i = 0; i < shortPixels.Length; ++i)
+				
+				int colorIndex = 0;
+				for (int index = 0; index < shortPixels.Length; ++index)
 				{
-					bytePixels[outIndex++] = (byte) (shortPixels[i] & 0x00ff);
-					bytePixels[outIndex++] = (byte) ((shortPixels[i] & 0xff00) >> 8);
+					UInt16 pixel = shortPixels[index];
+					byte intensity = (byte) ((frame is InfraredFrame) ? (pixel >> 8) : (pixel >= minDepth && pixel <= maxDepth) ? pixel : 0);
+
+					bytePixels[colorIndex++] = intensity;
+					bytePixels[colorIndex++] = intensity;
 				}
 			}
-
 			return BitmapSource.Create(width, height, 96, 96, kFrame.PixelFormat() , null, bytePixels, kFrame.Stride());
 		}
 
@@ -186,7 +193,7 @@ namespace WpfApp1
 
 			public int Stride()
 			{
-				return FrameDescription().Width * ((_thisFrame is ColorFrame) ? PixelFormat().BitsPerPixel / 8 : 2);
+				return FrameDescription().Width * PixelFormat().BitsPerPixel / 8;
 			}
 
 			public byte[] getPixelArray()
@@ -194,12 +201,8 @@ namespace WpfApp1
 				int width = FrameDescription().Width;
 				int height = FrameDescription().Height;
 
-				if (_thisFrame is ColorFrame)
-					return new byte[width * height * ((PixelFormat().BitsPerPixel + 7) / 8)];
-				else
-					return new byte[width * height * 2];
+				return new byte[width * height * ((PixelFormats.Bgr32.BitsPerPixel + 7) / 8)];
 			}
-
 		}
 
 		private void InfraredSave_Click(object sender, RoutedEventArgs e)
@@ -247,7 +250,5 @@ namespace WpfApp1
 			sensor.Close();
 			Application.Current.Shutdown();
 		}
-
 	}
-
 }

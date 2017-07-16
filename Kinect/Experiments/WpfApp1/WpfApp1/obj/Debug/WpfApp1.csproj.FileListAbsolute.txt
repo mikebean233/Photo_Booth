@@ -28,3 +28,4 @@ C:\Users\michael\Desktop\Photo_Booth\Kinect\Experiments\WpfApp1\WpfApp1\obj\Debu
 C:\Users\michael\Desktop\Photo_Booth\Kinect\Experiments\WpfApp1\WpfApp1\obj\Debug\WpfApp1.csproj.GenerateResource.Cache
 C:\Users\michael\Desktop\Photo_Booth\Kinect\Experiments\WpfApp1\WpfApp1\obj\Debug\WpfApp1.exe
 C:\Users\michael\Desktop\Photo_Booth\Kinect\Experiments\WpfApp1\WpfApp1\obj\Debug\WpfApp1.pdb
+C:\Users\michael\Desktop\Photo_Booth\Kinect\Experiments\WpfApp1\WpfApp1\obj\Debug\WpfApp1.csprojResolveAssemblyReference.cache
