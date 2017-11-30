@@ -15,15 +15,17 @@
                     </MenuItem>
                 </MenuItem>
                 <MenuItem Header="_Source">
-                    <RadioButton IsChecked="True">Color</RadioButton>
-                    <RadioButton IsChecked="False">Infrared</RadioButton>
-                    <RadioButton IsChecked="False">Depth</RadioButton>
+                    <RadioButton GroupName="sourceRadioGroup" Checked="SourceRadioGroup_OnChecked" Content="Color" Tag="COLOR" IsChecked="true" Width="63" />
+                    <RadioButton GroupName="sourceRadioGroup" Checked="SourceRadioGroup_OnChecked" Content="Depth" Tag="DEPTH"/>
+                    <RadioButton GroupName="sourceRadioGroup" Checked="SourceRadioGroup_OnChecked" Content="Infrared" Tag="INFRARED"/>
                 </MenuItem>
                 <MenuItem Header="_GreenScreen">
                     <ToggleButton IsChecked="True">Use GreenScreen</ToggleButton>
                 </MenuItem>
             </Menu>
-            <Image DockPanel.Dock="Bottom" x:Name="MyImage" Stretch="Fill"/>
+            <Image DockPanel.Dock="Bottom" x:Name="MyImage" Stretch="Fill" Margin="0,0,-0.333,0">
+ 
+            </Image>
         </DockPanel>
     </Grid>
 
