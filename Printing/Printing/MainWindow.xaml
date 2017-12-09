@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Button Content="Print Dialog" HorizontalAlignment="Left" Height="75" Margin="89,43,0,0" VerticalAlignment="Top" Width="213" Click="Button_Click"/>
-
+        <Button Content="Print Dialog" HorizontalAlignment="Left" Height="75" Margin="132,108,0,0" VerticalAlignment="Top" Width="213" Click="Button_Click"/>
+        <TextBlock FontSize="18" TextAlignment="Center" HorizontalAlignment="Left" Height="29" Margin="10,10,0,0" TextWrapping="Wrap" Text="Hello World" VerticalAlignment="Top" Width="497"/>
+        <TextBlock TextAlignment="Center" HorizontalAlignment="Left" Height="27" Margin="116,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268"><Run FontStyle="Italic" Text="Printed Edition"/></TextBlock>
     </Grid>
+
 </Window>
