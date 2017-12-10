@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Printing"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="4in" Width="6in">
     <Grid>
-        <Button Content="Print Dialog" HorizontalAlignment="Left" Height="75" Margin="132,108,0,0" VerticalAlignment="Top" Width="213" Click="Button_Click"/>
-        <TextBlock FontSize="18" TextAlignment="Center" HorizontalAlignment="Left" Height="29" Margin="10,10,0,0" TextWrapping="Wrap" Text="Hello World" VerticalAlignment="Top" Width="497"/>
+        <Button Content="Print Dialog" HorizontalAlignment="Left" Height="75" Margin="171,103,0,0" VerticalAlignment="Top" Width="213" Click="Button_Click"/>
+        <TextBlock FontSize="18" TextAlignment="Center" HorizontalAlignment="Left" Height="29" Margin="13,9,0,0" TextWrapping="Wrap" Text="Hello World" VerticalAlignment="Top" Width="497"/>
         <TextBlock TextAlignment="Center" HorizontalAlignment="Left" Height="27" Margin="116,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268"><Run FontStyle="Italic" Text="Printed Edition"/></TextBlock>
+        <!--FixedPage Width="6in" Height="4in">
+            <Image Width="6in" Height="4in" Source="PhotoBoothPicture.bmp"></Image>
+        </-->
     </Grid>
-
 </Window>
