@@ -32,6 +32,9 @@ namespace Printing
 		PrintDialog dialog;
 		LocalPrintServer printServer;
 		PrintQueueCollection printerCollection;
+        PageResolution resolution;
+        Double XRes = 100, YRes = 100;
+        Printing.Page1 page;
 
 		public MainWindow()
 		{
@@ -39,17 +42,34 @@ namespace Printing
 
 			dialog = new PrintDialog();
 			printServer = new LocalPrintServer();
-			printerCollection = printServer.GetPrintQueues();
+            printerCollection = printServer.GetPrintQueues();
+            page = new Printing.Page1();
+            page.BeginInit();
+            page.InitializeComponent();
+            page.EndInit();
+        }
 
+        private enum Axis {X,Y}
 
-		}
+        private double convertDouble(Axis axis, double value) {
+            double dpi = (axis == Axis.X) ? (double) resolution.X : (double )resolution.Y;
+            return dpi * value;
+        }
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+        private int convertInt(Axis axis, double value) { return (int)convertDouble(axis, value); }
+
+        private Image setImageSource(Image image, String fileName)
+        {
+            image.Source = new BitmapImage(new Uri(fileName, UriKind.RelativeOrAbsolute)); ;
+            return image;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			PrintQueue targetPrinter = null;
+            PrintQueue targetPrinter = null;
+
 			foreach (PrintQueue thisPrinter in printerCollection )
 			{
-				//Console.WriteLine("{0} {1} {2} {3} {4}",thisPrinter.FullName, thisPrinter.Description, thisPrinter.DefaultPriority, thisPrinter.HasPaperProblem, thisPrinter.IsDirect);
 				if (thisPrinter.Name.ToLower().Contains("pdf"))
 					targetPrinter = thisPrinter;
 			}
@@ -59,53 +79,19 @@ namespace Printing
 				Console.WriteLine();
 				Console.WriteLine("Printer:  {0}", targetPrinter.FullName);
 
-				PrintTicket ticket = targetPrinter.DefaultPrintTicket;
-				PrintCapabilities capabilities = targetPrinter.GetPrintCapabilities();
+                PrintTicket ticket = targetPrinter.DefaultPrintTicket;
+                resolution = new PageResolution( 96, 96);
+
+                PrintCapabilities capabilities = targetPrinter.GetPrintCapabilities();
 				try
 				{
-					Visual visual = this.GetVisualChild(0);
-					FixedPage fixedPage = new FixedPage();
+                    setImageSource(page.ImageTop, "Kinect_Leaning.bmp");
+                    setImageSource(page.ImageCenter, "Kinect_Standing.bmp");
 
-                    Image image = new Image();
-                    //var imageSource = new BitmapImage();
-                    //imageSource.BeginInit();
-                    //imageSource.UriSource = new Uri("PhotoBoothPicture.bmp", UriKind.RelativeOrAbsolute);
-                    //imageSource.EndInit();
-                    //image.Source = imageSource;
-
-                    //image.Height = 96 * 4;
-                    //image.Width  = 96 * 6;
-
-                    ImageSource imageSource;
-                    Bitmap bitmap = ((Bitmap)Properties.Resources.ResourceManager.GetObject("PhotoBoothPicture"));
-                    //var bitmapImage = new BitmapImage(new Uri("pack://application:,,,/PhotoBoothPicture.bmp"));
-                    using (var stream = new MemoryStream())
-                    {
-                        bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
-                        stream.Position = 0;
-                        imageSource = BitmapFrame.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    }
-                    image.Source = imageSource;
-
-                    fixedPage.Children.Add(image);
-
-                    TextBlock textBlock = new TextBlock();
-                    textBlock.Text = "------------- TEST TEXT -----------------";
-                    textBlock.TextAlignment = TextAlignment.Center;
-                    textBlock.FontSize = 18;
-                    textBlock.Width = 100;
-                    textBlock.Height = 20;
-
-                    //fixedPage.Children.Add(textBlock);
-
-					//XpsDocument document = new XpsDocument("thing", FileAccess.ReadWrite);
-                    
-					XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(targetPrinter); //XpsDocument.CreateXpsDocumentWriter(targetPrinter); //GetPrintXpsDocumentWriter(); //new XpsDocumentWriter(visual);
-					writer.Write(fixedPage);
-					targetPrinter.Commit();
+                    XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(targetPrinter); 
+                    writer.Write(page.Page1_FixedPage);
+                    targetPrinter.Commit();
 					printServer.Commit();
-					
-					//PrintSystemJobInfo PrintJob = targetPrinter.AddJob( AddJob("new Job", ticket);
 				}
 				catch(Exception ex)
 				{

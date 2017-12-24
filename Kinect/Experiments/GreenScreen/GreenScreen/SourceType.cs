@@ -11,6 +11,7 @@ namespace GreenScreen
 		public static SourceType COLOR = new SourceType(0);
 		public static SourceType DEPTH = new SourceType(1);
 		public static SourceType INFRARED = new SourceType(2);
+		public static SourceType BODY_INDEX = new SourceType(3);
 
 		//private FrameSourceTypes _type;
 		//public FrameSourceTypes Type { get { return _type; } }
@@ -29,7 +30,9 @@ namespace GreenScreen
 					return DEPTH;
 				else if (value.ToLower().Equals("infrared"))
 					return INFRARED;
-			}
+				else if (value.ToLower().Equals("bodyindex"))
+					return BODY_INDEX;
+				}
 			throw new InvalidOperationException("Error converting \"" + value + "\" to SourceType");
 		}
 

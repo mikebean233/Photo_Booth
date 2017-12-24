@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Linq;
 
 namespace GreenScreen
 {
@@ -35,6 +36,8 @@ namespace GreenScreen
 		private byte[] colorPixels { get; set; }
 		private byte[] depthPixels { get; set; }
 		private UInt16[] infraredPixels { get; set; }
+		//private IBufferByteAccess bodIndexByteAccess;
+
 		private int min, max;
 
 		public Boolean HaveAllFrames() { return colorPixels != null && depthPixels != null && infraredPixels != null; }
@@ -146,37 +149,20 @@ namespace GreenScreen
 					infraredPixels = new UInt16[dimensions.Area];
 
 				infraredFrame.CopyFrameDataToArray(infraredPixels);
-
-				/*
-
-				outPixels = new byte[dimensions.Area * ((PixelFormats.Bgr32.BitsPerPixel + 7) / 8)];
-				int colorIndex = 0;
-				int minDepth = frameSourceType == SourceType.DEPTH ? min : 0;
-				int maxDepth = frameSourceType == SourceType.DEPTH ? max : 0;
-				UInt16[] thisPixelArray = frameSourceType == SourceType.DEPTH ? depthPixels : infraredPixels;
-
-				for (int index = 0; index < thisPixelArray.Length; ++index)
-				{
-					UInt16 pixel = thisPixelArray[index];
-					byte intensity = (byte)((frameSourceType == SourceType.INFRARED) ? (pixel >> 8) : (pixel >= minDepth && pixel <= maxDepth) ? pixel : 0);
-
-					outPixels[colorIndex++] = intensity;
-					outPixels[colorIndex++] = intensity;
-				}
-
-
-
-
-
-
-
-
-
-
-
-
-				*/
 				infraredFrame?.Dispose();
+			}
+		}
+
+		private void processBodyIndexFrame(BodyIndexFrame bodyIndexFrame)
+		{
+			if (bodyIndexFrame != null)
+			{
+				Box dimensions = Box.With(bodyIndexFrame.FrameDescription.Width, bodyIndexFrame.FrameDescription.Height);
+				//frameResolutions[SourceType.] = dimensions;
+				framePixelFormats[SourceType.INFRARED] = PixelFormats.Gray16;
+
+				
+
 			}
 		}
 
@@ -185,6 +171,7 @@ namespace GreenScreen
 			processColorFrame(eventArgs.FrameReference.AcquireFrame().ColorFrameReference.AcquireFrame());
 			processDepthFrame(eventArgs.FrameReference.AcquireFrame().DepthFrameReference.AcquireFrame());
 			processInfraredFrame(eventArgs.FrameReference.AcquireFrame().InfraredFrameReference.AcquireFrame());
+			//processBodyIndexFrame(eventArgs.FrameReference.AcquireFrame().BodyIndexFrameReference.AcquireFrame());
 
 			return HaveAllFrames();
 		}
