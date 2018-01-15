@@ -1,39 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Xps;
-using System.Windows.Xps.Packaging;
 using System.Printing;
-using System.Resources;
-using System.IO;
-
-using System.Drawing;
-using Image = System.Windows.Controls.Image;
-using System.Reflection;
 
 namespace Printing
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
 	{
 		PrintDialog dialog;
 		LocalPrintServer printServer;
 		PrintQueueCollection printerCollection;
-        PageResolution resolution;
-        Double XRes = 100, YRes = 100;
+        //PageResolution resolution;
+       // Double XRes = 100, YRes = 100;
         Printing.Page1 page;
 
 		public MainWindow()
@@ -49,19 +33,18 @@ namespace Printing
             page.EndInit();
         }
 
-        private enum Axis {X,Y}
+        //private enum Axis {X,Y}
 
-        private double convertDouble(Axis axis, double value) {
-            double dpi = (axis == Axis.X) ? (double) resolution.X : (double )resolution.Y;
-            return dpi * value;
-        }
+        //private double convertDouble(Axis axis, double value) {
+        //    double dpi = (axis == Axis.X) ? (double) resolution.X : (double )resolution.Y;
+        //    return dpi * value;
+        //}
 
-        private int convertInt(Axis axis, double value) { return (int)convertDouble(axis, value); }
+        //private int convertInt(Axis axis, double value) { return (int)convertDouble(axis, value); }
 
-        private Image setImageSource(Image image, String fileName)
+        private ImageSource setImageSource(String fileName)
         {
-            image.Source = new BitmapImage(new Uri(fileName, UriKind.RelativeOrAbsolute)); ;
-            return image;
+            return new BitmapImage(new Uri(fileName, UriKind.RelativeOrAbsolute));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -70,7 +53,7 @@ namespace Printing
 
 			foreach (PrintQueue thisPrinter in printerCollection )
 			{
-				if (thisPrinter.Name.ToLower().Contains("pdf"))
+				if (thisPrinter.Name.ToLower().Contains("hiti"))
 					targetPrinter = thisPrinter;
 			}
 
@@ -80,23 +63,26 @@ namespace Printing
 				Console.WriteLine("Printer:  {0}", targetPrinter.FullName);
 
                 PrintTicket ticket = targetPrinter.DefaultPrintTicket;
-                resolution = new PageResolution( 96, 96);
+                //resolution = new PageResolution( 96, 96);
 
                 PrintCapabilities capabilities = targetPrinter.GetPrintCapabilities();
-				try
-				{
-                    setImageSource(page.ImageTop, "Kinect_Leaning.bmp");
-                    setImageSource(page.ImageCenter, "Kinect_Standing.bmp");
+                
+				//try
+				//{
+                    page.ImageTop.Source = setImageSource("Kinect_Leaning.bmp");
+                    page.ImageCenter.Source = setImageSource("Kinect_Standing.bmp");
 
                     XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(targetPrinter); 
                     writer.Write(page.Page1_FixedPage);
+                    targetPrinter.CurrentJobSettings.CurrentPrintTicket.PageBorderless = PageBorderless.Borderless;
                     targetPrinter.Commit();
+                        
 					printServer.Commit();
-				}
-				catch(Exception ex)
-				{
-					Console.WriteLine(ex.Message);
-				}
+				//}
+				//catch(Exception ex)
+				//{
+					//Console.WriteLine(ex.Message);
+				//}
 			}
 
 		}
