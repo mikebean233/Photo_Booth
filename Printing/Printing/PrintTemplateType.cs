@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Printing
 {
-    
-    public enum PrintTemplateType{
+    public enum PrintTemplateType
+    {
         Wide,
         Standard
     }

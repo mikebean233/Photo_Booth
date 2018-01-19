@@ -12,7 +12,7 @@ namespace Printing
     internal abstract class PrintTemplate
     {
         private int totalImages, addedImageCount;
-        private List<ImageSource> imageSources = new List<ImageSource>();
+        protected List<ImageSource> imageSources = new List<ImageSource>();
         
         protected PrintTemplate(int totalImages, PrintQueue printQueue)
         {

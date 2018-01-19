@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Printing;
 using System.Windows.Media;
+using System.Windows.Documents;
+using System.Windows.Xps;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Printing
 {
@@ -29,7 +32,7 @@ namespace Printing
             printerNameString = name ?? "";
             status = PrintStatus.NOT_READY;
             FindPrintQueue();
-            template = PrintTemplate.ofType(PrintTemplateType.Standard, thisPrinter);
+            template = PrintTemplate.ofType(PrintTemplateType.Wide, thisPrinter);
         }
 
         public static PrintManager GetInstance(String name)
@@ -42,7 +45,7 @@ namespace Printing
         public void SetPrinterSearchString(String value)
         {
             if(value != null)
-                printerNameString = value;
+                printerNameString = value.ToLower();
         }
 
         private void FindPrintQueue()
@@ -52,13 +55,14 @@ namespace Printing
 
             foreach (PrintQueue printQueue in printServer.GetPrintQueues())
             {
-                if (printQueue.Name.Contains(printerNameString))
+                if (printQueue.Name.ToLower().Contains(printerNameString))
                 {
                     thisPrinter = printQueue;
                     break;
                 }
             }
-            status = PrintStatus.READY;
+            if(thisPrinter != null)
+                status = PrintStatus.READY;
         }
 
         public int ImageCapacity()
@@ -75,6 +79,34 @@ namespace Printing
         {
             return template.AddImage(imageSource);
         }
+        
+        public Boolean print()
+        {
+            Boolean printStarted = false;
+            if (!template.CanAddMoreImages() && status == PrintStatus.READY)
+            {
+                try
+                {
+                    FixedPage page = template.Render();
+                    XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(thisPrinter);
+                    writer.Write(page);
+                    thisPrinter.Commit();
+                    printServer.Commit();
+                    
+                    printStarted = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex);
+                }
+            }
+
+            if (printStarted)
+                status = PrintStatus.PRINTING;
+
+            return printStarted;
+        }
+
     }
 }
 

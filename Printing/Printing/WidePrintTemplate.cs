@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Printing;
+using System.Threading;
 
 namespace Printing
 {
-    class WidePrintTemplate : PrintTemplate
+    internal class WidePrintTemplate : PrintTemplate
     {
-        private Printing.Page1 page = new Printing.Page1();
-
-        public WidePrintTemplate(PrintQueue printQueue) : base(4, printQueue)
+        private WideTemplate page;
+        public WidePrintTemplate(PrintQueue printQueue) : base(2, printQueue)
         {
+            page = new WideTemplate();
             page.BeginInit();
             page.InitializeComponent();
             page.EndInit();
@@ -22,7 +23,9 @@ namespace Printing
 
         public override FixedPage Render()
         {
-            return page.Page1_FixedPage;
+            page.ImageTop.Source = imageSources[0];
+            page.ImageCenter.Source = imageSources[1];
+            return page.FixedPage;
         }
     }
 }
