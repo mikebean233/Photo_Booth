@@ -7,15 +7,17 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Printing;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace Printing
 {
     internal class WidePrintTemplate : PrintTemplate
     {
         private WideTemplate page;
-        public WidePrintTemplate(PrintQueue printQueue) : base(2, printQueue)
+        public WidePrintTemplate(DispatcherUnhandledExceptionEventHandler errorHandler) : base(2, errorHandler)
         {
             page = new WideTemplate();
+            page.Dispatcher.UnhandledException += errorHandler;
             page.BeginInit();
             page.InitializeComponent();
             page.EndInit();

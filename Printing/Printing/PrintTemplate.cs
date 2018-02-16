@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Printing;
+using System.Windows.Threading;
 
 namespace Printing
 {
@@ -14,7 +15,8 @@ namespace Printing
         private int totalImages, addedImageCount;
         protected List<ImageSource> imageSources = new List<ImageSource>();
         
-        protected PrintTemplate(int totalImages, PrintQueue printQueue)
+
+        protected PrintTemplate(int totalImages, Delegate errorHandler)
         {
             this.totalImages = totalImages;
             
@@ -41,14 +43,14 @@ namespace Printing
             return canAddMoreImages;
         }
 
-        public static PrintTemplate ofType(PrintTemplateType type, PrintQueue printQueue)
+        public static PrintTemplate ofType(PrintTemplateType type, DispatcherUnhandledExceptionEventHandler errorHandler)
         {
             switch (type)
             {
                 case PrintTemplateType.Wide:
-                    return new WidePrintTemplate(printQueue);
+                    return new WidePrintTemplate(errorHandler);
                 case PrintTemplateType.Standard:
-                    return new StandardPrintTemplate(printQueue);
+                    return new StandardPrintTemplate(errorHandler);
             }
             return null;
         }
