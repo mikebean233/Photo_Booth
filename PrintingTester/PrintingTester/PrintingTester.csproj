@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6C906CC4-5552-44C9-A1AF-0DF11A2A3F5C}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>PrintingTester</RootNamespace>
     <AssemblyName>PrintingTester</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -51,9 +51,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
-    <Reference Include="PrinterPlusPlusSDK">
-      <HintPath>..\..\Printing\Printing\bin\Debug\PrinterPlusPlusSDK.dll</HintPath>
-    </Reference>
     <Reference Include="Printing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Printing\Printing\bin\Debug\Printing.dll</HintPath>
