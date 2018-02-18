@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using PrinterPlusPlusSDK;
 
 using Printing;
 
@@ -9,39 +8,71 @@ namespace PrintingTester
 {
     class Program
     {
-        [STAThread]
-        static void Main(string[] args)
+        private PrintManager _printManager;
+        private Program()
         {
-            PrintManager printManager = PrintManager.GetInstance("pdf");
-            printManager.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Standing.bmp"));
-            printManager.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Leaning.bmp"));
-            Boolean result = printManager.print();
-
-            Console.WriteLine("Print result: {0}", result ? "success" : "failure");
+            _printManager = PrintManager.GetInstance("pdf", 2);
+            _printManager.SetPrintErrorInformer(HandlePrintError);
         }
 
-        static ImageSource GetImageSourceFromPath(String path)
+        private void HandlePrintError(String errorMessages)
         {
-            ImageSource returnValue = null;
+            System.Diagnostics.Debug.WriteLine(String.Format("================= PRINT ERRORS RECEIVED =================="));
+            System.Diagnostics.Debug.WriteLine(errorMessages);
+
+            // If there was a paper outage, simulate refilling the printerr
+            if (errorMessages.Contains("out of paper"))
+                _printManager.ResetRemainingPrintCount(200);
+
+            _printManager.RetryPrintingAfterUserIntervention();
+        }
+
+        public void Run()
+        {
             try
             {
-                returnValue =  new BitmapImage(new Uri(path, UriKind.RelativeOrAbsolute));
+                PrintManager.PrintBatchHandler batch1 = _printManager.startNewBatch(PrintTemplateType.Wide);
+                batch1.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Standing.bmp"));
+                batch1.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Standing.bmp"));
+                batch1.CompleteBatch(1);
+
+                PrintManager.PrintBatchHandler batch2 = _printManager.startNewBatch(PrintTemplateType.Wide);
+                batch2.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Standing.bmp"));
+                batch2.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Leaning.bmp"));
+                batch2.CompleteBatch(1);
+
+                PrintManager.PrintBatchHandler batch3 = _printManager.startNewBatch(PrintTemplateType.Wide);
+                batch3.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Leaning.bmp"));
+                batch3.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Standing.bmp"));
+                batch3.CompleteBatch(1);
+
+                PrintManager.PrintBatchHandler batch4 = _printManager.startNewBatch(PrintTemplateType.Wide);
+                batch4.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Leaning.bmp"));
+                batch4.AddImage(GetImageSourceFromPath("pack://application:,,,/Kinect_Leaning.bmp"));
+                batch4.CompleteBatch(2);
+
+                //System.Diagnostics.Debug.WriteLine("Print result: " + (result ? "success" : "failure"));
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex);
+                System.Diagnostics.Debug.WriteLine("=========== Exception In Main ===========");
+                System.Diagnostics.Debug.WriteLine("{0}", ex.Message);
+                System.Diagnostics.Debug.WriteLine("=========================================");
             }
+
+        }
+
+        [STAThread]
+        static void Main(string[] args)
+        {
+            (new Program()).Run();
+        }
+
+
+        static ImageSource GetImageSourceFromPath(String path)
+        {
+            ImageSource returnValue = new BitmapImage(new Uri(path, UriKind.RelativeOrAbsolute));
             return returnValue;
         }
-
-        public class PrintProcessor : PrinterPlusPlusSDK.IProcessor
-        {
-            public ProcessResult Process(string key, string psFilename)
-            {
-                Console.WriteLine("key: {0}    psFilename: {1}", key, psFilename);
-                return new ProcessResult();
-            }
-        }
-
     }
 }

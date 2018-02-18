@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ED52D96B-061B-4C2E-B7B4-1D6FF8E172B1}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Printing</RootNamespace>
     <AssemblyName>Printing</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
