@@ -17,28 +17,30 @@ namespace Printing
 {
     public class PrintManager
     {
-        private static PrintManager instance;
-        private String printerNameString;
-        private LocalPrintServer printServer;
-        private PrintQueue thisPrinter;
-        private String printErrors = "";
-        private bool inError = false;
-        private Queue<IPrintBatch> printQueue = new Queue<IPrintBatch>();
-        private Object queueLock = new Object();
+        private static PrintManager _instance;
+        private String _printerNameString;
+        private LocalPrintServer _printServer;
+        private PrintQueue _thisPrinter;
+        private String _printErrors = "";
+        private bool _inError = false;
+        private Queue<IPrintBatch> _printQueue = new Queue<IPrintBatch>();
+        private Object _queueLock = new Object();
+        private int _remainingPrintsInTray;
+        private IPrintBatch _thisPrintBatch;
+        private Action<String> _printErrorInformer;
 
-        private IPrintBatch thisPrintBatch;
-        //PrintTicket printTicket;
-
-        private PrintManager(String name)
+        #region Construction
+        private PrintManager(String name, int remainingPrints)
         {
-            printServer = new LocalPrintServer();
+            _remainingPrintsInTray = remainingPrints;
+            _printServer = new LocalPrintServer();
             SetPrinterSearchString(name);
             FindPrinter();
-            thisPrinter.Refresh();
-            thisPrintBatch = NullPrintBatch.Instance;
+            _thisPrinter.Refresh();
+            _thisPrintBatch = NullPrintBatch.Instance;
         }
         
-        public static PrintManager GetInstance()
+        public static PrintManager GetInstance(int remainingPrints)
         {
             String printerName;
             #if DEBUG
@@ -46,40 +48,51 @@ namespace Printing
             #else
                 printerName = "hiti";
             #endif
-            return GetInstance(printerName);
+            return GetInstance(printerName, remainingPrints);
         }
 
-        public static PrintManager GetInstance(String name)
+        public static PrintManager GetInstance(String name, int remainingPrints)
         {
-            if (instance == null)
-                instance = new PrintManager(name);
-            return instance;
+            if (_instance == null)
+                _instance = new PrintManager(name, remainingPrints);
+            return _instance;
         }
+        #endregion
 
-        public void SetPrinterSearchString(String name)
+
+        #region Setup
+        private void SetPrinterSearchString(String name)
         {
             name = name ?? "";
-            printerNameString = name.ToLower();
+            _printerNameString = name.ToLower();
         }
 
         private void FindPrinter()
         {
-            // Don't allow choosing another printer for this instance of Print Manager
-            if (thisPrinter != null)
+            // Don't allow choosing another printer
+            if (_thisPrinter != null)
                 return;
 
-            foreach (PrintQueue printQueue in printServer.GetPrintQueues())
+            foreach (PrintQueue printQueue in _printServer.GetPrintQueues())
             {
-                if (printQueue.Name.ToLower().Contains(printerNameString))
+                if (printQueue.Name.ToLower().Contains(_printerNameString))
                 {
-                    thisPrinter = printQueue;
+                    _thisPrinter = printQueue;
                     break;
                 }
             }
-            if (thisPrinter == null)
-                throw new Exception(String.Format("Cannot find printer that matches name of \"{0}\"", printerNameString)); 
+            if (_thisPrinter == null)
+                throw new Exception(String.Format("Cannot find printer that matches name of \"{0}\"", _printerNameString)); 
 
         }
+
+        public void SetPrintErrorInformer(Action<String> informer)
+        {
+            _printErrorInformer = informer;
+        }
+
+        #endregion
+
 
         #region QueueManagement
         private void EnQueuePrintBatch(IPrintBatch batch)
@@ -87,11 +100,11 @@ namespace Printing
             if (batch.Template.CanAddMoreImages())
                 throw new Exception("Cannot print a print batch before it has all of the its images");
             Boolean doPrint = false;
-            lock (queueLock)
+            lock (_queueLock)
             { 
-                printQueue.Enqueue(batch);
+                _printQueue.Enqueue(batch);
 
-                if (printQueue.Count == 1)
+                if (_printQueue.Count == 1)
                     doPrint = true;
             }
             if (doPrint)
@@ -100,10 +113,10 @@ namespace Printing
 
         private IPrintBatch DeQueuePrintBatch()
         {
-            lock (queueLock)
+            lock (_queueLock)
             {
-                if (printQueue.Count > 0)
-                    return printQueue.Dequeue();
+                if (_printQueue.Count > 0)
+                    return _printQueue.Dequeue();
                 else
                     return NullPrintBatch.Instance;
             }
@@ -111,65 +124,75 @@ namespace Printing
         #endregion
 
         #region Printing
-        public void ResolveNonPaperOutPrintError()
+        public void RetryPrintingAfterUserIntervention()
         {
-            inError = false;
+            _inError = false;
             Print();
         }
 
-        public void ResolvePaperOutPrintError(int paperStockPrintCount)
+        // Call this before RetryPrinting() if we refilled the printer with paper
+        public void ResetRemainingPrintCount(int remainingPrints)
         {
-            // TODO: Implement paper paper out detection
+            _remainingPrintsInTray = remainingPrints;
         }
 
+        // TODO: Make this thread safe
         private void Print()
         {
-            thisPrinter.Refresh();
+            _thisPrinter.Refresh();
+            bool transitionedToErrorState = false;
 
-            // TODO: Try to detect paper outage with a print counter
+            // See if our printer is in an error state
+            if (CheckPrinterForErrorState())
+            {
+                if (!_inError)
+                    transitionedToErrorState = true;
 
-            if (!inError)
-                inError = CheckPrinterForErrorState();
+                _inError = true;
+            }
 
-            // TODO: Make this thread safe
             // Get our current print Batch(if we don't already have it)
-            if (thisPrintBatch.BatchFinishedPrinting())
-                thisPrintBatch = DeQueuePrintBatch();
+            if (_thisPrintBatch.BatchFinishedPrinting())
+                _thisPrintBatch = DeQueuePrintBatch();
 
-            if (!inError && !thisPrintBatch.BatchFinishedPrinting())
+            if (!_inError && !_thisPrintBatch.BatchFinishedPrinting())
             {
                 try
                 {
-                    FixedPage page = thisPrintBatch.Template.Render();
-                    thisPrinter.UserPrintTicket.PageBorderless = PageBorderless.Borderless;
-                    thisPrinter.UserPrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
-                    thisPrinter.UserPrintTicket.PageMediaSize = new PageMediaSize(4, 6);
-                    thisPrinter.Commit();
-                    //printTicket = thisPrinter.UserPrintTicket;
-                    XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(thisPrinter);
+                    FixedPage page = _thisPrintBatch.Template.Render();
+                    _thisPrinter.UserPrintTicket.PageBorderless = PageBorderless.Borderless;
+                    _thisPrinter.UserPrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
+                    _thisPrinter.UserPrintTicket.PageMediaSize = new PageMediaSize(4, 6);
+                    _thisPrinter.Commit();
+                    XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(_thisPrinter);
                     
                     writer.Write(page);
                     
-                    
                     // Pretend we know that this print worked and tell our current print batch that it did.
-                    thisPrintBatch.RegisterSucessfullPrint();
+                    _thisPrintBatch.RegisterSucessfullPrint();
 
-                    // Print the next page (eventually this should run our of batches or a print error will happen...)
+                    _remainingPrintsInTray--;
+
+                    // Print the next page (eventually this should run out of batches or a print error will happen...)
                     Print();
                 }
                 catch (Exception ex)
                 {
-                    // TODO: Specifically look for paper out exceptions
-                    printErrors = ex.Message;
-                    inError = true;
-                    InformClientOfPrintProblems(printErrors);
+                    _printErrors = ex.Message;
+                    transitionedToErrorState = true;
+                    _inError = true;
                 }
+            }
+
+            if (transitionedToErrorState)
+            {
+                InformClientOfPrintProblems(_printErrors);
             }
         }
 
         private Boolean CheckPrinterForErrorState()
         {
-            PrintQueue pq = thisPrinter;
+            PrintQueue pq = _thisPrinter;
 
             String statusReport = "";
             if ((pq.QueueStatus & PrintQueueStatus.PaperProblem) == PrintQueueStatus.PaperProblem)
@@ -200,8 +223,9 @@ namespace Printing
             {
                 statusReport = statusReport + "Is out of memory. ";
             }
-            if ((pq.QueueStatus & PrintQueueStatus.PaperOut) == PrintQueueStatus.PaperOut)
+            if ((pq.QueueStatus & PrintQueueStatus.PaperOut) == PrintQueueStatus.PaperOut || _remainingPrintsInTray <= 0)
             {
+                _remainingPrintsInTray = 0;
                 statusReport = statusReport + "Is out of paper. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.OutputBinFull) == PrintQueueStatus.OutputBinFull)
@@ -231,7 +255,7 @@ namespace Printing
             }
             else
             {
-                printErrors = statusReport;
+                _printErrors = statusReport;
                 return true;
             }
         }
@@ -240,11 +264,10 @@ namespace Printing
 
         private void InformClientOfPrintProblems(String problemDescription)
         {
-            // TODO: Implement this
+            if (_printErrorInformer != null)
+                _printErrorInformer(problemDescription);
         }
-
-
-        
+ 
         public PrintBatchHandler startNewBatch(PrintTemplateType printTemplateType)
         {
             return new PrintBatchHandler(printTemplateType, this);
