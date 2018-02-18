@@ -21,33 +21,23 @@ namespace Printing
         private String printerNameString;
         private LocalPrintServer printServer;
         private PrintQueue thisPrinter;
-        private PrintStatus status;
-        //private PrintTemplate template;
-        private Object printingLock = new object();
         private String printErrors = "";
+        private bool inError = false;
+        private Queue<IPrintBatch> printQueue = new Queue<IPrintBatch>();
+        private Object queueLock = new Object();
 
-        PrintTicket printTicket;
+        private IPrintBatch thisPrintBatch;
+        //PrintTicket printTicket;
 
-        // TODO: Use Queue instead of one reference
-        private PrintBatch thisPrintBatch;
-
-        private enum PrintStatus {
-            NOT_READY,
-            READY,
-            PRINTING
-        }
-        
         private PrintManager(String name)
         {
             printServer = new LocalPrintServer();
             SetPrinterSearchString(name);
-            status = PrintStatus.NOT_READY;
-            FindPrintQueue();
+            FindPrinter();
             thisPrinter.Refresh();
-           
-            thisPrintBatch = new PrintBatch(PrintTemplate.ofType(PrintTemplateType.Wide, this.Dispatcher_UnhandledException),2);
+            thisPrintBatch = NullPrintBatch.Instance;
         }
-
+        
         public static PrintManager GetInstance()
         {
             String printerName;
@@ -72,12 +62,11 @@ namespace Printing
             printerNameString = name.ToLower();
         }
 
-        private void FindPrintQueue()
+        private void FindPrinter()
         {
-            if (status == PrintStatus.PRINTING)
-                throw new Exception("Cannot change printers during print!");
-
-            Object thing = printServer.GetPrintQueues();
+            // Don't allow choosing another printer for this instance of Print Manager
+            if (thisPrinter != null)
+                return;
 
             foreach (PrintQueue printQueue in printServer.GetPrintQueues())
             {
@@ -87,107 +76,98 @@ namespace Printing
                     break;
                 }
             }
-            if(thisPrinter != null && !havePrinterError())
-                status = PrintStatus.READY;
+            if (thisPrinter == null)
+                throw new Exception(String.Format("Cannot find printer that matches name of \"{0}\"", printerNameString)); 
+
         }
 
-        public int ImageCapacity()
+        #region QueueManagement
+        private void EnQueuePrintBatch(IPrintBatch batch)
         {
-            return thisPrintBatch.Template.ImageCapacity();
+            if (batch.Template.CanAddMoreImages())
+                throw new Exception("Cannot print a print batch before it has all of the its images");
+            Boolean doPrint = false;
+            lock (queueLock)
+            { 
+                printQueue.Enqueue(batch);
+
+                if (printQueue.Count == 1)
+                    doPrint = true;
+            }
+            if (doPrint)
+                Print();
         }
 
-        public Boolean CanAddMoreImage()
+        private IPrintBatch DeQueuePrintBatch()
         {
-            return thisPrintBatch.Template.CanAddMoreImages();
+            lock (queueLock)
+            {
+                if (printQueue.Count > 0)
+                    return printQueue.Dequeue();
+                else
+                    return NullPrintBatch.Instance;
+            }
+        }
+        #endregion
+
+        #region Printing
+        public void ResolveNonPaperOutPrintError()
+        {
+            inError = false;
+            Print();
         }
 
-        public Boolean AddImage(ImageSource imageSource)
+        public void ResolvePaperOutPrintError(int paperStockPrintCount)
         {
-            return thisPrintBatch.Template.AddImage(imageSource);
+            // TODO: Implement paper paper out detection
         }
-        
-        public Boolean print()
+
+        private void Print()
         {
-            Boolean printStarted = false;
-            thisPrinter.Purge();
-            if (!thisPrintBatch.Template.CanAddMoreImages() && status == PrintStatus.READY && !havePrinterError())
+            thisPrinter.Refresh();
+
+            // TODO: Try to detect paper outage with a print counter
+
+            if (!inError)
+                inError = CheckPrinterForErrorState();
+
+            // TODO: Make this thread safe
+            // Get our current print Batch(if we don't already have it)
+            if (thisPrintBatch.BatchFinishedPrinting())
+                thisPrintBatch = DeQueuePrintBatch();
+
+            if (!inError && !thisPrintBatch.BatchFinishedPrinting())
             {
                 try
                 {
-                    
-                    FixedPage    page = thisPrintBatch.Template.Render();
-                    
+                    FixedPage page = thisPrintBatch.Template.Render();
                     thisPrinter.UserPrintTicket.PageBorderless = PageBorderless.Borderless;
                     thisPrinter.UserPrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
                     thisPrinter.UserPrintTicket.PageMediaSize = new PageMediaSize(4, 6);
                     thisPrinter.Commit();
-                    printTicket = thisPrinter.UserPrintTicket;
+                    //printTicket = thisPrinter.UserPrintTicket;
                     XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(thisPrinter);
-
-                    writer.WritingCancelled += Writer_WritingCancelled;
-                    writer.WritingCompleted += Writer_WritingCompleted;
-                    writer.WritingPrintTicketRequired += Writer_WritingPrintTicketRequired;
-                    writer.WritingProgressChanged += Writer_WritingProgressChanged;
-
+                    
                     writer.Write(page);
                     
-                    printStarted = true;
+                    
+                    // Pretend we know that this print worked and tell our current print batch that it did.
+                    thisPrintBatch.RegisterSucessfullPrint();
+
+                    // Print the next page (eventually this should run our of batches or a print error will happen...)
+                    Print();
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex);
+                    // TODO: Specifically look for paper out exceptions
+                    printErrors = ex.Message;
+                    inError = true;
+                    InformClientOfPrintProblems(printErrors);
                 }
             }
-
-            if (printStarted)
-                status = PrintStatus.PRINTING;
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("=========== Print Queue Errors ===========");
-                System.Diagnostics.Debug.WriteLine(printErrors);
-                System.Diagnostics.Debug.WriteLine("============================================");
-            }
-
-            return printStarted;
         }
 
-        private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("=========== Dispatcher Exception ===========");
-            System.Diagnostics.Debug.WriteLine("{0}", e.Exception.StackTrace);
-            System.Diagnostics.Debug.WriteLine("============================================");
-
-        }
-
-        private void Writer_WritingProgressChanged(object sender, WritingProgressChangedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("=========== Writing Progress Changed ===========");
-            System.Diagnostics.Debug.WriteLine("     Progress:{0}", e.ProgressPercentage);
-            System.Diagnostics.Debug.WriteLine("    Use State:{0}", e.UserState);
-            System.Diagnostics.Debug.WriteLine("Writing Level:{0}", e.WritingLevel);
-            System.Diagnostics.Debug.WriteLine("       Number:{0}", e.Number);
-            System.Diagnostics.Debug.WriteLine("================================================");
-        }
-
-        private void Writer_WritingPrintTicketRequired(object sender, WritingPrintTicketRequiredEventArgs e)
-        {
-            //e.CurrentPrintTicket = printTicket;
-            //throw new NotImplementedException();
-        }
-
-        private void Writer_WritingCompleted(object sender, WritingCompletedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("=========== Writing Completed ===========");
-            System.Diagnostics.Debug.WriteLine("============================================");
-        }
-
-        private void Writer_WritingCancelled(object sender, WritingCancelledEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("=========== Writing Canceled ===========");
-            System.Diagnostics.Debug.WriteLine("============================================");
-        }
-
-        private Boolean havePrinterError()
+        private Boolean CheckPrinterForErrorState()
         {
             PrintQueue pq = thisPrinter;
 
@@ -256,11 +236,70 @@ namespace Printing
             }
         }
 
-        private class PrintBatch
+        #endregion
+
+        private void InformClientOfPrintProblems(String problemDescription)
+        {
+            // TODO: Implement this
+        }
+
+
+        
+        public PrintBatchHandler startNewBatch(PrintTemplateType printTemplateType)
+        {
+            return new PrintBatchHandler(printTemplateType, this);
+        }
+        
+        #region PrintBatchHandler
+        public class PrintBatchHandler
+        {
+            private PrintBatch _printBatch;
+            
+            public PrintBatchHandler(PrintTemplateType templateType, PrintManager printManager)
+            {
+                _printBatch = new PrintBatch(PrintTemplate.OfType(templateType), printManager);
+            }
+
+            public Boolean AddImage(ImageSource imageSource)
+            {
+                return _printBatch.Template.AddImage(imageSource);
+            }
+
+            public bool CompleteBatch(int copyCount)
+            {
+                return _printBatch.QueueBatchForPrinting(copyCount);
+            }
+            public bool BatchFinished()
+            {
+                return _printBatch.BatchFinishedPrinting();
+            }
+        }
+        #endregion
+
+        private interface IPrintBatch
+        {
+            PrintTemplate Template { get; }
+            bool BatchFinishedPrinting();
+            void RegisterSucessfullPrint();
+            bool QueueBatchForPrinting(int totalCopiesInBatch);
+        }
+
+        private class NullPrintBatch : IPrintBatch
+        {
+            private static NullPrintBatch _instance = new NullPrintBatch();
+            public static NullPrintBatch Instance { get { return _instance; } }
+
+            private NullPrintBatch() { }
+            public PrintTemplate Template { get { return NullPrintTemplate.Instance; } }
+            public bool BatchFinishedPrinting(){return true;}
+            public bool QueueBatchForPrinting(int totalCopiesInBatch){throw new NotImplementedException();}
+            public void RegisterSucessfullPrint(){throw new NotImplementedException();}
+        }
+
+        #region PrintBatch
+        private class PrintBatch : IPrintBatch
         {
             static int printBatchCount = 0;
-            private int successfullPrintCount = 0;
-
             private int _totalCopiesInbatch;
             private int _remainingCopiesInBatch;
 
@@ -270,57 +309,51 @@ namespace Printing
             private String _id;
             public String Id{get {return _id;}}
 
-            IList<String> _printErrors = new List<String>();
-            public IList<String> PrintErrors { get { return new List<String>(_printErrors); } }
+            private PrintManager _printManager;
             
-            
-            public PrintBatch(PrintTemplate template, int totalCopiesInBatch)
+            public PrintBatch(PrintTemplate template, PrintManager printManager)
             {
-                if (template == null)
-                    throw new NullReferenceException("parameter template was null for PrintBatch constructor");
+                _template = template;
+                _printManager = printManager;
+                BuildId();
+            }
 
+            // We won't know how many prints the user wants to make until they are finished taking pictures, so we're getting 
+            // that upon completion of the photo session(hence totalCopiesInBatch not being passed into the constructor)
+            public bool QueueBatchForPrinting(int totalCopiesInBatch)
+            {
                 if (totalCopiesInBatch < 1)
                     throw new ArgumentOutOfRangeException("PrintBatch must have at least one copy to print");
 
-                _totalCopiesInbatch = _remainingCopiesInBatch =  totalCopiesInBatch;
-                
-                _template = template;
-                buildId();
+                if (_template.CanAddMoreImages())
+                {
+                    return false;
+                }
+                else
+                {
+                    _totalCopiesInbatch = _remainingCopiesInBatch = totalCopiesInBatch;
+                    _printManager.EnQueuePrintBatch(this);
+                    return true;
+                }
             }
 
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            private void buildId()
+            private void BuildId()
             {
                 _id = (printBatchCount++) + "_" + DateTime.Today.ToShortTimeString();
             }
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <returns>
-            ///     True: There are more prints left in this batch
-            ///     False: There are no more prints left in this batch
-            /// </returns>
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            public Boolean registerSucessfullPrint()
+            public void RegisterSucessfullPrint()
             {
-                if (_remainingCopiesInBatch > 0)
+                if (!BatchFinishedPrinting())
                     _remainingCopiesInBatch--;
-
-                return batchFinished();
             }
 
-            public Boolean batchFinished()
+            public Boolean BatchFinishedPrinting()
             {
-                return _remainingCopiesInBatch > 0;
-            }
-
-            [MethodImpl(MethodImplOptions.Synchronized)]
-            public void registerPrintError(String error)
-            {
-                _printErrors.Add(error);
+                return _remainingCopiesInBatch <= 0;
             }
         }
+        #endregion
     }
 }
 

@@ -14,14 +14,13 @@ namespace Printing
     {
         private int totalImages, addedImageCount;
         protected List<ImageSource> imageSources = new List<ImageSource>();
-        
 
-        protected PrintTemplate(int totalImages, Delegate errorHandler)
+        protected PrintTemplate(int totalImages)
         {
             this.totalImages = totalImages;
             
         }
-
+        
         public int ImageCapacity()
         {
             return totalImages;
@@ -43,14 +42,14 @@ namespace Printing
             return canAddMoreImages;
         }
 
-        public static PrintTemplate ofType(PrintTemplateType type, DispatcherUnhandledExceptionEventHandler errorHandler)
+        public static PrintTemplate OfType(PrintTemplateType type)
         {
             switch (type)
             {
                 case PrintTemplateType.Wide:
-                    return new WidePrintTemplate(errorHandler);
+                    return new WidePrintTemplate();
                 case PrintTemplateType.Standard:
-                    return new StandardPrintTemplate(errorHandler);
+                    return new StandardPrintTemplate();
             }
             return null;
         }

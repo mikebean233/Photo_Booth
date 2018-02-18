@@ -7,7 +7,7 @@ namespace Printing
 {
     internal class StandardPrintTemplate : PrintTemplate
     {
-        public StandardPrintTemplate(DispatcherUnhandledExceptionEventHandler errorHandler) : base(2, errorHandler)
+        public StandardPrintTemplate() : base(2)
         {
         }
             

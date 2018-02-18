@@ -14,10 +14,10 @@ namespace Printing
     internal class WidePrintTemplate : PrintTemplate
     {
         private WideTemplate page;
-        public WidePrintTemplate(DispatcherUnhandledExceptionEventHandler errorHandler) : base(2, errorHandler)
+        public WidePrintTemplate() : base(2)
         {
             page = new WideTemplate();
-            page.Dispatcher.UnhandledException += errorHandler;
+            //page.Dispatcher.UnhandledException += errorHandler;
             page.BeginInit();
             page.InitializeComponent();
             page.EndInit();
