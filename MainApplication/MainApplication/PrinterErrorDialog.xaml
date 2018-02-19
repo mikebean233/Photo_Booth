@@ -1,17 +1,13 @@
-﻿<Window x:Class="MainApplication.MainWindow"
+﻿<Window x:Class="MainApplication.PrinterErrorDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApplication"
         mc:Ignorable="d"
-        Title="Photobooth Application" Height="350" Width="525">
+        Title="Printer Error" Height="336.885" Width="403.893">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="57*"/>
-            <ColumnDefinition Width="460*"/>
-        </Grid.ColumnDefinitions>
+        <Label Content="an error occured during printing: " HorizontalContentAlignment="Center" HorizontalAlignment="Left" Height="33" Margin="77,10,0,0" VerticalAlignment="Top" Width="210"/>
 
     </Grid>
 </Window>

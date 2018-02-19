@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Printing;
 
 namespace MainApplication
 {
@@ -20,9 +21,30 @@ namespace MainApplication
     /// </summary>
     public partial class MainWindow : Window
     {
+        private PrintManager _printManager;
+
+
         public MainWindow()
         {
             InitializeComponent();
+
+            StartDialog startDialog = new StartDialog();
+            startDialog.ShowDialog();
+            _printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
+            _printManager.SetPrintErrorInformer(HandlePrintError);
+
+            String testMessage = "This is a test print error message";
+
+
+
+
+        }
+
+
+        private void HandlePrintError(String errorMessages)
+        {
+            
+
         }
     }
 }
