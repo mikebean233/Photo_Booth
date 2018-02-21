@@ -5,9 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApplication"
         mc:Ignorable="d"
-        Title="Printer Error" Height="336.885" Width="403.893">
-    <Grid>
-        <Label Content="an error occured during printing: " HorizontalContentAlignment="Center" HorizontalAlignment="Left" Height="33" Margin="77,10,0,0" VerticalAlignment="Top" Width="210"/>
-
-    </Grid>
+        Title="Printer Error" Height="336.885" Width="700.893">
+    <StackPanel Margin="10">
+        <TextBlock Name="TextBlock_errorMessages" Foreground="Red" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow"  Text="TextBlock" VerticalAlignment="Top">Error...</TextBlock>
+        <TextBlock TextWrapping="WrapWithOverflow">please correct the printer problem(s) then click OK to continue</TextBlock>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Name="TextBlock_paper" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextWrapping="WrapWithOverflow" >it looks like the printer is out of paper, enter the remaining prints left in the tray after refilling the printer</TextBlock>
+            <Label Name="Label_printCount" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" Content="Remaining Prints:" ></Label>
+            <TextBox Name="TextBox_printCount" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" Width="100" HorizontalAlignment="Left" TextChanged="TextBox_printCount_TextChanged" />
+            <Button Name="Button_Ok" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Width="100" Click="Button_Click" IsEnabled="False">OK</Button>
+        </Grid>
+    </StackPanel>
 </Window>

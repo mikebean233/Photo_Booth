@@ -19,9 +19,38 @@ namespace MainApplication
     /// </summary>
     public partial class PrinterErrorDialog : Window
     {
-        public PrinterErrorDialog()
+        private String _printErrors;
+        private bool _needPrintCount;
+        private int _printCount;
+        public int PrintCount {get{return _printCount;} }
+
+        public void ValidateInput()
+        {
+            Button_Ok.IsEnabled = _printCount > 0;
+        }
+        
+        public PrinterErrorDialog(String printErrors)
         {
             InitializeComponent();
+            _printErrors = printErrors ?? "";
+            _needPrintCount = _printErrors.Contains("out of paper");
+            TextBlock_errorMessages.Text = _printErrors;
+            Button_Ok.IsEnabled = !_needPrintCount;
+            TextBox_printCount.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
+            Label_printCount.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
+            TextBlock_paper.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void TextBox_printCount_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            String value = ((TextBox)sender).Text;
+            bool parseSucceded = int.TryParse(value, out _printCount);
+            ValidateInput();
         }
     }
 }

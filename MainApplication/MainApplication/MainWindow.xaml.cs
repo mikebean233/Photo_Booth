@@ -27,23 +27,26 @@ namespace MainApplication
         public MainWindow()
         {
             InitializeComponent();
-
+            
             StartDialog startDialog = new StartDialog();
             startDialog.ShowDialog();
             _printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
             _printManager.SetPrintErrorInformer(HandlePrintError);
-
-            String testMessage = "This is a test print error message";
-
-
-
-
+            
+            TestErrorDialog("Something \nwent \nwrong, \ngood luck with taht ;)");
+            TestErrorDialog("Blah Blah Blah\n out of paper Blah\n Blah\n");
         }
 
+        private void TestErrorDialog(String errorMessages)
+        {
+            PrinterErrorDialog dialog = new PrinterErrorDialog(errorMessages);
+            dialog.ShowDialog();
+            System.Diagnostics.Debug.WriteLine("PrintCount: {0}",dialog.PrintCount);
+        }
 
         private void HandlePrintError(String errorMessages)
         {
-            
+                
 
         }
     }
