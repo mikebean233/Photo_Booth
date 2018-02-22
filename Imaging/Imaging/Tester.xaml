@@ -1,0 +1,14 @@
+﻿<Window x:Class="Imaging.Tester"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Imaging"
+        mc:Ignorable="d"
+        Title="Tester" Height="350" Width="525">
+    <Grid>
+        <Image Name="Image_preview" HorizontalAlignment="Left" Height="205" Margin="62,34,0,0" VerticalAlignment="Top" Width="372"/>
+        <Label Name="Label_count" Content="Label" HorizontalAlignment="Left" Height="35" Margin="155,263,0,0" VerticalAlignment="Top" Width="140"/>
+
+    </Grid>
+</Window>
