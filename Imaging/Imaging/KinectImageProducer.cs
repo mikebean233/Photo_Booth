@@ -49,7 +49,7 @@ namespace Imaging
             // do nothing
         }
 
-        #region Implemtation Details
+        #region Implementation Details
 
         private class Box
         {
