@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Imaging
 {
@@ -30,17 +31,30 @@ namespace Imaging
 
             _imageProducer = ImageProducerFactory.GetImageProducer();
             _queue = _imageProducer.GetImageQueue();
-            System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 50);
-            timer.Tick += (sender, e) =>
-            {
-                ImageSource thisImage = null;
-                if (_queue.TryDequeue(out thisImage))
-                    Image_preview.Source = thisImage;
-                Label_count.Content = _queue.Count + "";
-            };
-            timer.Start();
+            
+            Thread consumer = new Thread(new ThreadStart(Consume));
+            consumer.Start();
+        }
 
+        private void Consume()
+        {
+            bool done = false;
+
+            while (!done)
+            {
+                try
+                {
+                    ImageSource thisImage = null;
+                    if (_queue.TryDequeue(out thisImage))
+                        Dispatcher.Invoke(new Action(() => Image_preview.Source = thisImage));
+
+                    Dispatcher.Invoke(new Action(() => Label_count.Content = _queue.Count + ""));
+                }
+                catch (Exception ex)
+                {
+                    done = true;
+                }
+            }
         }
     }
 }
