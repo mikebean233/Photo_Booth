@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Printing;
+using Imaging;
+using System.Threading;
+using System.Collections.Concurrent;
 
 namespace MainApplication
 {
@@ -22,7 +25,9 @@ namespace MainApplication
     public partial class MainWindow : Window
     {
         private PrintManager _printManager;
-
+        private ConcurrentQueue<ImageSource> _queue;
+        private PrintManager.PrintBatchHandler _currentBatch;
+        private bool _readyForCapture = false;
 
         public MainWindow()
         {
@@ -32,9 +37,56 @@ namespace MainApplication
             startDialog.ShowDialog();
             _printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
             _printManager.SetPrintErrorInformer(HandlePrintError);
-            
-            TestErrorDialog("Something \nwent \nwrong, \ngood luck with taht ;)");
-            TestErrorDialog("Blah Blah Blah\n out of paper Blah\n Blah\n");
+            _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
+
+            ImageProducer imageProducer = ImageProducerFactory.GetImageProducer();
+            _queue = imageProducer.GetImageQueue();
+
+            Thread consumer = new Thread(new ThreadStart(Consume));
+            consumer.Start();
+            UpdateStatus();
+        }
+
+        private void UpdateStatus()
+        {
+            String statusText = "";
+            if (_currentBatch.BatchFinishedPrinting)
+                statusText = "session finished, images sent to printer";
+            else
+                statusText = String.Format("{0}/{1}", _currentBatch.AddedImageCount, _currentBatch.TemplateImageCapacity);
+
+            Dispatcher.Invoke(new Action(() => Label_remCount.Content = statusText));
+        }
+
+        private void Consume()
+        {
+            bool done = false;
+
+            while (!done)
+            {
+                try
+                {
+                    ImageSource thisImage = null;
+                    if (_queue.TryDequeue(out thisImage))
+                    {
+                        Dispatcher.Invoke(new Action(() => Image_preview.Source = thisImage));
+
+                        if (_readyForCapture)
+                        {
+                            _readyForCapture = false;
+                            _currentBatch.AddImage(thisImage);
+                            if (_currentBatch.RemainingImageCount == 0)
+                                _currentBatch.CompleteBatch(1);
+
+                            UpdateStatus();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    done = true;
+                }
+            }
         }
 
         private void TestErrorDialog(String errorMessages)
@@ -48,6 +100,12 @@ namespace MainApplication
         {
                 
 
+        }
+
+        private void Button_takePicture_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentBatch.RemainingImageCount > 0)
+                _readyForCapture = true;
         }
     }
 }

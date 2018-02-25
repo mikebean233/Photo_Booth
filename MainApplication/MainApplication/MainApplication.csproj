@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Imaging">
+      <HintPath>..\..\Imaging\Imaging\bin\Release\Imaging.dll</HintPath>
+    </Reference>
     <Reference Include="Printing">
       <HintPath>..\..\Printing\Printing\bin\Debug\Printing.dll</HintPath>
     </Reference>
