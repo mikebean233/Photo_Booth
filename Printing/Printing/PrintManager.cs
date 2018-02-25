@@ -95,20 +95,30 @@ namespace Printing
 
 
         #region QueueManagement
-        private void EnQueuePrintBatch(IPrintBatch batch)
+
+        private bool EnQueuePrintBatch(IPrintBatch batch)
         {
+            bool doPrint = false;
+            bool addedBatch = false;
+
             if (batch.Template.CanAddMoreImages())
                 throw new Exception("Cannot print a print batch before it has all of the its images");
-            Boolean doPrint = false;
+            
             lock (_queueLock)
-            { 
-                _printQueue.Enqueue(batch);
+            {
+                if (!_printQueue.Contains(batch))
+                {
+                    _printQueue.Enqueue(batch);
+                    addedBatch = true;
 
-                if (_printQueue.Count == 1)
-                    doPrint = true;
+                    if (_printQueue.Count == 1)
+                        doPrint = true;
+                }
             }
             if (doPrint)
                 Print();
+
+            return addedBatch;
         }
 
         private IPrintBatch DeQueuePrintBatch()
@@ -277,7 +287,13 @@ namespace Printing
         public class PrintBatchHandler
         {
             private PrintBatch _printBatch;
-            
+            private int _addedImageCount = 0;
+
+            public int RemainingImageCount    { get { return _printBatch.Template.ImageCapacity - _addedImageCount; } }
+            public int TemplateImageCapacity  { get { return _printBatch.Template.ImageCapacity;}}
+            public int AddedImageCount        { get { return _addedImageCount;}}
+            public bool BatchFinishedPrinting { get { return _printBatch.BatchFinishedPrinting(); }}
+
             public PrintBatchHandler(PrintTemplateType templateType, PrintManager printManager)
             {
                 _printBatch = new PrintBatch(PrintTemplate.OfType(templateType), printManager);
@@ -285,16 +301,20 @@ namespace Printing
 
             public Boolean AddImage(ImageSource imageSource)
             {
-                return _printBatch.Template.AddImage(imageSource);
+                if (_printBatch.Template.AddImage(imageSource))
+                {
+                    ++_addedImageCount;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             public bool CompleteBatch(int copyCount)
             {
                 return _printBatch.QueueBatchForPrinting(copyCount);
-            }
-            public bool BatchFinished()
-            {
-                return _printBatch.BatchFinishedPrinting();
             }
         }
         #endregion
@@ -324,7 +344,7 @@ namespace Printing
         {
             static int printBatchCount = 0;
             private int _totalCopiesInbatch;
-            private int _remainingCopiesInBatch;
+            private int _remainingCopiesInBatch = -1;
 
             private PrintTemplate _template;
             public PrintTemplate Template { get { return _template; } }
@@ -355,8 +375,7 @@ namespace Printing
                 else
                 {
                     _totalCopiesInbatch = _remainingCopiesInBatch = totalCopiesInBatch;
-                    _printManager.EnQueuePrintBatch(this);
-                    return true;
+                    return _printManager.EnQueuePrintBatch(this);
                 }
             }
 
@@ -373,7 +392,12 @@ namespace Printing
 
             public Boolean BatchFinishedPrinting()
             {
-                return _remainingCopiesInBatch <= 0;
+                return _remainingCopiesInBatch == 0;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj != null && obj.GetType() == this.GetType() && ((PrintBatch)obj).Id == _id;
             }
         }
         #endregion

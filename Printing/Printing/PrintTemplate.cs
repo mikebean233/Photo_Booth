@@ -12,34 +12,30 @@ namespace Printing
 {
     internal abstract class PrintTemplate
     {
-        private int totalImages, addedImageCount;
+        private int _imageCapacity, _addedImageCount = 0;
+        public int ImageCapacity { get { return _imageCapacity; } }
+
         protected List<ImageSource> imageSources = new List<ImageSource>();
 
-        protected PrintTemplate(int totalImages)
+        protected PrintTemplate(int imageCapacity)
         {
-            this.totalImages = totalImages;
-            
+            _imageCapacity = imageCapacity;
         }
         
-        public int ImageCapacity()
-        {
-            return totalImages;
-        }
-
         public Boolean CanAddMoreImages()
         {
-            return addedImageCount < totalImages;
+            return _addedImageCount < _imageCapacity;
         }
 
         public Boolean AddImage(ImageSource imageSource)
         {
-            Boolean canAddMoreImages = CanAddMoreImages();
-            if (imageSource != null && canAddMoreImages)
+            if (imageSource != null && CanAddMoreImages())
             {
                 imageSources.Add(imageSource);
-                ++addedImageCount;
+                ++_addedImageCount;
+                return true;
             }
-            return canAddMoreImages;
+            return false;
         }
 
         public static PrintTemplate OfType(PrintTemplateType type)
