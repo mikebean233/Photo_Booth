@@ -17,7 +17,6 @@ namespace Printing
         public WidePrintTemplate() : base(2)
         {
             page = new WideTemplate();
-            //page.Dispatcher.UnhandledException += errorHandler;
             page.BeginInit();
             page.InitializeComponent();
             page.EndInit();
@@ -25,8 +24,11 @@ namespace Printing
 
         public override FixedPage Render()
         {
-            page.ImageTop.Source = imageSources[0];
-            page.ImageCenter.Source = imageSources[1];
+            page.Dispatcher.Invoke(new Action(()=>
+            {
+                page.ImageTop.Source = imageSources[0];
+                page.ImageCenter.Source = imageSources[1];
+            }));
             return page.FixedPage;
         }
     }

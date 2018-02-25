@@ -69,17 +69,20 @@ namespace MainApplication
                     ImageSource thisImage = null;
                     if (_queue.TryDequeue(out thisImage))
                     {
-                        Dispatcher.Invoke(new Action(() => Image_preview.Source = thisImage));
 
-                        if (_readyForCapture)
+                        Dispatcher.Invoke(new Action(() => 
                         {
-                            _readyForCapture = false;
-                            _currentBatch.AddImage(thisImage);
-                            if (_currentBatch.RemainingImageCount == 0)
-                                _currentBatch.CompleteBatch(1);
+                            Image_preview.Source = thisImage;
+                            if (_readyForCapture)
+                            {
+                                _readyForCapture = false;
+                                _currentBatch.AddImage(thisImage);
+                                if (_currentBatch.RemainingImageCount == 0)
+                                    _currentBatch.CompleteBatch(1);
 
-                            UpdateStatus();
-                        }
+                                UpdateStatus();
+                            }
+                        }));
                     }
                 }
                 catch (Exception ex)
@@ -88,18 +91,10 @@ namespace MainApplication
                 }
             }
         }
-
-        private void TestErrorDialog(String errorMessages)
-        {
-            PrinterErrorDialog dialog = new PrinterErrorDialog(errorMessages);
-            dialog.ShowDialog();
-            System.Diagnostics.Debug.WriteLine("PrintCount: {0}",dialog.PrintCount);
-        }
-
+        
         private void HandlePrintError(String errorMessages)
         {
-                
-
+            System.Diagnostics.Debug.WriteLine(errorMessages);            
         }
 
         private void Button_takePicture_Click(object sender, RoutedEventArgs e)

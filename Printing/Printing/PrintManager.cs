@@ -149,8 +149,15 @@ namespace Printing
         // TODO: Make this thread safe
         private void Print()
         {
-            _thisPrinter.Refresh();
-            bool transitionedToErrorState = false;
+            try
+            {
+                _thisPrinter.Refresh();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+            }
+                bool transitionedToErrorState = false;
 
             // See if our printer is in an error state
             if (CheckPrinterForErrorState())
