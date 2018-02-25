@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Imaging
 {
-    class ImageProducerFactory
+    public class ImageProducerFactory
     {
         public static ImageProducer GetImageProducer()
         {
