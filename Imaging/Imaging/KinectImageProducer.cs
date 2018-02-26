@@ -22,7 +22,7 @@ namespace Imaging
             _queue = new ConcurrentQueue<ImageSource>();
             _sensor = KinectSensor.GetDefault();
 
-            _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth | FrameSourceTypes.Infrared)
+            _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth | FrameSourceTypes.Infrared | FrameSourceTypes.BodyIndex)
                 .MultiSourceFrameArrived += OnMultiSourceFrameArrived;
 
             _sensor.Open();
@@ -31,7 +31,7 @@ namespace Imaging
         private void OnMultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs multiSourceFrameArrivedEventArgs)
         {
             _frameManager.ProcessMultiSourceFrameEvent(multiSourceFrameArrivedEventArgs);
-            _queue.Enqueue(_frameManager.BuildBitmapSourceFromFrame(SourceType.DEPTH));
+            _queue.Enqueue(_frameManager.BuildBitmapSourceFromFrame(SourceType.BODY_INDEX));
         }
 
         public static KinectImageProducer GetInstance()
@@ -123,9 +123,12 @@ namespace Imaging
             private static readonly FrameManager _instance;
             private static readonly Dictionary<SourceType, Box> _frameResolutions = new Dictionary<SourceType, Box>();
             private static readonly Dictionary<SourceType, PixelFormat> _framePixelFormats = new Dictionary<SourceType, PixelFormat>();
-            private static byte[] _colorPixels { get; set; }
-            private static byte[] _depthPixels { get; set; }
-            private static byte[] _infraredPixels { get; set; }
+            private static readonly Dictionary<int, int> _bodyIndexToColorMap = new Dictionary<int, int>();
+            private static readonly Dictionary<int, int> _colorToBodyIndexMap = new Dictionary<int, int>();
+            private static byte[] _colorPixels;
+            private static byte[] _depthPixels;
+            private static byte[] _infraredPixels;
+            private static byte[] _bodyIndexPixels;
             
             private bool HaveAllFrames() { return _colorPixels != null && _depthPixels != null && _infraredPixels != null; }
 
@@ -136,7 +139,17 @@ namespace Imaging
                 _framePixelFormats[SourceType.COLOR] = PixelFormats.Bgr32;
                 _framePixelFormats[SourceType.DEPTH] = PixelFormats.Gray16;
                 _framePixelFormats[SourceType.INFRARED] = PixelFormats.Gray16;
+                _framePixelFormats[SourceType.BODY_INDEX] = PixelFormats.Rgb24;
 
+                _bodyIndexToColorMap.Add(0, 0xFF0000); // RED
+                _bodyIndexToColorMap.Add(1, 0x00FF00); // GREEN
+                _bodyIndexToColorMap.Add(2, 0x0000FF); // BLUE
+                _bodyIndexToColorMap.Add(3, 0xFFFF00); // YELLOW
+                _bodyIndexToColorMap.Add(4, 0xFF00FF); // PURPLE
+                _bodyIndexToColorMap.Add(5, 0xFFFFFF); // WHITE
+
+                foreach (int bodyIndex in _bodyIndexToColorMap.Keys)
+                    _colorToBodyIndexMap.Add(_bodyIndexToColorMap[bodyIndex], bodyIndex);
             }
             private FrameManager() { }
 
@@ -162,9 +175,9 @@ namespace Imaging
                     {
                         outPixels = _infraredPixels;
                     }
-                    else
+                    else if (frameSourceType == SourceType.BODY_INDEX)
                     {
-                                        
+                        outPixels = _bodyIndexPixels;
                     }
                     if(outPixels != null)
                         return BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, format, null, outPixels, dimensions.Width * format.BitsPerPixel / 8);
@@ -250,12 +263,26 @@ namespace Imaging
             {
                 if (bodyIndexFrame != null)
                 {
-                    Box dimensions = Box.With(bodyIndexFrame.FrameDescription.Width, bodyIndexFrame.FrameDescription.Height);
-                    //frameResolutions[SourceType.] = dimensions;
-                    _framePixelFormats[SourceType.INFRARED] = PixelFormats.Gray16;
+                    if (!_frameResolutions.ContainsKey(SourceType.BODY_INDEX))
+                    {
+                        _frameResolutions[SourceType.BODY_INDEX] = Box.FromFrameDescription(bodyIndexFrame.FrameDescription);
+                        _bodyIndexPixels = new byte[_frameResolutions[SourceType.BODY_INDEX].Area * _framePixelFormats[SourceType.BODY_INDEX].BitsPerPixel * 3];
+                    }
 
+                    byte[] rawBodyIndexPixels = new byte[_frameResolutions[SourceType.BODY_INDEX].Area];
+                    bodyIndexFrame.CopyFrameDataToArray(rawBodyIndexPixels);
+                    bodyIndexFrame.Dispose();
 
-
+                    int outIndex = 0;
+                    for (int inIndex = 0; inIndex < rawBodyIndexPixels.Length; ++inIndex)
+                    {
+                        int bodyIndex = rawBodyIndexPixels[inIndex];
+                        int thisColor = 0;
+                        _bodyIndexToColorMap.TryGetValue(bodyIndex, out thisColor);
+                        _bodyIndexPixels[outIndex++] = (byte)((thisColor & 0xFF0000) >> 16); // Red channel
+                        _bodyIndexPixels[outIndex++] = (byte)((thisColor & 0x00FF00) >> 8 ); // Green channel
+                        _bodyIndexPixels[outIndex++] = (byte)((thisColor & 0x0000FF)      ); // Blue channel
+                    }
                 }
             }
 
@@ -264,7 +291,7 @@ namespace Imaging
                 ProcessColorFrame(eventArgs.FrameReference.AcquireFrame().ColorFrameReference.AcquireFrame());
                 ProcessDepthFrame(eventArgs.FrameReference.AcquireFrame().DepthFrameReference.AcquireFrame());
                 ProcessInfraredFrame(eventArgs.FrameReference.AcquireFrame().InfraredFrameReference.AcquireFrame());
-                //processBodyIndexFrame(eventArgs.FrameReference.AcquireFrame().BodyIndexFrameReference.AcquireFrame());
+                ProcessBodyIndexFrame(eventArgs.FrameReference.AcquireFrame().BodyIndexFrameReference.AcquireFrame());
 
                 return HaveAllFrames();
             }
