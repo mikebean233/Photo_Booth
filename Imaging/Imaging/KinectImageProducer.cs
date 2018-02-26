@@ -18,7 +18,7 @@ namespace Imaging
 
         private KinectImageProducer()
         {
-            _frameManager = FrameManager.GetInstance();
+            _frameManager = FrameManager.Instance;
             _queue = new ConcurrentQueue<ImageSource>();
             _sensor = KinectSensor.GetDefault();
 
@@ -31,7 +31,7 @@ namespace Imaging
         private void OnMultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs multiSourceFrameArrivedEventArgs)
         {
             _frameManager.ProcessMultiSourceFrameEvent(multiSourceFrameArrivedEventArgs);
-            _queue.Enqueue(_frameManager.buildBitmapSourceFromFrame(SourceType.COLOR));
+            _queue.Enqueue(_frameManager.BuildBitmapSourceFromFrame(SourceType.DEPTH));
         }
 
         public static KinectImageProducer GetInstance()
@@ -50,7 +50,7 @@ namespace Imaging
         }
 
         #region Implementation Details
-
+        
         private class Box
         {
             private int _width, _height;
@@ -64,6 +64,11 @@ namespace Imaging
                 _height = height;
             }
 
+            public static Box FromFrameDescription(FrameDescription frameDescription)
+            {
+                return new Box(frameDescription.Width, frameDescription.Height);
+            }
+
             public static Box With(int width, int height)
             {
                 return new Box(width, height);
@@ -72,197 +77,182 @@ namespace Imaging
 
         private class SourceType
         {
-            public static SourceType COLOR = new SourceType(0);
-            public static SourceType DEPTH = new SourceType(1);
-            public static SourceType INFRARED = new SourceType(2);
-            public static SourceType BODY_INDEX = new SourceType(3);
+            private readonly int _id;
+            public int Id { get { return _id; } }
 
-            //private FrameSourceTypes _type;
-            //public FrameSourceTypes Type { get { return _type; } }
-            //private SourceType(FrameSourceTypes type) { _type = type; }
-            private SourceType(int value) { _value = value; }
-            private int Value { get { return _value; } }
-            private int _value;
+            private readonly String _name;
+            public String Name { get { return _name; } }
 
-            public static SourceType fromString(String value)
+            private static readonly HashSet<SourceType> _values = new HashSet<SourceType>();
+            public static ISet<SourceType> Values { get { return _values; }}
+
+            public static readonly SourceType COLOR      = new SourceType(0, "color");
+            public static readonly SourceType DEPTH      = new SourceType(1, "depth");
+            public static readonly SourceType INFRARED   = new SourceType(2, "infrared");
+            public static readonly SourceType BODY_INDEX = new SourceType(3, "bodyindex");
+
+            private SourceType(int id, String name)
             {
-                if (!String.IsNullOrEmpty(value) && !String.IsNullOrWhiteSpace(value))
-                {
-                    if (value.ToLower().Equals("color"))
-                        return COLOR;
-                    else if (value.ToLower().Equals("depth"))
-                        return DEPTH;
-                    else if (value.ToLower().Equals("infrared"))
-                        return INFRARED;
-                    else if (value.ToLower().Equals("bodyindex"))
-                        return BODY_INDEX;
-                }
-                throw new InvalidOperationException("Error converting \"" + value + "\" to SourceType");
+                _id = id;
+                _name = name;
+                _values.Add(this);
+            }
+            
+            public static SourceType FromString(String name)
+            {
+                foreach (SourceType thisSourceType in _values)
+                    if (thisSourceType.Name.Equals(name))
+                        return thisSourceType;
+
+                throw new InvalidOperationException(String.Format("Error converting \"{0}\" to SourceType", name));
             }
 
             public override bool Equals(object obj)
             {
-                return obj != null && (obj is SourceType) && (obj as SourceType).Value == Value;
+                return obj != null && (obj is SourceType) && (obj as SourceType).Id == _id;
             }
 
             public override int GetHashCode()
             {
-                return Value;
+                return _id;
             }
         }
 
         private class FrameManager
         {
-            private static FrameManager instance;
+            private static readonly FrameManager _instance;
+            private static readonly Dictionary<SourceType, Box> _frameResolutions = new Dictionary<SourceType, Box>();
+            private static readonly Dictionary<SourceType, PixelFormat> _framePixelFormats = new Dictionary<SourceType, PixelFormat>();
+            private static byte[] _colorPixels { get; set; }
+            private static byte[] _depthPixels { get; set; }
+            private static byte[] _infraredPixels { get; set; }
+            
+            private bool HaveAllFrames() { return _colorPixels != null && _depthPixels != null && _infraredPixels != null; }
 
+            static FrameManager()
+            {
+                _instance = new FrameManager();
+
+                _framePixelFormats[SourceType.COLOR] = PixelFormats.Bgr32;
+                _framePixelFormats[SourceType.DEPTH] = PixelFormats.Gray16;
+                _framePixelFormats[SourceType.INFRARED] = PixelFormats.Gray16;
+
+            }
             private FrameManager() { }
 
-            public static FrameManager GetInstance()
+            public static FrameManager Instance { get { return _instance; } }
+        
+            public BitmapSource BuildBitmapSourceFromFrame(SourceType frameSourceType)
             {
-                if (instance == null)
-                    instance = new FrameManager();
-                return instance;
-            }
-
-            //private Object colorPixelsLock = new System.Object();
-            //private Object depthPixelsLock = new Object();
-            //private Object infraredPixelsLock = new Object();
-
-            private Dictionary<SourceType, Box> frameResolutions = new Dictionary<SourceType, Box>();
-            private Dictionary<SourceType, PixelFormat> framePixelFormats = new Dictionary<SourceType, PixelFormat>();
-
-            //private ImmutableList<FrameSourceTypes> compatableFrameSourceTypes = ImmutableList.Create<FrameSourceTypes>()
-            //	.Add(FrameSourceTypes.Color)
-            //	.Add(FrameSourceTypes.Depth)
-            //	.Add(FrameSourceTypes.Infrared);
-
-            private byte[] colorPixels { get; set; }
-            private byte[] depthPixels { get; set; }
-            private UInt16[] infraredPixels { get; set; }
-            //private IBufferByteAccess bodIndexByteAccess;
-
-            private int min, max;
-
-            public Boolean HaveAllFrames() { return colorPixels != null && depthPixels != null && infraredPixels != null; }
-
-            public BitmapSource buildBitmapSourceFromFrame(SourceType frameSourceType)
-            {
-                if (frameResolutions.ContainsKey(frameSourceType))
+                if (_frameResolutions.ContainsKey(frameSourceType))
                 {
-                    Box dimensions = frameResolutions[frameSourceType];
-                    PixelFormat format = framePixelFormats[frameSourceType];
+                    Box dimensions = _frameResolutions[frameSourceType];
+                    PixelFormat format = _framePixelFormats[frameSourceType];
 
-                    byte[] outPixels;
+                    byte[] outPixels = null;
                     if (frameSourceType == SourceType.COLOR)
                     {
-                        outPixels = colorPixels;
+                        outPixels = _colorPixels;
                     }
                     else if (frameSourceType == SourceType.DEPTH)
                     {
-                        outPixels = depthPixels;
+                        outPixels = _depthPixels;
+                    }
+                    else if (frameSourceType == SourceType.INFRARED)
+                    {
+                        outPixels = _infraredPixels;
                     }
                     else
                     {
-                        outPixels = new byte[dimensions.Area * ((PixelFormats.Bgr32.BitsPerPixel + 7) / 8)];
-                        int colorIndex = 0;
-                        int minDepth = frameSourceType == SourceType.DEPTH ? min : 0;
-                        int maxDepth = frameSourceType == SourceType.DEPTH ? max : 0;
-                        UInt16[] thisPixelArray = infraredPixels;// frameSourceType == SourceType.DEPTH ? depthPixels : infraredPixels;
-
-                        for (int index = 0; index < thisPixelArray.Length; ++index)
-                        {
-                            UInt16 pixel = thisPixelArray[index];
-                            byte intensity = (byte)((frameSourceType == SourceType.INFRARED) ? (pixel >> 8) : (pixel >= minDepth && pixel <= maxDepth) ? pixel : 0);
-
-                            outPixels[colorIndex++] = intensity;
-                            outPixels[colorIndex++] = intensity;
-                        }
+                                        
                     }
-                    return BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, format, null, outPixels, dimensions.Width * format.BitsPerPixel / 8);
+                    if(outPixels != null)
+                        return BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, format, null, outPixels, dimensions.Width * format.BitsPerPixel / 8);
                 }
-                else
-                {
-                    //throw new Exception("There is no frame available for source type " + frameSourceType);
-                    return null;
-                }
+                return null;
             }
 
-            private void processColorFrame(ColorFrame colorFrame)
+            private void ProcessColorFrame(ColorFrame colorFrame)
             {
                 if (colorFrame != null)
                 {
-                    Box dimensions = Box.With(colorFrame.FrameDescription.Width, colorFrame.FrameDescription.Height);
-                    frameResolutions[SourceType.COLOR] = dimensions;
-                    framePixelFormats[SourceType.COLOR] = PixelFormats.Bgr32;
-
-                    if (colorPixels == null)
-                        colorPixels = new byte[dimensions.Area * 4];
-
+                    if (!_frameResolutions.ContainsKey(SourceType.COLOR))
+                    {
+                        _frameResolutions[SourceType.COLOR] = Box.FromFrameDescription(colorFrame.FrameDescription);
+                        _colorPixels = new byte[_frameResolutions[SourceType.COLOR].Area * 4];
+                    }
+                    
                     if (colorFrame.RawColorImageFormat == ColorImageFormat.Bgra)
-                        colorFrame.CopyRawFrameDataToArray(colorPixels);
+                        colorFrame.CopyRawFrameDataToArray(_colorPixels);
                     else
-                        colorFrame.CopyConvertedFrameDataToArray(colorPixels, ColorImageFormat.Bgra);
+                        colorFrame.CopyConvertedFrameDataToArray(_colorPixels, ColorImageFormat.Bgra);
                     colorFrame?.Dispose();
                 }
             }
 
-            private void processDepthFrame(DepthFrame depthFrame)
+            private void ProcessDepthFrame(DepthFrame depthFrame)
             {
                 if (depthFrame != null)
                 {
-                    Box dimensions = Box.With(depthFrame.FrameDescription.Width, depthFrame.FrameDescription.Height);
-                    frameResolutions[SourceType.DEPTH] = Box.With(depthFrame.FrameDescription.Width, depthFrame.FrameDescription.Height);
-                    framePixelFormats[SourceType.DEPTH] = PixelFormats.Gray16;
-
-                    min = depthFrame.DepthMinReliableDistance;
-                    max = depthFrame.DepthMaxReliableDistance;
-
-                    if (depthPixels == null)
-                        depthPixels = new byte[dimensions.Area * (39 / 8)];
-
-                    UInt16[] tempPixels = new UInt16[dimensions.Area];
+                    if (!_frameResolutions.ContainsKey(SourceType.DEPTH))
+                    {
+                        _frameResolutions[SourceType.DEPTH] = Box.FromFrameDescription(depthFrame.FrameDescription);
+                        _depthPixels = new byte[_frameResolutions[SourceType.DEPTH].Area * (39 / 8)];
+                    }
+                    
+                    UInt16[] tempPixels = new UInt16[_frameResolutions[SourceType.DEPTH].Area];
 
                     depthFrame.CopyFrameDataToArray(tempPixels);
-
-
+                    
                     int colorIndex = 0;
                     for (int index = 0; index < tempPixels.Length; ++index)
                     {
                         UInt16 pixel = tempPixels[index];
-                        byte intensity = (byte)(pixel);/// ((pixel - min) % (max - min));//(byte)((pixel >= minDepth && pixel <= maxDepth) ? pixel : 0);
+                        byte intensity = (byte)(pixel);
 
-                        //depthPixels[colorIndex++] = intensity;
                         colorIndex++;
-                        depthPixels[colorIndex++] = intensity;
+                        _depthPixels[colorIndex++] = intensity;
                     }
 
                     depthFrame?.Dispose();
                 }
             }
 
-            private void processInfraredFrame(InfraredFrame infraredFrame)
+            private void ProcessInfraredFrame(InfraredFrame infraredFrame)
             {
                 if (infraredFrame != null)
                 {
-                    Box dimensions = Box.With(infraredFrame.FrameDescription.Width, infraredFrame.FrameDescription.Height);
-                    frameResolutions[SourceType.INFRARED] = dimensions;
-                    framePixelFormats[SourceType.INFRARED] = PixelFormats.Gray16;
 
-                    if (infraredPixels == null)
-                        infraredPixels = new UInt16[dimensions.Area];
+                    if (!_frameResolutions.ContainsKey(SourceType.INFRARED))
+                    {
+                        _frameResolutions[SourceType.INFRARED] = Box.FromFrameDescription(infraredFrame.FrameDescription);
+                        _infraredPixels = new byte[_frameResolutions[SourceType.INFRARED].Area * ((PixelFormats.Bgr32.BitsPerPixel + 7) / 8)];
+                    }
+                    UInt16[] rawInfraredPixels = new UInt16[_frameResolutions[SourceType.INFRARED].Area];
 
-                    infraredFrame.CopyFrameDataToArray(infraredPixels);
+                    infraredFrame.CopyFrameDataToArray(rawInfraredPixels);
                     infraredFrame?.Dispose();
+                    
+                    int colorIndex = 0;
+                    for (int index = 0; index < rawInfraredPixels.Length; ++index)
+                    {
+                        UInt16 pixel = rawInfraredPixels[index];
+                        byte intensity = (byte)(pixel >> 8);
+
+                        _infraredPixels[colorIndex++] = intensity;
+                        _infraredPixels[colorIndex++] = intensity;
+                    }
+
                 }
             }
 
-            private void processBodyIndexFrame(BodyIndexFrame bodyIndexFrame)
+            private void ProcessBodyIndexFrame(BodyIndexFrame bodyIndexFrame)
             {
                 if (bodyIndexFrame != null)
                 {
                     Box dimensions = Box.With(bodyIndexFrame.FrameDescription.Width, bodyIndexFrame.FrameDescription.Height);
                     //frameResolutions[SourceType.] = dimensions;
-                    framePixelFormats[SourceType.INFRARED] = PixelFormats.Gray16;
+                    _framePixelFormats[SourceType.INFRARED] = PixelFormats.Gray16;
 
 
 
@@ -271,9 +261,9 @@ namespace Imaging
 
             public Boolean ProcessMultiSourceFrameEvent(MultiSourceFrameArrivedEventArgs eventArgs)
             {
-                processColorFrame(eventArgs.FrameReference.AcquireFrame().ColorFrameReference.AcquireFrame());
-                processDepthFrame(eventArgs.FrameReference.AcquireFrame().DepthFrameReference.AcquireFrame());
-                processInfraredFrame(eventArgs.FrameReference.AcquireFrame().InfraredFrameReference.AcquireFrame());
+                ProcessColorFrame(eventArgs.FrameReference.AcquireFrame().ColorFrameReference.AcquireFrame());
+                ProcessDepthFrame(eventArgs.FrameReference.AcquireFrame().DepthFrameReference.AcquireFrame());
+                ProcessInfraredFrame(eventArgs.FrameReference.AcquireFrame().InfraredFrameReference.AcquireFrame());
                 //processBodyIndexFrame(eventArgs.FrameReference.AcquireFrame().BodyIndexFrameReference.AcquireFrame());
 
                 return HaveAllFrames();
