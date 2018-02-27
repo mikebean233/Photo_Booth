@@ -7,8 +7,6 @@
         mc:Ignorable="d"
         Title="Tester" Height="350" Width="525">
     <Grid>
-        <Image Name="Image_preview" HorizontalAlignment="Left" Height="205" Margin="62,34,0,0" VerticalAlignment="Top" Width="372"/>
-        <Label Name="Label_count" Content="Label" HorizontalAlignment="Left" Height="35" Margin="155,263,0,0" VerticalAlignment="Top" Width="140"/>
-
+        <Image Name="Image_preview" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch"/>
     </Grid>
 </Window>

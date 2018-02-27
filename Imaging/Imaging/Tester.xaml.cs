@@ -25,15 +25,22 @@ namespace Imaging
     {
         ImageProducer _imageProducer;
         ConcurrentQueue<ImageSource> _queue;
+        Thread _consumer;
         public Tester()
         {
             InitializeComponent();
-
             _imageProducer = ImageProducerFactory.GetImageProducer();
             _queue = _imageProducer.GetImageQueue();
             
-            Thread consumer = new Thread(new ThreadStart(Consume));
-            consumer.Start();
+            _consumer = new Thread(new ThreadStart(Consume));
+            _consumer.Start();
+            this.Closing += Tester_Closing;
+        }
+
+        private void Tester_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _consumer.Interrupt();
+            _imageProducer.Cleanup();
         }
 
         private void Consume()
@@ -47,8 +54,6 @@ namespace Imaging
                     ImageSource thisImage = null;
                     if (_queue.TryDequeue(out thisImage))
                         Dispatcher.Invoke(new Action(() => Image_preview.Source = thisImage));
-
-                    Dispatcher.Invoke(new Action(() => Label_count.Content = _queue.Count + ""));
                 }
                 catch (Exception ex)
                 {
@@ -56,5 +61,7 @@ namespace Imaging
                 }
             }
         }
+
+        
     }
 }
