@@ -12,5 +12,6 @@ namespace Imaging
     {
         ConcurrentQueue<ImageSource> GetImageQueue();
         void SetConfiguration(ImageProducerConfiguration config);
+        void Cleanup();
     }
 }

@@ -35,6 +35,11 @@ namespace Imaging
             timer.Start();
         }
 
+        public void Cleanup()
+        {
+            // Do nothing;
+        }
+
         public ConcurrentQueue<ImageSource> GetImageQueue()
         {
             return _queue; 
