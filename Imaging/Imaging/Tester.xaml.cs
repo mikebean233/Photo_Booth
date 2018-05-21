@@ -26,6 +26,7 @@ namespace Imaging
         ImageProducer _imageProducer;
         ConcurrentQueue<ImageSource> _queue;
         Thread _consumer;
+
         public Tester()
         {
             InitializeComponent();
@@ -40,8 +41,11 @@ namespace Imaging
         private void Tester_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _consumer.Interrupt();
+            _consumer.Abort();
             _imageProducer.Cleanup();
-        }
+            _consumer.Join();
+            _consumer = null;
+       }
 
         private void Consume()
         {

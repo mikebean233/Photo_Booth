@@ -15,6 +15,7 @@ namespace Imaging
         private static TestImageProducer _instance;
         public static TestImageProducer Instance { get { return _instance; } }
         private static List<ImageSource> _images = new List<ImageSource>();
+        private static DispatcherTimer _timer;
 
         private ConcurrentQueue<ImageSource> _queue = new ConcurrentQueue<ImageSource>();
         private int _curIndex = -1;
@@ -29,15 +30,18 @@ namespace Imaging
 
         private TestImageProducer()
         {
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
-            timer.Tick += (sender, e) => _queue.Enqueue(_images[_curIndex = (_curIndex + 1) % _images.Count]);
-            timer.Start();
+            _timer = new DispatcherTimer();
+            _timer.Interval = new TimeSpan(0, 0, 0, 0, 5);
+            _timer.Tick += (sender, e) => _queue.Enqueue(_images[_curIndex = (_curIndex + 1) % _images.Count]);
+            _timer.Start();
         }
 
         public void Cleanup()
         {
-            // Do nothing;
+            _timer.Stop();
+            _images.Clear();
+            _images = null;
+            _timer = null;
         }
 
         public ConcurrentQueue<ImageSource> GetImageQueue()
