@@ -41,7 +41,6 @@ namespace Imaging
         private void Tester_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _consumer.Interrupt();
-            _consumer.Abort();
             _imageProducer.Cleanup();
             _consumer.Join();
             _consumer = null;
@@ -49,23 +48,20 @@ namespace Imaging
 
         private void Consume()
         {
-            bool done = false;
-
-            while (!done)
-            {
                 try
                 {
-                    ImageSource thisImage = null;
-                    if (_queue.TryDequeue(out thisImage))
-                        Dispatcher.Invoke(new Action(() => Image_preview.Source = thisImage));
+                    while (true)
+                    {
+                        Thread.Sleep(10);
+                        ImageSource thisImage = null;
+                        if (_queue.TryDequeue(out thisImage))
+                            Dispatcher.Invoke(new Action(() => Image_preview.Source = thisImage));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    done = true;
+                    System.Diagnostics.Debug.WriteLine("Tester image consumer thread shutting down...");
                 }
-            }
         }
-
-        
     }
 }

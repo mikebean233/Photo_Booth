@@ -9,6 +9,7 @@ using System.Windows.Media;
 using Microsoft.Kinect;
 using System.Windows.Media.Imaging;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Imaging
 {
@@ -17,13 +18,20 @@ namespace Imaging
         private ConcurrentQueue<ImageSource> _queue;
         private KinectSensor _sensor;
         private FrameManager _frameManager;
-        private int _maxQueueSize = 20;
+        private int _maxQueueSize = 100;
         private MaxFrameRateMinder _frameRateMinder;
-
+        private Thread _producer;
+        
         private KinectImageProducer()
         {
             _queue = new ConcurrentQueue<ImageSource>();
-            _frameRateMinder = new MaxFrameRateMinder(7);
+            _producer = new Thread(new ThreadStart(Setup));
+            _producer.Start();
+        }
+
+        private void Setup()
+        {
+            _frameRateMinder = new MaxFrameRateMinder(60);
 
             _frameManager = FrameManager.Instance;
             _sensor = KinectSensor.GetDefault();
@@ -31,11 +39,27 @@ namespace Imaging
                 .MultiSourceFrameArrived += OnMultiSourceFrameArrived;
             _frameManager.CoordinateMapper = _sensor.CoordinateMapper;
             _sensor.Open();
+
+            try
+            {
+                while (true)
+                {
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                _sensor.Close();
+                System.Diagnostics.Debug.WriteLine("Kinect image producer thread shutting down...");
+            }
         }
+
 
         public void Cleanup()
         {
             _sensor.Close();
+            _producer.Interrupt();
+            _producer.Join();
         }
 
         private void OnMultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs multiSourceFrameArrivedEventArgs)
@@ -225,7 +249,9 @@ namespace Imaging
                 {
                     Box dimensions = _frameResolutions[frameSourceType];
                     byte[] outPixels = _displayableBuffers[frameSourceType];
-                    return BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, _outputPixelFormat, null, outPixels, dimensions.Width * _outputPixelFormat.BitsPerPixel / 8);
+                    BitmapSource output =  BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, _outputPixelFormat, null, outPixels, dimensions.Width * _outputPixelFormat.BitsPerPixel / 8);
+                    output.Freeze();
+                    return output;
                 }
                 return null;
             }
@@ -315,7 +341,6 @@ namespace Imaging
             {
                 if (_coordinateMapper != null && _rawDepthPixels != null && _cameraSpacePoints != null)
                 {
-                     int methodStartTime = Environment.TickCount;
                     _coordinateMapper.MapColorFrameToCameraSpace(_rawDepthPixels, _cameraSpacePoints);
 
                     byte[] colorBuffer = _displayableBuffers[SourceType.COLOR];
@@ -353,10 +378,6 @@ namespace Imaging
 
                         ++colorPixelIndex;
                     }
-                    int methodEndTime = Environment.TickCount;
-                    int methodTimeCost = methodEndTime - methodStartTime;
-                    System.Diagnostics.Debug.WriteLine(String.Format("ProcessGreenScreenFrame() time cost: {0}", methodTimeCost));
-
                 }
             }
 
