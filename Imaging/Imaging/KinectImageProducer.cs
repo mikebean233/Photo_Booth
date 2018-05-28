@@ -198,13 +198,14 @@ namespace Imaging
             private static readonly ushort[] _rawInfraredPixels;
             private static readonly byte[] _rawBodyIndexPixels;
             private CameraSpacePoint[] _cameraSpacePoints;
+            private static ColorSpacePoint[] _colorSpacePoints;
 
             static FrameManager()
             {
                 _instance = new FrameManager();
 
                 _frameResolutions[SourceType.COLOR] = Box.S_1920_1080;
-                _frameResolutions[SourceType.GREEN_SCREEN] = Box.S_1920_1080;
+                _frameResolutions[SourceType.GREEN_SCREEN] = Box.S_512_424;
                 _frameResolutions[SourceType.DEPTH] = Box.S_512_424;
                 _frameResolutions[SourceType.INFRARED] = Box.S_512_424;
                 _frameResolutions[SourceType.BODY_INDEX] = Box.S_512_424;
@@ -226,6 +227,7 @@ namespace Imaging
                 _rawInfraredPixels = new UInt16[_frameResolutions[SourceType.INFRARED].Area];
                 _rawBodyIndexPixels = new byte[_frameResolutions[SourceType.BODY_INDEX].Area];
                 //_cameraSpacePoints = new CameraSpacePoint[Box.S_1920_1080.Area];
+                _colorSpacePoints = new ColorSpacePoint[_frameResolutions[SourceType.DEPTH].Area];
             }
             private FrameManager() { }
             public static FrameManager Instance { get { return _instance; } }
@@ -339,46 +341,72 @@ namespace Imaging
 
             private void ProcessGreenScreenFrame()
             {
+
                 if (_coordinateMapper != null && _rawDepthPixels != null && _cameraSpacePoints != null)
                 {
-                    _coordinateMapper.MapColorFrameToCameraSpace(_rawDepthPixels, _cameraSpacePoints);
-
                     byte[] colorBuffer = _displayableBuffers[SourceType.COLOR];
                     byte[] greenScreenBuffer = _displayableBuffers[SourceType.GREEN_SCREEN];
+
+                    //_coordinateMapper.MapColorFrameToCameraSpace(_rawDepthPixels, _cameraSpacePoints);
+                    _coordinateMapper.MapDepthFrameToColorSpace(_rawDepthPixels, _colorSpacePoints);
+
+
                     int outputBytesPerPixel = _outputPixelFormat.BitsPerPixel / 8;
-
                     byte[] outPixel = new byte[outputBytesPerPixel];
-
-
                     int colorPixelIndex = 0;
-                    foreach (CameraSpacePoint thisPoint in _cameraSpacePoints)
+                    int depthWidth = _frameResolutions[SourceType.DEPTH].Width;
+                    int depthHeight = _frameResolutions[SourceType.DEPTH].Height;
+                    int colorWidth = _frameResolutions[SourceType.COLOR].Width;
+
+                    //foreach (CameraSpacePoint thisPoint in _cameraSpacePoints)
+                    for (int depthY = 0; depthY < depthHeight; ++depthY)
                     {
-
-                        bool haveMapping = !float.IsInfinity(thisPoint.X) && !float.IsInfinity(thisPoint.Y);
-                        int colorBufferIndex = outputBytesPerPixel * colorPixelIndex;
-
-                        // Copy all the channels for this pixel from the color frame buffer to a temporary array
-                        for (int i = 0; i < outputBytesPerPixel; ++i)
-                            outPixel[i] = colorBuffer[colorBufferIndex + i];
-
-                        float depthValue = thisPoint.Z;
-                        
-                        if (float.IsNegativeInfinity(depthValue) || depthValue > 2.0f)
+                        for(int depthX = 0; depthX < depthWidth; ++depthX)
                         {
-                            outPixel[0] = 0x00;
-                            outPixel[1] = 0xFF;
-                            outPixel[2] = 0x00;
+                            //bool haveMapping = !float.IsInfinity(thisPoint.X) && !float.IsInfinity(thisPoint.Y);
+                            //int colorBufferIndex = outputBytesPerPixel * colorPixelIndex;
+                            int depthBufferIndex = (depthY * depthWidth) + depthX;
+                            int depthValue = _rawDepthPixels[depthBufferIndex];
+                            ColorSpacePoint colorSpacePoint = _colorSpacePoints[depthBufferIndex];
+
+                            if (isInColorFrame(colorSpacePoint))
+                            {
+                                int colorX = (int)Math.Floor(colorSpacePoint.X + 0.5);
+                                int colorY = (int)Math.Floor(colorSpacePoint.Y + 0.5);
+                                int colorBufferIndex = (colorY * colorWidth) + colorX;
+                                // Copy all the channels for this pixel from the color frame buffer to a temporary array
+                                for (int i = 0; i < outputBytesPerPixel; ++i)
+                                    outPixel[i] = colorBuffer[colorBufferIndex + i];
+
+                                //float depthValue = thisPoint.Z;
+
+                                if (float.IsNegativeInfinity(depthValue) || depthValue > 2.0f)
+                                {
+                                    outPixel[0] = 0x00;
+                                    outPixel[1] = 0xFF;
+                                    outPixel[2] = 0x00;
+                                }
+
+                                outPixel[3] = 0xFF;
+
+                                // Copy all of the channels from the temporary array to the color frame buffer
+                                for (int i = 0; i < outputBytesPerPixel; ++i)
+                                    greenScreenBuffer[depthBufferIndex + i] = outPixel[i];
+
+                                ++colorPixelIndex;
+                            }
                         }
-
-                        outPixel[3] = 0xFF;
-                        
-                        // Copy all of the channels from the temporary array to the color frame buffer
-                        for (int i = 0; i < outputBytesPerPixel; ++i)
-                            greenScreenBuffer[colorBufferIndex + i] = outPixel[i];
-
-                        ++colorPixelIndex;
                     }
                 }
+            }
+
+            private bool isInColorFrame(ColorSpacePoint colorSpacePoint)
+            {
+                int colorWidth  = _frameResolutions[SourceType.COLOR].Width;
+                int colorHeight = _frameResolutions[SourceType.COLOR].Height;
+                float x = colorSpacePoint.X;
+                float y = colorSpacePoint.Y;
+                return (x >= 0 && x < colorWidth) && (y >= 0 && y < colorHeight);
             }
 
             //[MethodImpl(MethodImplOptions.Synchronized)]
