@@ -33,8 +33,9 @@ namespace Imaging
             _timer = new DispatcherTimer();
             _timer.Interval = new TimeSpan(0, 0, 0, 0, 5);
             _timer.Tick += (sender, e) => _queue.Enqueue(_images[_curIndex = (_curIndex + 1) % _images.Count]);
-            _timer.Start();
         }
+
+        public void Start() { _timer.Start(); }
 
         public void Cleanup()
         {

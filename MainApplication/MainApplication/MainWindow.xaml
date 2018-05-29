@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApplication"
         mc:Ignorable="d"
-        Title="Photobooth Application" Height="350" Width="525">
+        Title="Photobooth Application" Height="350" Width="525" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>

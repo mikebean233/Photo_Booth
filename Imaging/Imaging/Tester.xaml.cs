@@ -29,8 +29,15 @@ namespace Imaging
 
         public Tester()
         {
-            InitializeComponent();
+            BitmapImage backgroundImage = new BitmapImage(new Uri("pack://application:,,,/enterprise-D-bridge.bmp", UriKind.RelativeOrAbsolute));
+            backgroundImage.Freeze();
+            ImageProducerConfiguration config = ImageProducerConfiguration.Simple("backgroundImage", backgroundImage);
+
+
+            //InitializeComponent();
             _imageProducer = ImageProducerFactory.GetImageProducer();
+            _imageProducer.Start();
+            _imageProducer.SetConfiguration(config);
             _queue = _imageProducer.GetImageQueue();
             
             _consumer = new Thread(new ThreadStart(Consume));

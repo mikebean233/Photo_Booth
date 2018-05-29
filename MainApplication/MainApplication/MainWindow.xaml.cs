@@ -27,7 +27,10 @@ namespace MainApplication
         private PrintManager _printManager;
         private ConcurrentQueue<ImageSource> _queue;
         private PrintManager.PrintBatchHandler _currentBatch;
+        private ImageProducer _imageProducer;
         private bool _readyForCapture = false;
+        private Thread _consumer;
+
 
         public MainWindow()
         {
@@ -39,11 +42,18 @@ namespace MainApplication
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
 
-            ImageProducer imageProducer = ImageProducerFactory.GetImageProducer();
-            _queue = imageProducer.GetImageQueue();
+            _imageProducer = ImageProducerFactory.GetImageProducer();
+            _imageProducer.Start();
+            BitmapImage backgroundImage = new BitmapImage(new Uri("pack://application:,,,/enterprise-D-bridge.bmp", UriKind.RelativeOrAbsolute));
+            backgroundImage.Freeze();
 
-            Thread consumer = new Thread(new ThreadStart(Consume));
-            consumer.Start();
+            ImageProducerConfiguration config = ImageProducerConfiguration.Simple("backgroundImage", backgroundImage);
+            _imageProducer.SetConfiguration(config);
+
+            _queue = _imageProducer.GetImageQueue();
+
+            _consumer = new Thread(new ThreadStart(Consume));
+            _consumer.Start();
             UpdateStatus();
         }
 
@@ -60,17 +70,15 @@ namespace MainApplication
 
         private void Consume()
         {
-            bool done = false;
-
-            while (!done)
+            try
             {
-                try
+                while (true)
                 {
                     ImageSource thisImage = null;
                     if (_queue.TryDequeue(out thisImage))
                     {
 
-                        Dispatcher.Invoke(new Action(() => 
+                        Dispatcher.Invoke(new Action(() =>
                         {
                             Image_preview.Source = thisImage;
                             if (_readyForCapture)
@@ -85,13 +93,13 @@ namespace MainApplication
                         }));
                     }
                 }
-                catch (Exception ex)
-                {
-                    done = true;
-                }
+            }
+            catch (Exception ex)
+            {
+
             }
         }
-        
+
         private void HandlePrintError(String errorMessages)
         {
             System.Diagnostics.Debug.WriteLine(errorMessages);            
@@ -101,6 +109,12 @@ namespace MainApplication
         {
             if (_currentBatch.RemainingImageCount > 0)
                 _readyForCapture = true;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _imageProducer.Cleanup();
+            _consumer.Interrupt();
         }
     }
 }

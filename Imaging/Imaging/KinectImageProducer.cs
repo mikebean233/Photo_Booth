@@ -26,13 +26,13 @@ namespace Imaging
         {
             _queue = new ConcurrentQueue<ImageSource>();
             _producer = new Thread(new ThreadStart(Setup));
-            _producer.Start();
         }
+
+        public void Start() { _producer.Start();}
 
         private void Setup()
         {
             _frameRateMinder = new MaxFrameRateMinder(60);
-
             _frameManager = FrameManager.Instance;
             _sensor = KinectSensor.GetDefault();
             _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth)
@@ -83,7 +83,21 @@ namespace Imaging
 
         public void SetConfiguration(ImageProducerConfiguration config)
         {
-            // do nothing
+            Thread retryThread = new Thread(new ThreadStart( ()=> 
+            {
+                while (_frameManager == null)
+                    Thread.Sleep(10);
+
+                String backgroundImageKey = "backgroundImage";
+                if (config.ContainsKey(backgroundImageKey))
+                {
+                    Object value = config.Get(backgroundImageKey);
+                    if (value is BitmapImage)
+                         _frameManager.SetBackgroundImage(value as BitmapImage);
+
+                }
+            }));
+            retryThread.Start();
         }
 
         #region Implementation Details
@@ -138,7 +152,7 @@ namespace Imaging
                 return new Box(width, height);
             }
         }
-
+        
         private class SourceType
         {
             private readonly int _id;
@@ -155,6 +169,7 @@ namespace Imaging
             public static readonly SourceType INFRARED = new SourceType(2, "infrared");
             public static readonly SourceType BODY_INDEX = new SourceType(3, "bodyindex");
             public static readonly SourceType GREEN_SCREEN = new SourceType(4, "greenscreen");
+            public static readonly SourceType BACKGROUND = new SourceType(5, "background");
 
             private SourceType(int id, String name)
             {
@@ -193,21 +208,23 @@ namespace Imaging
             private static readonly Dictionary<UInt32, int> _colorToBodyIndexMap = new Dictionary<UInt32, int>();
             private static readonly Dictionary<SourceType, byte[]> _displayableBuffers = new Dictionary<SourceType, byte[]>();
             private static readonly PixelFormat _outputPixelFormat = PixelFormats.Bgra32;
+            private static KinectSensor _sensor;
 
-            private ushort[] _rawDepthPixels;
+            private static readonly ushort[] _rawDepthPixels;
             private static readonly ushort[] _rawInfraredPixels;
             private static readonly byte[] _rawBodyIndexPixels;
-            private CameraSpacePoint[] _cameraSpacePoints;
+            private static readonly CameraSpacePoint[] _cameraSpacePoints;
 
             static FrameManager()
             {
                 _instance = new FrameManager();
-
+                _sensor = KinectSensor.GetDefault();
                 _frameResolutions[SourceType.COLOR] = Box.S_1920_1080;
                 _frameResolutions[SourceType.GREEN_SCREEN] = Box.S_1920_1080;
                 _frameResolutions[SourceType.DEPTH] = Box.S_512_424;
                 _frameResolutions[SourceType.INFRARED] = Box.S_512_424;
                 _frameResolutions[SourceType.BODY_INDEX] = Box.S_512_424;
+                _frameResolutions[SourceType.BACKGROUND] = _frameResolutions[SourceType.GREEN_SCREEN];
 
                 foreach (SourceType thisSourceType in _frameResolutions.Keys)
                     _displayableBuffers[thisSourceType] = new byte[_frameResolutions[thisSourceType].Area * (_outputPixelFormat.BitsPerPixel / 8)];
@@ -222,14 +239,16 @@ namespace Imaging
                 foreach (int bodyIndex in _bodyIndexToColorMap.Keys)
                     _colorToBodyIndexMap.Add(_bodyIndexToColorMap[bodyIndex], bodyIndex);
 
-                //_rawDepthPixels = new UInt16[_frameResolutions[SourceType.DEPTH].Area];
+                _instance.InitializeBackgroundImage();
+
+                _rawDepthPixels = new UInt16[_frameResolutions[SourceType.DEPTH].Area];
                 _rawInfraredPixels = new UInt16[_frameResolutions[SourceType.INFRARED].Area];
                 _rawBodyIndexPixels = new byte[_frameResolutions[SourceType.BODY_INDEX].Area];
-                //_cameraSpacePoints = new CameraSpacePoint[Box.S_1920_1080.Area];
+                _cameraSpacePoints = new CameraSpacePoint[Box.S_1920_1080.Area];
             }
             private FrameManager() { }
             public static FrameManager Instance { get { return _instance; } }
-
+            
             public CoordinateMapper CoordinateMapper
             {
                 set
@@ -256,15 +275,58 @@ namespace Imaging
                 return null;
             }
 
+            private void InitializeBackgroundImage()
+            {
+                uint color = 0xFF0000FF; // BLUE
+                byte[] backgroundBuffer = _displayableBuffers[SourceType.BACKGROUND];
+                int bytesPerPixel = _outputPixelFormat.BitsPerPixel / 8;
+
+                for (int pixelIndex = 0; pixelIndex < _frameResolutions[SourceType.BACKGROUND].Area; pixelIndex++)
+                {
+                    for (byte bitIndex = 0; bitIndex < bytesPerPixel; bitIndex++)
+                    {
+                        byte shiftBits = (byte)(8 * bitIndex);
+                        uint mask = (uint)(0xFF << shiftBits);
+                        backgroundBuffer[(pixelIndex* bytesPerPixel) + bitIndex] = (byte)((mask & color) >> shiftBits); 
+                    }
+                }
+            }
+
+            public void SetBackgroundImage(BitmapImage image)
+            {
+                if (image == null)
+                    return;
+
+                PixelFormat inputFormat = image.Format;
+                if (image.PixelHeight == _frameResolutions[SourceType.BACKGROUND].Height && 
+                    image.PixelWidth  == _frameResolutions[SourceType.BACKGROUND].Width)
+                {
+                    
+                    int stride = image.PixelWidth * (inputFormat.BitsPerPixel / 8);
+                    byte[] inputBuffer = new byte[(int)image.PixelHeight * stride];
+                    image.CopyPixels(inputBuffer, stride, 0);
+
+                    byte[] outputBuffer = _displayableBuffers[SourceType.BACKGROUND];
+
+                    for (int pixelIndex = 0; pixelIndex < _frameResolutions[SourceType.BACKGROUND].Area; ++pixelIndex)
+                    {
+                        int inputBaseIndex = pixelIndex * inputFormat.BitsPerPixel / 8;
+                        int outputBaseIndex = pixelIndex * _outputPixelFormat.BitsPerPixel / 8;
+
+                        // TODO: Add support for more pixel formats
+                        outputBuffer[inputBaseIndex + 0] = inputBuffer[outputBaseIndex + 0];
+                        outputBuffer[inputBaseIndex + 1] = inputBuffer[outputBaseIndex + 1];
+                        outputBuffer[inputBaseIndex + 2] = inputBuffer[outputBaseIndex + 2];
+                        outputBuffer[inputBaseIndex + 3] = 0xff;
+                    }
+                }
+            }
+            
             private void ProcessColorFrame(ColorFrame colorFrame)
             { 
                 if (colorFrame != null)
                 {
-                    if(_cameraSpacePoints == null)
-                        _cameraSpacePoints = new CameraSpacePoint[Box.S_1920_1080.Area];
-
                     colorFrame.CopyConvertedFrameDataToArray(_displayableBuffers[SourceType.COLOR], ColorImageFormat.Bgra);
-                    //colorFrame?.Dispose();
                 }
             }
 
@@ -272,12 +334,8 @@ namespace Imaging
             {
                 if (depthFrame != null)
                 {
-                    if(_rawDepthPixels == null)
-                        _rawDepthPixels = new UInt16[_frameResolutions[SourceType.DEPTH].Area];
-
                     depthFrame.CopyFrameDataToArray(_rawDepthPixels);
-                    //depthFrame?.Dispose();
-
+                    
                     int outIndex = 0;
                     for (int index = 0; index < _rawDepthPixels.Length; ++index)
                     {
@@ -345,56 +403,35 @@ namespace Imaging
 
                     byte[] colorBuffer = _displayableBuffers[SourceType.COLOR];
                     byte[] greenScreenBuffer = _displayableBuffers[SourceType.GREEN_SCREEN];
+                    byte[] backgroundBuffer = _displayableBuffers[SourceType.BACKGROUND];
                     int outputBytesPerPixel = _outputPixelFormat.BitsPerPixel / 8;
-
-                    byte[] outPixel = new byte[outputBytesPerPixel];
-
 
                     int colorPixelIndex = 0;
                     foreach (CameraSpacePoint thisPoint in _cameraSpacePoints)
                     {
-
-                        bool haveMapping = !float.IsInfinity(thisPoint.X) && !float.IsInfinity(thisPoint.Y);
                         int colorBufferIndex = outputBytesPerPixel * colorPixelIndex;
-
-                        // Copy all the channels for this pixel from the color frame buffer to a temporary array
-                        for (int i = 0; i < outputBytesPerPixel; ++i)
-                            outPixel[i] = colorBuffer[colorBufferIndex + i];
-
                         float depthValue = thisPoint.Z;
-                        
-                        if (float.IsNegativeInfinity(depthValue) || depthValue > 2.0f)
-                        {
-                            outPixel[0] = 0x00;
-                            outPixel[1] = 0xFF;
-                            outPixel[2] = 0x00;
-                        }
 
-                        outPixel[3] = 0xFF;
-                        
-                        // Copy all of the channels from the temporary array to the color frame buffer
+                        // Determine where this pixel will come from
+                        byte[] pixelSourceArray = (float.IsNegativeInfinity(depthValue) || depthValue > 2.0f) ? backgroundBuffer : colorBuffer;
+
                         for (int i = 0; i < outputBytesPerPixel; ++i)
-                            greenScreenBuffer[colorBufferIndex + i] = outPixel[i];
-
+                            greenScreenBuffer[colorBufferIndex + i] = pixelSourceArray[colorBufferIndex + i];
+                    
                         ++colorPixelIndex;
                     }
                 }
             }
 
-            //[MethodImpl(MethodImplOptions.Synchronized)]
             public void ProcessMultiSourceFrameEvent(MultiSourceFrameArrivedEventArgs eventArgs)
             {
                 MultiSourceFrame multiSourceFrame = eventArgs.FrameReference.AcquireFrame();
-
-                    using (var colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+                using (var colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
                     {
                         using (var depthFrame = multiSourceFrame.DepthFrameReference.AcquireFrame())
                         {
-
-                            ProcessColorFrame(colorFrame);// eventArgs.FrameReference.AcquireFrame().ColorFrameReference.AcquireFrame());
-                            ProcessDepthFrame(depthFrame);// eventArgs.FrameReference.AcquireFrame().DepthFrameReference.AcquireFrame());
-                                                          //ProcessInfraredFrame(eventArgs.FrameReference.AcquireFrame().InfraredFrameReference.AcquireFrame());
-                                                          //ProcessBodyIndexFrame(eventArgs.FrameReference.AcquireFrame().BodyIndexFrameReference.AcquireFrame());
+                            ProcessColorFrame(colorFrame);
+                            ProcessDepthFrame(depthFrame);
                             ProcessGreenScreenFrame();
                         }
                     }
