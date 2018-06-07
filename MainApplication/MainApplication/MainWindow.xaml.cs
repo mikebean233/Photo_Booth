@@ -16,6 +16,7 @@ using Printing;
 using Imaging;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.IO;
 
 namespace MainApplication
 {
@@ -30,8 +31,10 @@ namespace MainApplication
         private ImageProducer _imageProducer;
         private bool _readyForCapture = false;
         private Thread _consumer;
-
-
+        private Dictionary<String, BitmapImage> _backgroundImages;
+        private int _backgroundImageIndex = 0;
+        private Object _backgroundChangeLock = new object();
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -44,12 +47,12 @@ namespace MainApplication
 
             _imageProducer = ImageProducerFactory.GetImageProducer();
             _imageProducer.Start();
-            BitmapImage backgroundImage = new BitmapImage(new Uri("pack://application:,,,/enterprise-D-bridge.bmp", UriKind.RelativeOrAbsolute));
-            backgroundImage.Freeze();
 
-            ImageProducerConfiguration config = ImageProducerConfiguration.Simple("backgroundImage", backgroundImage);
-            _imageProducer.SetConfiguration(config);
-
+            _backgroundImages = new Dictionary<string, BitmapImage>();
+            LoadBackgroundImages();
+            if(_backgroundImages.Count > 0)
+                SetBackgroundImage(_backgroundImages.ElementAt(0).Key);
+            
             _queue = _imageProducer.GetImageQueue();
 
             _consumer = new Thread(new ThreadStart(Consume));
@@ -66,6 +69,34 @@ namespace MainApplication
                 statusText = String.Format("{0}/{1}", _currentBatch.AddedImageCount, _currentBatch.TemplateImageCapacity);
 
             Dispatcher.Invoke(new Action(() => Label_remCount.Content = statusText));
+        }
+
+        private void nextBackgroundImage()
+        {
+            lock (_backgroundChangeLock)
+            {
+                _backgroundImageIndex++;
+                if (_backgroundImageIndex > _backgroundImages.Count - 1)
+                    _backgroundImageIndex = 0;
+                SetBackgroundImage(_backgroundImages.ElementAt(_backgroundImageIndex).Key);
+            }
+        }
+
+
+        private void PrevBackgroundImage()
+        {
+            lock (_backgroundChangeLock)
+            {
+                _backgroundImageIndex--;
+                if (_backgroundImageIndex < 0)
+                    _backgroundImageIndex = _backgroundImages.Count - 1;
+                SetBackgroundImage(_backgroundImages.ElementAt(_backgroundImageIndex).Key);
+            }
+        }
+
+        private void SetBackgroundImage(String imageName)
+        {
+            _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("selectBackgroundImage", imageName));
         }
 
         private void Consume()
@@ -100,6 +131,29 @@ namespace MainApplication
             }
         }
 
+        private void LoadBackgroundImages()
+        {
+            String bmpDir =  AppDomain.CurrentDomain.BaseDirectory + "/backgroundImages";
+            if (Directory.Exists(bmpDir))
+            {
+                String[] filePaths = Directory.GetFiles(bmpDir, "*.bmp");
+
+                foreach(String path in filePaths)
+                {
+                    try
+                    {
+                        String name = System.IO.Path.GetFileNameWithoutExtension(path);
+                        BitmapImage thisImage = new BitmapImage(new Uri(path, UriKind.RelativeOrAbsolute));
+                        thisImage.Freeze();
+                        _backgroundImages.Add(name, thisImage);
+                    }
+                    catch (Exception ex)
+                    { }
+                }
+                _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("loadBackgroundImages", _backgroundImages));
+            } 
+        }
+
         private void HandlePrintError(String errorMessages)
         {
             System.Diagnostics.Debug.WriteLine(errorMessages);            
@@ -115,6 +169,19 @@ namespace MainApplication
         {
             _imageProducer.Cleanup();
             _consumer.Interrupt();
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Down:
+                    nextBackgroundImage();
+                    break;
+                case Key.Up:
+                    PrevBackgroundImage();
+                    break;
+            }
         }
     }
 }

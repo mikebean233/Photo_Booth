@@ -83,21 +83,29 @@ namespace Imaging
 
         public void SetConfiguration(ImageProducerConfiguration config)
         {
-            Thread retryThread = new Thread(new ThreadStart( ()=> 
+            Action action = () =>
             {
                 while (_frameManager == null)
                     Thread.Sleep(10);
 
-                String backgroundImageKey = "backgroundImage";
-                if (config.ContainsKey(backgroundImageKey))
-                {
-                    Object value = config.Get(backgroundImageKey);
-                    if (value is BitmapImage)
-                         _frameManager.SetBackgroundImage(value as BitmapImage);
+                DoThingIfPresent("loadBackgroundImages" , typeof(Dictionary<String, BitmapImage>), config, (x) => _frameManager.LoadBackgroudBuffer((Dictionary<String, BitmapImage>)x));
+                DoThingIfPresent("selectBackgroundImage", typeof(String)                         , config, (x) => _frameManager.SetBackgroundImage((String)x));
+            };
 
-                }
-            }));
-            retryThread.Start();
+            if (_frameManager == null)
+                (new Thread(new ThreadStart(action))).Start();
+            else
+                action.Invoke();
+        }
+        
+        private void DoThingIfPresent(String key, Type type, ImageProducerConfiguration config, Action<object> action)
+        {
+            if (config.ContainsKey(key))
+            {
+                Object value = config.Get(key);
+                if (value.GetType().Equals(type))
+                    action.BeginInvoke(value, null, null);
+            }
         }
 
         #region Implementation Details
@@ -207,6 +215,8 @@ namespace Imaging
             private static readonly Dictionary<int, UInt32> _bodyIndexToColorMap = new Dictionary<int, UInt32>();
             private static readonly Dictionary<UInt32, int> _colorToBodyIndexMap = new Dictionary<UInt32, int>();
             private static readonly Dictionary<SourceType, byte[]> _displayableBuffers = new Dictionary<SourceType, byte[]>();
+            private static Dictionary<String, byte[]> _backgroundImages = new Dictionary<string, byte[]>();
+
             private static readonly PixelFormat _outputPixelFormat = PixelFormats.Bgra32;
             private static KinectSensor _sensor;
 
@@ -292,34 +302,61 @@ namespace Imaging
                 }
             }
 
-            public void SetBackgroundImage(BitmapImage image)
+            public void SetBackgroundImage(String imageName)
             {
-                if (image == null)
-                    return;
+                if (_backgroundImages.ContainsKey(imageName))
+                    _displayableBuffers[SourceType.BACKGROUND] = _backgroundImages[imageName];
+            }
+
+            public void LoadBackgroudBuffer(Dictionary<String, BitmapImage> inputMap)
+            {
+                if (inputMap != null)
+                {
+                    Dictionary<String, byte[]> outputMap = new Dictionary<String, byte[]>();
+
+                    foreach (var entry in inputMap)
+                    {
+                        String key = entry.Key;
+                        byte[] buffer = BuildBackgroundBuffer(entry.Value);
+                        if (buffer != null)
+                            outputMap.Add(key, buffer);
+                    }
+                    if (outputMap.Keys.Count > 0)
+                        _backgroundImages = outputMap;
+                }
+            }
+
+            public byte[] BuildBackgroundBuffer(BitmapImage image)
+            {
+                int pixelCount = _frameResolutions[SourceType.BACKGROUND].Area;
+                int outputBytesPerPixel = _outputPixelFormat.BitsPerPixel / 8;
+
+                byte[] output = null;
 
                 PixelFormat inputFormat = image.Format;
-                if (image.PixelHeight == _frameResolutions[SourceType.BACKGROUND].Height && 
+                if (image != null && 
+                    image.PixelHeight == _frameResolutions[SourceType.BACKGROUND].Height && 
                     image.PixelWidth  == _frameResolutions[SourceType.BACKGROUND].Width)
                 {
-                    
-                    int stride = image.PixelWidth * (inputFormat.BitsPerPixel / 8);
+                    output = new byte[pixelCount * (_outputPixelFormat.BitsPerPixel / 8)];
+                    int inputBytesPerPixel = inputFormat.BitsPerPixel / 8;
+                    int stride = image.PixelWidth * (inputBytesPerPixel);
                     byte[] inputBuffer = new byte[(int)image.PixelHeight * stride];
                     image.CopyPixels(inputBuffer, stride, 0);
-
-                    byte[] outputBuffer = _displayableBuffers[SourceType.BACKGROUND];
-
+                    
                     for (int pixelIndex = 0; pixelIndex < _frameResolutions[SourceType.BACKGROUND].Area; ++pixelIndex)
                     {
-                        int inputBaseIndex = pixelIndex * inputFormat.BitsPerPixel / 8;
-                        int outputBaseIndex = pixelIndex * _outputPixelFormat.BitsPerPixel / 8;
+                        int inputBaseIndex = pixelIndex * inputBytesPerPixel;
+                        int outputBaseIndex = pixelIndex * outputBytesPerPixel;
 
                         // TODO: Add support for more pixel formats
-                        outputBuffer[inputBaseIndex + 0] = inputBuffer[outputBaseIndex + 0];
-                        outputBuffer[inputBaseIndex + 1] = inputBuffer[outputBaseIndex + 1];
-                        outputBuffer[inputBaseIndex + 2] = inputBuffer[outputBaseIndex + 2];
-                        outputBuffer[inputBaseIndex + 3] = 0xff;
+                        output[inputBaseIndex + 0] = inputBuffer[outputBaseIndex + 0];
+                        output[inputBaseIndex + 1] = inputBuffer[outputBaseIndex + 1];
+                        output[inputBaseIndex + 2] = inputBuffer[outputBaseIndex + 2];
+                        output[inputBaseIndex + 3] = 0xff;
                     }
                 }
+                return output;
             }
             
             private void ProcessColorFrame(ColorFrame colorFrame)

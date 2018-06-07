@@ -115,7 +115,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="enterprise-D-bridge.bmp" />
+    <Resource Include="backgroundImages\enterprise-D-bridge.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
