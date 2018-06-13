@@ -88,8 +88,9 @@ namespace Imaging
                 while (_frameManager == null)
                     Thread.Sleep(10);
 
-                DoThingIfPresent("loadBackgroundImages" , typeof(Dictionary<String, BitmapImage>), config, (x) => _frameManager.LoadBackgroudBuffer((Dictionary<String, BitmapImage>)x));
-                DoThingIfPresent("selectBackgroundImage", typeof(String)                         , config, (x) => _frameManager.SetBackgroundImage((String)x));
+                DoThingIfPresent<Dictionary<String, BitmapImage>>("loadBackgroundImages" , config, _frameManager.LoadBackgroudBuffer);
+                DoThingIfPresent<String>                         ("selectBackgroundImage", config, _frameManager.SetBackgroundImage);
+                DoThingIfPresent<float>                          ("depthThreshold"       , config, _frameManager.SetDepthThreshold);
             };
 
             if (_frameManager == null)
@@ -98,13 +99,13 @@ namespace Imaging
                 action.Invoke();
         }
         
-        private void DoThingIfPresent(String key, Type type, ImageProducerConfiguration config, Action<object> action)
+        private void DoThingIfPresent<T>(String key, ImageProducerConfiguration config, Action<T> action)
         {
             if (config.ContainsKey(key))
             {
                 Object value = config.Get(key);
-                if (value.GetType().Equals(type))
-                    action.BeginInvoke(value, null, null);
+                if(value is T)
+                    action.BeginInvoke((T)value, null, null);
             }
         }
 
@@ -216,6 +217,7 @@ namespace Imaging
             private static readonly Dictionary<UInt32, int> _colorToBodyIndexMap = new Dictionary<UInt32, int>();
             private static readonly Dictionary<SourceType, byte[]> _displayableBuffers = new Dictionary<SourceType, byte[]>();
             private static Dictionary<String, byte[]> _backgroundImages = new Dictionary<string, byte[]>();
+            private static float _depthThresholdInMeters;
 
             private static readonly PixelFormat _outputPixelFormat = PixelFormats.Bgra32;
             private static KinectSensor _sensor;
@@ -306,6 +308,12 @@ namespace Imaging
             {
                 if (_backgroundImages.ContainsKey(imageName))
                     _displayableBuffers[SourceType.BACKGROUND] = _backgroundImages[imageName];
+            }
+
+            public void SetDepthThreshold(float value)
+            {
+                if (value >= 0.5f && value <= 8.0f)
+                    _depthThresholdInMeters = value;
             }
 
             public void LoadBackgroudBuffer(Dictionary<String, BitmapImage> inputMap)
@@ -450,7 +458,7 @@ namespace Imaging
                         float depthValue = thisPoint.Z;
 
                         // Determine where this pixel will come from
-                        byte[] pixelSourceArray = (float.IsNegativeInfinity(depthValue) || depthValue > 2.0f) ? backgroundBuffer : colorBuffer;
+                        byte[] pixelSourceArray = (float.IsNegativeInfinity(depthValue) || depthValue > _depthThresholdInMeters) ? backgroundBuffer : colorBuffer;
 
                         for (int i = 0; i < outputBytesPerPixel; ++i)
                             greenScreenBuffer[colorBufferIndex + i] = pixelSourceArray[colorBufferIndex + i];

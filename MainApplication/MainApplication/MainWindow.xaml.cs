@@ -34,14 +34,27 @@ namespace MainApplication
         private Dictionary<String, BitmapImage> _backgroundImages;
         private int _backgroundImageIndex = 0;
         private Object _backgroundChangeLock = new object();
-        
+        private Dictionary<Key, Action> _keyActions = new Dictionary<Key, Action>();
+        private float _depthThresholdInMeters = 2.0f;
+        private float _depthChangeStep = 0.5f;
+        private float _minDepthThreshold = 0.5f;
+        private float _maxDepthThreshold = 8.0f;
+
         public MainWindow()
         {
             InitializeComponent();
-            
-            StartDialog startDialog = new StartDialog();
-            startDialog.ShowDialog();
-            _printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
+
+            // Setup key actions
+            _keyActions.Add(Key.Left , NextBackgroundImage);
+            _keyActions.Add(Key.Right, PrevBackgroundImage);
+            _keyActions.Add(Key.Up   , IncreaseDepthThreshold);
+            _keyActions.Add(Key.Down , DecreaseDepthThreshold);
+            _keyActions.Add(Key.Space, TakePicture);
+
+            //StartDialog startDialog = new StartDialog();
+            //startDialog.ShowDialog();
+            //_printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
+            _printManager = PrintManager.GetInstance("pdf", 10);
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
 
@@ -50,9 +63,9 @@ namespace MainApplication
 
             _backgroundImages = new Dictionary<string, BitmapImage>();
             LoadBackgroundImages();
-            if(_backgroundImages.Count > 0)
+            if (_backgroundImages.Count > 0)
                 SetBackgroundImage(_backgroundImages.ElementAt(0).Key);
-            
+
             _queue = _imageProducer.GetImageQueue();
 
             _consumer = new Thread(new ThreadStart(Consume));
@@ -71,8 +84,10 @@ namespace MainApplication
             Dispatcher.Invoke(new Action(() => Label_remCount.Content = statusText));
         }
 
-        private void nextBackgroundImage()
+        private void NextBackgroundImage()
         {
+            if (_backgroundImages.Count == 0)
+                return;
             lock (_backgroundChangeLock)
             {
                 _backgroundImageIndex++;
@@ -85,6 +100,9 @@ namespace MainApplication
 
         private void PrevBackgroundImage()
         {
+            if (_backgroundImages.Count == 0)
+                return;
+
             lock (_backgroundChangeLock)
             {
                 _backgroundImageIndex--;
@@ -133,12 +151,12 @@ namespace MainApplication
 
         private void LoadBackgroundImages()
         {
-            String bmpDir =  AppDomain.CurrentDomain.BaseDirectory + "/backgroundImages";
+            String bmpDir = AppDomain.CurrentDomain.BaseDirectory + "backgroundImages";
             if (Directory.Exists(bmpDir))
             {
                 String[] filePaths = Directory.GetFiles(bmpDir, "*.bmp");
 
-                foreach(String path in filePaths)
+                foreach (String path in filePaths)
                 {
                     try
                     {
@@ -151,20 +169,50 @@ namespace MainApplication
                     { }
                 }
                 _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("loadBackgroundImages", _backgroundImages));
-            } 
+            }
         }
 
         private void HandlePrintError(String errorMessages)
         {
-            System.Diagnostics.Debug.WriteLine(errorMessages);            
+            System.Diagnostics.Debug.WriteLine(errorMessages);
         }
 
         private void Button_takePicture_Click(object sender, RoutedEventArgs e)
+        {
+            TakePicture();
+        }
+
+        private void TakePicture()
         {
             if (_currentBatch.RemainingImageCount > 0)
                 _readyForCapture = true;
         }
 
+        private void IncreaseDepthThreshold()
+        {
+            if (_depthThresholdInMeters + _depthChangeStep<= _maxDepthThreshold)
+            {
+                _depthThresholdInMeters += _depthChangeStep;
+                UpdateDepthThreshold();
+            }
+
+        }
+
+        private void DecreaseDepthThreshold()
+        {
+            if (_depthThresholdInMeters - _depthChangeStep >= _minDepthThreshold)
+            {
+
+                _depthThresholdInMeters -= _depthChangeStep;
+                UpdateDepthThreshold();
+            }
+        }
+
+        private void UpdateDepthThreshold()
+        {
+            _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("depthThreshold", _depthThresholdInMeters));
+        }
+        
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _imageProducer.Cleanup();
@@ -173,15 +221,9 @@ namespace MainApplication
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            switch (e.Key)
-            {
-                case Key.Down:
-                    nextBackgroundImage();
-                    break;
-                case Key.Up:
-                    PrevBackgroundImage();
-                    break;
-            }
+            Key key = e.Key;
+            if (_keyActions.ContainsKey(key))
+                _keyActions[key].BeginInvoke(null, null);
         }
     }
 }
