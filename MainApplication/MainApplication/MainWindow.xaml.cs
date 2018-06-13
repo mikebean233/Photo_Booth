@@ -17,6 +17,7 @@ using Imaging;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.IO;
+using ButtonDriver;
 
 namespace MainApplication
 {
@@ -35,6 +36,8 @@ namespace MainApplication
         private int _backgroundImageIndex = 0;
         private Object _backgroundChangeLock = new object();
         private Dictionary<Key, Action> _keyActions = new Dictionary<Key, Action>();
+        private Dictionary<int, Action> _buttonActions = new Dictionary<int, Action>();
+        private ButtonListener _buttonListener;
         private float _depthThresholdInMeters = 2.0f;
         private float _depthChangeStep = 0.5f;
         private float _minDepthThreshold = 0.5f;
@@ -44,6 +47,8 @@ namespace MainApplication
         {
             InitializeComponent();
 
+            _buttonListener = new ButtonListener(ButtonPressHandler);
+
             // Setup key actions
             _keyActions.Add(Key.Left , NextBackgroundImage);
             _keyActions.Add(Key.Right, PrevBackgroundImage);
@@ -51,6 +56,11 @@ namespace MainApplication
             _keyActions.Add(Key.Down , DecreaseDepthThreshold);
             _keyActions.Add(Key.Space, TakePicture);
 
+            // Setup button actions
+            _buttonActions.Add(0, TakePicture);         // pin 2
+            _buttonActions.Add(1, PrevBackgroundImage); // pin 3
+            _buttonActions.Add(2, NextBackgroundImage); // pin 4
+            
             //StartDialog startDialog = new StartDialog();
             //startDialog.ShowDialog();
             //_printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
@@ -224,6 +234,13 @@ namespace MainApplication
             Key key = e.Key;
             if (_keyActions.ContainsKey(key))
                 _keyActions[key].BeginInvoke(null, null);
+        }
+
+        private void ButtonPressHandler(HashSet<int> buttons)
+        {
+            foreach (int pressedButton in buttons)
+                if (_buttonActions.ContainsKey(pressedButton))
+                    _buttonActions[pressedButton].BeginInvoke(null, null);
         }
     }
 }
