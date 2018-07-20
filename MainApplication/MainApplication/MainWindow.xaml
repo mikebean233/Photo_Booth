@@ -5,61 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApplication"
         mc:Ignorable="d"
-        Title="Photobooth Application" Height="1080" Width="1920" Closing="Window_Closing" KeyUp="Window_KeyUp">
-    <Grid>
+        Title="Photobooth Application" Height="900" Width="1440" Closing="Window_Closing" KeyUp="Window_KeyUp">
+    <Grid Background="Black">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="250px"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="66*"/>
-            <RowDefinition Height="150px"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <Image  Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="Image_preview" Source="backgroundImages/enterprise-D-bridge.bmp"></Image>
-        <Label  Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0" HorizontalAlignment="Left" Name="Label_remCount">1/?</Label>
-        <ListView Grid.Column="0" Grid.Row="1" Height="150px" FlowDirection="LeftToRight" HorizontalAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="Label_remCount" FontSize="48" Background="Black" Foreground="White">1/?</Label>
+            <Image Grid.RowSpan="1" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Name="Image_preview" Source="backgroundImages/enterprise-D-bridge.bmp"/>
+        </Grid>
+
+        <ListView Grid.Column="1" Grid.Row="0" Background="Black" VerticalAlignment="Center"  VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="ListView_Carousal">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"></StackPanel>
+                    <StackPanel Orientation="Vertical"></StackPanel>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/enterprise-D-bridge.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/beach.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/LukeVaderDual.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/enterprise-D-bridge.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/beach.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/LukeVaderDual.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/enterprise-D-bridge.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/beach.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/LukeVaderDual.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/enterprise-D-bridge.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/beach.bmp" />
-            </ListViewItem>
-            <ListViewItem Height="150" BorderThickness="0" Padding="0">
-                <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="backgroundImages/LukeVaderDual.bmp" />
-            </ListViewItem>
-
         </ListView>
+        <Image Grid.Column="1" Source="icons/down_arrow.gif" Width="150px" VerticalAlignment="Bottom"/>
+        <Image Grid.Column="1" Source="icons/up_arrow.gif"   Width="150px" VerticalAlignment="Top"/>
     </Grid>
 </Window>

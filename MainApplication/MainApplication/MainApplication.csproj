@@ -41,9 +41,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Imaging\Imaging\bin\Debug\Imaging.dll</HintPath>
     </Reference>
-    <Reference Include="Printing">
-      <HintPath>..\..\Printing\Printing\bin\Debug\Printing.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Management" />
@@ -74,7 +71,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BackgroundImage.cs" />
     <Compile Include="ButtonDriver\ButtonListener.cs" />
+    <Compile Include="ContinousIterator.cs" />
     <Compile Include="PrinterErrorDialog.xaml.cs">
       <DependentUpon>PrinterErrorDialog.xaml</DependentUpon>
     </Compile>
@@ -136,6 +135,16 @@
   <ItemGroup>
     <Resource Include="backgroundImages\beach.bmp" />
     <Resource Include="backgroundImages\LukeVaderDual.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\down_arrow.gif" />
+    <Resource Include="icons\up_arrow.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Printing\Printing\Printing.csproj">
+      <Project>{ed52d96b-061b-4c2e-b7b4-1d6ff8e172b1}</Project>
+      <Name>Printing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
