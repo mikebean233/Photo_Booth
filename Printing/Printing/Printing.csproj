@@ -81,15 +81,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </None>
-    <None Include="App.xaml.cs">
+    <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <Compile Include="NullPrintTemplate.cs" />
     <Compile Include="PrintManager.cs" />
     <Compile Include="PrintTemplateType.cs" />
     <Compile Include="StandardPrintTemplate.cs" />
-    <Compile Include="Tester.cs" />
+    <None Include="Tester.cs" />
     <Compile Include="WidePrintTemplate.cs" />
     <Page Include="WideTemplate.xaml">
       <SubType>Designer</SubType>
