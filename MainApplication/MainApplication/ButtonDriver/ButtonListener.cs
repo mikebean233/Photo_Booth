@@ -15,38 +15,50 @@ namespace ButtonDriver
         private byte _lastState = 0;
         private Thread _listener;
         private SerialPort _port;
+        private ManualResetEvent _threadStopSignal;
+
+        private void ReleasePort()
+        {
+            if (_port != null && _port.IsOpen)
+                _port.Close();
+
+            _port = null;
+        }
+
+        private bool HaveStopSignal()
+        {
+            return _threadStopSignal.WaitOne(0);
+        }
 
         public ButtonListener(Action<HashSet<int>> handler)
         {
             _handler = handler;
-            _listener = new Thread(() => 
+            _threadStopSignal = new ManualResetEvent(false);
+
+            _listener = new Thread(() =>
                 {
-                    try
+                    while (!HaveStopSignal())
                     {
-                        while (true)
+                        try
                         {
-                            while (_port == null)
+                            ReleasePort();
+                            while (_port == null && !HaveStopSignal())
                                 _port = getArduinoPort();
 
-                            try
+                            _port.Open();
+                            while (_port.IsOpen && !HaveStopSignal())
                             {
-                                _port.Open();
-                                while (_port.IsOpen)
-                                {
-                                    byte value = (byte)_port.ReadByte();
-                                    var newButtonPresses = GetNewButtonPresses(value);
-                                    if (newButtonPresses.Count > 0)
-                                        _handler.BeginInvoke(newButtonPresses, null, null);
-                                }
+                                byte value = (byte)_port.ReadByte();
+                                var newButtonPresses = GetNewButtonPresses(value);
+                                if (newButtonPresses.Count > 0)
+                                    _handler.BeginInvoke(newButtonPresses, null, null);
                             }
-                            catch (System.IO.IOException ex) { }
-                            _port = null;
                         }
-                    }
-                    catch (ThreadInterruptedException ex)
-                    {
-                        if (_port != null)
-                            _port.Close();
+                        catch (Exception ex)
+                        {
+                            Console.Out.WriteLine(ex);
+                            ReleasePort();
+                        }
                     }
                 }
              );
@@ -83,11 +95,20 @@ namespace ButtonDriver
                     return new SerialPort(enumerator.Current["DeviceID"].ToString(), 9600, Parity.None, 8, StopBits.One);
 
             }
-            catch (Exception ex) { }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            //catch (System.IO.IOException ex) { }
 
             return null;
         }
 
+        public void Cleanup()
+        {
+            _threadStopSignal.Set();
+            ReleasePort();
+        }
     }
 }
 
