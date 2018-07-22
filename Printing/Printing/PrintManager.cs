@@ -297,6 +297,7 @@ namespace Printing
             private int _addedImageCount = 0;
 
             public int RemainingImageCount    { get { return _printBatch.Template.ImageCapacity - _addedImageCount; } }
+            public bool TemplateFull          { get { return _printBatch.Template.ImageCapacity == _addedImageCount; } }
             public int TemplateImageCapacity  { get { return _printBatch.Template.ImageCapacity;}}
             public int AddedImageCount        { get { return _addedImageCount;}}
             public bool BatchFinishedPrinting { get { return _printBatch.BatchFinishedPrinting(); }}
@@ -319,6 +320,7 @@ namespace Printing
                 }
             }
 
+            
             public bool CompleteBatch(int copyCount)
             {
                 return _printBatch.QueueBatchForPrinting(copyCount);

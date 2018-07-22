@@ -326,11 +326,14 @@ namespace Imaging
                     {
                         String key = entry.Key;
                         byte[] buffer = BuildBackgroundBuffer(entry.Value);
+                        
                         if (buffer != null)
                             outputMap.Add(key, buffer);
                     }
                     if (outputMap.Keys.Count > 0)
                         _backgroundImages = outputMap;
+
+                    _instance.SetBackgroundImage(inputMap.Keys.First<String>());
                 }
             }
 

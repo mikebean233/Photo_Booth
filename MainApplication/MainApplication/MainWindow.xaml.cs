@@ -33,12 +33,59 @@ namespace MainApplication
         private float _depthChangeStep = 0.25f;
         private float _minDepthThreshold = 0.5f;
         private float _maxDepthThreshold = 8.0f;
-        private int _carouselSize = 7; // preferably an odd number
+        private int _carouselSize = 9; // preferably an odd number
         private int _centerCarouselImageIndex;
         private int _carouselWidth = 250;  // in pixels
         private double _carouselItemHeight;
+        private int _countdownLength = 3;
 
 
+        // State
+        private State _prevState;
+        private State _currentState;
+        
+        private State SELECT_BACKGROUND;
+        private State COUNTDOWN;
+        private State PRINTING;
+        private State PRINT_ERROR;
+
+
+        private enum EventType
+        {
+            TRANSITION_TO_STATE,
+            PREVIEW_IMAGE_ARRIVED,
+            IMAGE_CAPTURED,
+            TAKE_PICTURE_REQUEST,
+            PRINT_ERROR
+        }
+
+        private class State
+        {
+            private Action<EventType, Object, Dictionary<String, Object>> _eventHandler;
+            private Dictionary<String, Object> _stateData;
+            private String _name;
+
+            public State(String name, Action<EventType, Object, Dictionary<String, Object>> eventHandler)
+            {
+                _name = name;
+                _eventHandler = eventHandler;
+                _stateData = new Dictionary<string, object>();
+            }
+
+            public void HandleEvent(EventType thisEvent, Object args) 
+            {
+                _eventHandler.Invoke(thisEvent, args, _stateData);
+            }
+
+            override
+            public String ToString() { return _name; }
+        }
+
+        private void ChangeState(State newState)
+        {
+            _prevState = _currentState;
+            _currentState = newState;
+        }
 
         private ContinousIterator<BackgroundImage> _backgroundIterator;
         public MainWindow()
@@ -65,7 +112,7 @@ namespace MainApplication
             //StartDialog startDialog = new StartDialog();
             //startDialog.ShowDialog();
             //_printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
-            _printManager = PrintManager.GetInstance("hiti", 10);
+            _printManager = PrintManager.GetInstance("pdf", 10);
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
 
@@ -85,16 +132,113 @@ namespace MainApplication
             _consumer = new Thread(new ThreadStart(Consume));
             _consumer.Start();
             UpdateStatus();
+
+            SetupStates();
+
+
         }
+
+        private void SetupStates()
+        {
+            SELECT_BACKGROUND = new State("SELECT_BACKGROUND", (eventType, eventArgs, stateData) =>
+            {
+                switch (eventType)
+                {
+                    case EventType.TRANSITION_TO_STATE:
+                        ChangeState(SELECT_BACKGROUND);
+                        Dispatcher.Invoke(()=>tabControl.SelectedIndex = 0);
+
+                        if (_currentBatch.TemplateFull)
+                            _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
+
+                        UpdateStatus();
+                        break;
+                    case EventType.PREVIEW_IMAGE_ARRIVED:
+                        Dispatcher.Invoke(() => backgroundPreview.Source = eventArgs as ImageSource);
+                        break;
+                    case EventType.TAKE_PICTURE_REQUEST:
+                        COUNTDOWN.HandleEvent(EventType.TRANSITION_TO_STATE, null);
+                        COUNTDOWN.HandleEvent(EventType.TAKE_PICTURE_REQUEST, null);
+                        break;
+
+                }
+            });
+
+            COUNTDOWN = new State("COUNTDOWN", (eventType, eventArgs, stateData) => 
+            {
+                Thread countdownThread;
+                
+                switch (eventType)
+                {
+                    case EventType.TRANSITION_TO_STATE:
+                        ChangeState(COUNTDOWN);
+                        Dispatcher.Invoke(() => { tabControl.SelectedIndex =1; countdownPreview.Source = backgroundPreview.Source; });
+                        break;
+                    case EventType.PREVIEW_IMAGE_ARRIVED:
+                        Dispatcher.Invoke(() => countdownPreview.Source = eventArgs as ImageSource);
+                        break;
+                    case EventType.TAKE_PICTURE_REQUEST:
+                        countdownThread = new Thread(() =>
+                        {
+                            int countDown = _countdownLength;
+                            while (countDown > 0)
+                            {
+                                Thread.Sleep(500);
+                                Dispatcher.Invoke(() => countdownLabel.Content = countDown.ToString());
+                                Thread.Sleep(500);
+                                Dispatcher.Invoke(() => countdownLabel.Content = "");
+                                countDown--;
+                            }
+                            
+                            Dispatcher.Invoke(()=> countdownLabel.Content = "SMILE !");
+                            Thread.Sleep(1000);
+                            Dispatcher.Invoke(() => countdownLabel.Content = "");
+                            _readyForCapture = true;
+                        });
+                        countdownThread.Start();
+                        break;
+                    case EventType.IMAGE_CAPTURED:
+                        
+                        _currentBatch.AddImage(eventArgs as ImageSource);
+
+                        if (_currentBatch.TemplateFull)
+                        {
+                            //_currentBatch.CompleteBatch(1);
+                            Dispatcher.InvokeAsync(() => PRINTING.HandleEvent(EventType.TRANSITION_TO_STATE, null));
+                        }
+                        else
+                        {
+                            Dispatcher.InvokeAsync(() => SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null));
+                        }
+                        break;
+                }
+            });
+
+
+            PRINTING = new State("PRINTING", (eventType, eventArgs, stateData) => 
+            {
+                switch (eventType)
+                {
+                    case EventType.TRANSITION_TO_STATE:
+                        ChangeState(PRINTING);
+                        Dispatcher.Invoke(()=> tabControl.SelectedIndex = 2);
+                        Thread waitThread = new Thread(() =>
+                        {
+                            Thread.Sleep(3000);
+                            Dispatcher.Invoke(()=>SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null));
+                        });
+                        waitThread.Start();
+                        break;
+                }
+            });
+            PRINT_ERROR = new State("PRINT_ERROR", (eventType, eventArgs, stateData) => { });
+            SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null);
+        }
+
 
         private void UpdateStatus()
         {
-            String statusText = "";
-            if (_currentBatch.BatchFinishedPrinting)
-                statusText = "session finished, images sent to printer";
-            else
-                statusText = String.Format("{0}/{1}", _currentBatch.AddedImageCount, _currentBatch.TemplateImageCapacity);
-
+            String statusText = String.Format("{0}/{1}", _currentBatch.AddedImageCount, _currentBatch.TemplateImageCapacity);
             Dispatcher.Invoke(new Action(() => Label_remCount.Content = statusText));
         }
 
@@ -129,15 +273,11 @@ namespace MainApplication
 
                         Dispatcher.Invoke(new Action(() =>
                         {
-                            Image_preview.Source = thisImage;
+                            _currentState.HandleEvent(EventType.PREVIEW_IMAGE_ARRIVED, thisImage);
                             if (_readyForCapture)
                             {
                                 _readyForCapture = false;
-                                _currentBatch.AddImage(thisImage);
-                                if (_currentBatch.RemainingImageCount == 0)
-                                    _currentBatch.CompleteBatch(1);
-
-                                UpdateStatus();
+                                _currentState.HandleEvent(EventType.IMAGE_CAPTURED, thisImage);
                             }
                         }));
                     }
@@ -243,8 +383,9 @@ namespace MainApplication
 
         private void TakePicture()
         {
-            if (_currentBatch.RemainingImageCount > 0)
-                _readyForCapture = true;
+            //if (_currentBatch.RemainingImageCount > 0)
+            //    _readyForCapture = true;
+            _currentState.HandleEvent(EventType.TAKE_PICTURE_REQUEST, null);
         }
 
         private void IncreaseDepthThreshold()

@@ -5,37 +5,78 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApplication"
         mc:Ignorable="d"
-        Title="Photobooth Application" Height="900" Width="1440" Closing="Window_Closing" KeyUp="Window_KeyUp">
-    <Grid Background="Black">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="250px"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
+        Title="Photobooth Application" Height="900" Width="1440" Closing="Window_Closing" KeyUp="Window_KeyUp"
+        WindowStyle="ThreeDBorderWindow"
+        >
+    <TabControl Padding="0" BorderThickness="0" SelectedIndex="2" Name="tabControl">
+        <TabControl.Resources>
+            <Style TargetType="TabItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem"></ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </TabControl.Resources>
 
-        <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
+        <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="backgroundSelectView" TabIndex="0">
+            <Grid Background="Black" IsEnabled="false">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="250px"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
 
-            <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="Label_remCount" FontSize="48" Background="Black" Foreground="White">1/?</Label>
-            <Image Grid.RowSpan="1" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Name="Image_preview" Source="backgroundImages/enterprise-D-bridge.bmp"/>
-        </Grid>
+                <Grid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
 
-        <ListView Grid.Column="1" Grid.Row="0" Background="Black" VerticalAlignment="Center"  VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="ListView_Carousal">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical"></StackPanel>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-        </ListView>
-        <Image Grid.Column="1" Source="icons/down_arrow.gif" Width="150px" VerticalAlignment="Bottom"/>
-        <Image Grid.Column="1" Source="icons/up_arrow.gif"   Width="150px" VerticalAlignment="Top"/>
-    </Grid>
+                    <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="Label_remCount" FontSize="48" Background="Black" Foreground="White">1/?</Label>
+                    <Image Grid.RowSpan="1" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Name="backgroundPreview" Source="backgroundImages/enterprise-D-bridge.bmp"/>
+                </Grid>
+                <ListView Grid.Column="1" Grid.Row="0" Background="Black" VerticalAlignment="Center"  VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="ListView_Carousal" Padding="0" BorderThickness="0">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+                <Image Grid.Column="1" Source="icons/down_arrow.gif" Width="150px" VerticalAlignment="Bottom"/>
+                <Image Grid.Column="1" Source="icons/up_arrow.gif"   Width="150px" VerticalAlignment="Top"/>
+            </Grid>
+        </TabItem>
+
+        <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="countdownView" TabIndex="1">
+            <Grid>
+                <Image Name="countdownPreview" Source="backgroundImages/beach.bmp"></Image>
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="72" HorizontalContentAlignment="Center" Margin="0" VerticalContentAlignment="Center" FontFamily="Arial Black" Name="countdownLabel">
+                    <Label.RenderTransform>
+                        <ScaleTransform ScaleX="3" ScaleY="3" CenterY="30" CenterX="30"/>
+                    </Label.RenderTransform>
+
+                </Label>
+            </Grid>
+        </TabItem>
+
+        <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="printingView" TabIndex="2" Background="Black">
+            <Grid Background="Black">
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="48" HorizontalContentAlignment="Center" Margin="0" VerticalContentAlignment="Center" FontFamily="Arial Black" Foreground="White">
+                    <Label.RenderTransform>
+                        <ScaleTransform ScaleX="2" ScaleY="2" CenterY="50" CenterX="300"/>
+                    </Label.RenderTransform>
+                         Your prints are printing
+                </Label>
+            </Grid>
+        </TabItem>
+
+        
+        
+    </TabControl>
 </Window>
