@@ -8,7 +8,7 @@
         Title="Photobooth Application" Height="900" Width="1440" Closing="Window_Closing" KeyUp="Window_KeyUp"
         WindowStyle="ThreeDBorderWindow"
         >
-    <TabControl Padding="0" BorderThickness="0" SelectedIndex="2" Name="tabControl">
+    <TabControl Padding="0" BorderThickness="0" SelectedIndex="0" Name="tabControl">
         <TabControl.Resources>
             <Style TargetType="TabItem">
                 <Setter Property="Template">
@@ -19,11 +19,16 @@
             </Style>
         </TabControl.Resources>
 
+
+
+
+
+        <!-- ======================================= SELECT BACKGROUND ===================================================== -->
         <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="backgroundSelectView" TabIndex="0">
             <Grid Background="Black" IsEnabled="false">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="250px"/>
+                    <ColumnDefinition Width="350px"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
@@ -34,12 +39,38 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="100"/>
+                        <RowDefinition Height="100"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Name="Label_remCount" FontSize="48" Background="Black" Foreground="White">1/?</Label>
-                    <Image Grid.RowSpan="1" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Name="backgroundPreview" Source="backgroundImages/enterprise-D-bridge.bmp"/>
+                    <Image Grid.RowSpan="3" Grid.Column="0" Grid.Row="0" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="/backgroundImages/splash.bmp"/>
+                    <Image Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" Width="900" HorizontalAlignment="Center" VerticalAlignment="Center" Name="backgroundPreview" Source="backgroundImages/enterprise-D-bridge.bmp"/>
+                    <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Name="Label_remCount" FontSize="48" Background="{x:Null}" Foreground="Black">
+                        <Label.RenderTransform>
+                            <TransformGroup>
+                                <TranslateTransform Y="-20"/>
+                            </TransformGroup>
+                        </Label.RenderTransform>
+                        picture 1 of 3
+                    </Label>
+                    <Label Grid.Column="0" Grid.Row="0" Padding="0" Name="prompt" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="72" Background="{x:Null}" Foreground="Black" FontWeight="Bold">
+                    choose first background
+                    </Label>
+                    <Grid Grid.RowSpan="1" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.RowSpan="1" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="72" Background="{x:Null}" Foreground="Black" FontWeight="Bold">
+                            then press
+                        </Label>
+                        <Image Grid.RowSpan="1" Grid.Row="0" Grid.Column="1" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Top"  Source="/icons/camera.png"/>
+                    </Grid>
                 </Grid>
                 <ListView Grid.Column="1" Grid.Row="0" Background="Black" VerticalAlignment="Center"  VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="ListView_Carousal" Padding="0" BorderThickness="0">
                     <ListView.ItemsPanel>
@@ -53,30 +84,57 @@
             </Grid>
         </TabItem>
 
+
+
+
+
+        <!-- ======================================= COUNT DOWN ===================================================== -->
         <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="countdownView" TabIndex="1">
             <Grid>
                 <Image Name="countdownPreview" Source="backgroundImages/beach.bmp"></Image>
-                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="72" HorizontalContentAlignment="Center" Margin="0" VerticalContentAlignment="Center" FontFamily="Arial Black" Name="countdownLabel">
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="72" HorizontalContentAlignment="Center" Margin="0" VerticalContentAlignment="Center" FontFamily="Arial Black" Name="countdownLabel" RenderTransformOrigin="0.5,0.5" Foreground="Black">
+                    <Label.BorderBrush>
+                        <ImageBrush/>
+                    </Label.BorderBrush>
                     <Label.RenderTransform>
-                        <ScaleTransform ScaleX="3" ScaleY="3" CenterY="30" CenterX="30"/>
+                        <TransformGroup>
+                            <ScaleTransform ScaleY="3" ScaleX="3"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
                     </Label.RenderTransform>
-
+                    3
                 </Label>
             </Grid>
         </TabItem>
 
-        <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="printingView" TabIndex="2" Background="Black">
-            <Grid Background="Black">
-                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="48" HorizontalContentAlignment="Center" Margin="0" VerticalContentAlignment="Center" FontFamily="Arial Black" Foreground="White">
-                    <Label.RenderTransform>
-                        <ScaleTransform ScaleX="2" ScaleY="2" CenterY="50" CenterX="300"/>
-                    </Label.RenderTransform>
-                         Your prints are printing
-                </Label>
+
+
+
+        <!-- ======================================= PRINTING ===================================================== -->
+        <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="printingView" TabIndex="2">
+            <TabItem.Background>
+                <ImageBrush/>
+            </TabItem.Background>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+                <Grid.Background>
+                    <ImageBrush ImageSource="backgroundImages/splash.bmp" Opacity="0.7"/>
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row ="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"  HorizontalAlignment="Center" FontSize="72" Margin="0" FontFamily="Arial Black" Foreground="Black" Background="#00000000" RenderTransformOrigin="0.5,0.5" Text="please take your prints and make room for the next group">
+                </TextBlock>
+                
             </Grid>
         </TabItem>
+</TabControl>
 
-        
-        
-    </TabControl>
+
+    
 </Window>

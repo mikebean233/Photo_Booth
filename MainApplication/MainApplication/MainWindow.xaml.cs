@@ -25,6 +25,7 @@ namespace MainApplication
         private PrintManager.PrintBatchHandler _currentBatch;
         private ImageProducer _imageProducer;
         private bool _readyForCapture = false;
+        private bool _havePrintError = false;
         private Thread _consumer;
         private Dictionary<Key, Action> _keyActions = new Dictionary<Key, Action>();
         private Dictionary<int, Action> _buttonActions = new Dictionary<int, Action>();
@@ -33,23 +34,23 @@ namespace MainApplication
         private float _depthChangeStep = 0.25f;
         private float _minDepthThreshold = 0.5f;
         private float _maxDepthThreshold = 8.0f;
-        private int _carouselSize = 9; // preferably an odd number
+        private int _carouselSize = 7; // preferably an odd number
         private int _centerCarouselImageIndex;
-        private int _carouselWidth = 250;  // in pixels
+        private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
         private int _countdownLength = 3;
+        
+        private static string[] _numbers = {"first", "second", "third", "fourth", "five"};
 
 
         // State
         private State _prevState;
         private State _currentState;
-        
+
         private State SELECT_BACKGROUND;
         private State COUNTDOWN;
         private State PRINTING;
-        private State PRINT_ERROR;
-
-
+        
         private enum EventType
         {
             TRANSITION_TO_STATE,
@@ -72,13 +73,14 @@ namespace MainApplication
                 _stateData = new Dictionary<string, object>();
             }
 
-            public void HandleEvent(EventType thisEvent, Object args) 
+            public void HandleEvent(EventType thisEvent, Object args)
             {
                 _eventHandler.Invoke(thisEvent, args, _stateData);
             }
 
             override
-            public String ToString() { return _name; }
+            public String ToString()
+            { return _name; }
         }
 
         private void ChangeState(State newState)
@@ -95,24 +97,24 @@ namespace MainApplication
             _buttonListener = new ButtonListener(ButtonPressHandler);
 
             // Setup key actions
-            _keyActions.Add(Key.Left , NextBackgroundImage);
+            _keyActions.Add(Key.Left, NextBackgroundImage);
             _keyActions.Add(Key.Right, PrevBackgroundImage);
-            _keyActions.Add(Key.Up   , IncreaseDepthThreshold);
-            _keyActions.Add(Key.Down , DecreaseDepthThreshold);
+            _keyActions.Add(Key.Up, IncreaseDepthThreshold);
+            _keyActions.Add(Key.Down, DecreaseDepthThreshold);
             _keyActions.Add(Key.Space, TakePicture);
 
             // Setup button actions
             _buttonActions.Add(0, TakePicture);            // pin 2
-            _buttonActions.Add(1, PrevBackgroundImage);    // pin 3
-            _buttonActions.Add(2, NextBackgroundImage);    // pin 4
+            _buttonActions.Add(1, NextBackgroundImage);    // pin 3
+            _buttonActions.Add(2, PrevBackgroundImage);    // pin 4
             _buttonActions.Add(3, IncreaseDepthThreshold); // pin 5
             _buttonActions.Add(4, DecreaseDepthThreshold); // pin 6
-             
+
 
             //StartDialog startDialog = new StartDialog();
             //startDialog.ShowDialog();
             //_printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
-            _printManager = PrintManager.GetInstance("pdf", 10);
+            _printManager = PrintManager.GetInstance("pdf", 2);
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
 
@@ -134,8 +136,6 @@ namespace MainApplication
             UpdateStatus();
 
             SetupStates();
-
-
         }
 
         private void SetupStates()
@@ -146,7 +146,7 @@ namespace MainApplication
                 {
                     case EventType.TRANSITION_TO_STATE:
                         ChangeState(SELECT_BACKGROUND);
-                        Dispatcher.Invoke(()=>tabControl.SelectedIndex = 0);
+                        Dispatcher.Invoke(() => tabControl.SelectedIndex = 0);
 
                         if (_currentBatch.TemplateFull)
                             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
@@ -154,56 +154,59 @@ namespace MainApplication
                         UpdateStatus();
                         break;
                     case EventType.PREVIEW_IMAGE_ARRIVED:
-                        Dispatcher.Invoke(() => backgroundPreview.Source = eventArgs as ImageSource);
+                        if (!_havePrintError)
+                            Dispatcher.Invoke(() => backgroundPreview.Source = eventArgs as ImageSource);
                         break;
                     case EventType.TAKE_PICTURE_REQUEST:
-                        COUNTDOWN.HandleEvent(EventType.TRANSITION_TO_STATE, null);
-                        COUNTDOWN.HandleEvent(EventType.TAKE_PICTURE_REQUEST, null);
+                        if (!_havePrintError)
+                            COUNTDOWN.HandleEvent(EventType.TRANSITION_TO_STATE, null);
                         break;
-
+                    case EventType.PRINT_ERROR:
+                        DefaultPrintErrorHandler(eventArgs as String);
+                        break;
                 }
             });
 
-            COUNTDOWN = new State("COUNTDOWN", (eventType, eventArgs, stateData) => 
+            COUNTDOWN = new State("COUNTDOWN", (eventType, eventArgs, stateData) =>
             {
                 Thread countdownThread;
-                
+
                 switch (eventType)
                 {
                     case EventType.TRANSITION_TO_STATE:
                         ChangeState(COUNTDOWN);
-                        Dispatcher.Invoke(() => { tabControl.SelectedIndex =1; countdownPreview.Source = backgroundPreview.Source; });
-                        break;
-                    case EventType.PREVIEW_IMAGE_ARRIVED:
-                        Dispatcher.Invoke(() => countdownPreview.Source = eventArgs as ImageSource);
-                        break;
-                    case EventType.TAKE_PICTURE_REQUEST:
+                        Dispatcher.Invoke(() => { tabControl.SelectedIndex = 1; countdownPreview.Source = backgroundPreview.Source; });
+
                         countdownThread = new Thread(() =>
                         {
+                            while (_havePrintError)
+                            { }
+
                             int countDown = _countdownLength;
                             while (countDown > 0)
                             {
-                                Thread.Sleep(500);
                                 Dispatcher.Invoke(() => countdownLabel.Content = countDown.ToString());
                                 Thread.Sleep(500);
                                 Dispatcher.Invoke(() => countdownLabel.Content = "");
+                                Thread.Sleep(500);
                                 countDown--;
                             }
-                            
-                            Dispatcher.Invoke(()=> countdownLabel.Content = "SMILE !");
-                            Thread.Sleep(1000);
+
+                            Dispatcher.Invoke(() => countdownLabel.Content = "SMILE !");
+                            Thread.Sleep(2000);
                             Dispatcher.Invoke(() => countdownLabel.Content = "");
                             _readyForCapture = true;
                         });
                         countdownThread.Start();
                         break;
+                    case EventType.PREVIEW_IMAGE_ARRIVED:
+                        if(!_havePrintError)
+                            Dispatcher.Invoke(() => countdownPreview.Source = eventArgs as ImageSource);
+                        break;
                     case EventType.IMAGE_CAPTURED:
-                        
                         _currentBatch.AddImage(eventArgs as ImageSource);
-
                         if (_currentBatch.TemplateFull)
                         {
-                            //_currentBatch.CompleteBatch(1);
                             Dispatcher.InvokeAsync(() => PRINTING.HandleEvent(EventType.TRANSITION_TO_STATE, null));
                         }
                         else
@@ -211,44 +214,66 @@ namespace MainApplication
                             Dispatcher.InvokeAsync(() => SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null));
                         }
                         break;
+                    case EventType.PRINT_ERROR:
+                        DefaultPrintErrorHandler(eventArgs as String);
+                        break;
                 }
             });
 
 
-            PRINTING = new State("PRINTING", (eventType, eventArgs, stateData) => 
+            PRINTING = new State("PRINTING", (eventType, eventArgs, stateData) =>
             {
                 switch (eventType)
                 {
                     case EventType.TRANSITION_TO_STATE:
                         ChangeState(PRINTING);
-                        Dispatcher.Invoke(()=> tabControl.SelectedIndex = 2);
+                        Dispatcher.Invoke(() => tabControl.SelectedIndex = 2);
+
+                        _currentBatch.CompleteBatch(1);
                         Thread waitThread = new Thread(() =>
                         {
                             Thread.Sleep(3000);
-                            Dispatcher.Invoke(()=>SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null));
+
+                            while (_havePrintError)
+                            { }
+
+                            Dispatcher.Invoke(() => SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null));
                         });
                         waitThread.Start();
                         break;
+                    case EventType.PRINT_ERROR:
+                        DefaultPrintErrorHandler(eventArgs as String);
+                        break;
                 }
             });
-            PRINT_ERROR = new State("PRINT_ERROR", (eventType, eventArgs, stateData) => { });
             SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null);
         }
 
+        private void DefaultPrintErrorHandler(String errorMessage)
+        {
+            _havePrintError = true;
+            PrinterErrorDialog errorDialog = new PrinterErrorDialog(errorMessage);
+            errorDialog.ShowDialog();
+            _printManager.ResetRemainingPrintCount(errorDialog.PrintCount);
+            _printManager.RetryPrintingAfterUserIntervention();
+            _havePrintError = false;
+        }
 
         private void UpdateStatus()
         {
-            String statusText = String.Format("{0}/{1}", _currentBatch.AddedImageCount, _currentBatch.TemplateImageCapacity);
-            Dispatcher.Invoke(new Action(() => Label_remCount.Content = statusText));
+            String statusText = String.Format("picture {0} of {1}", _currentBatch.AddedImageCount + 1, _currentBatch.TemplateImageCapacity);
+            String promptText = String.Format("choose {0} background", _numbers[_currentBatch.AddedImageCount]);
+            Dispatcher.Invoke(() => Label_remCount.Content = statusText);
+            Dispatcher.Invoke(() => prompt.Content = promptText);
         }
-
+        
         private void NextBackgroundImage()
         {
             _backgroundIterator.MoveNext();
             SetBackgroundImage();
             Dispatcher.Invoke(UpdateCarousel);
         }
-        
+
         private void PrevBackgroundImage()
         {
             _backgroundIterator.MovePrev();
@@ -293,7 +318,7 @@ namespace MainApplication
         {
             // Set the carousel images
             int itemIndex = 0;
-            foreach (ListViewItem  item in ListView_Carousal.Items)
+            foreach (ListViewItem item in ListView_Carousal.Items)
             {
                 int offset = itemIndex++ - _centerCarouselImageIndex;
                 Image image = (Image)item.Content;
@@ -308,7 +333,7 @@ namespace MainApplication
             ListView listView = ListView_Carousal;
             Thickness zeroThickness = new Thickness(0);
 
-            for(int i = 0; i < _carouselSize; ++i)
+            for (int i = 0; i < _carouselSize; ++i)
             {
                 image = new Image();
                 image.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -320,11 +345,16 @@ namespace MainApplication
                 listViewItem.BorderThickness = zeroThickness;
                 listViewItem.Padding = zeroThickness;
                 listViewItem.Content = image;
-                
+
                 if (i == _centerCarouselImageIndex)
                 {
                     listViewItem.BorderThickness = new Thickness(10);
-                    listViewItem.BorderBrush = Brushes.Red;
+                    listViewItem.BorderBrush = new LinearGradientBrush(new GradientStopCollection(new GradientStop[]{ new GradientStop(Colors.Red, 0), new GradientStop(Colors.Black, .5), new GradientStop(Colors.Red, 1)}));
+
+                }
+                else
+                {
+                    listViewItem.Opacity = 0.7f;
                 }
 
                 listView.Items.Add(listViewItem);
@@ -373,7 +403,7 @@ namespace MainApplication
 
         private void HandlePrintError(String errorMessages)
         {
-            System.Diagnostics.Debug.WriteLine(errorMessages);
+            _currentState.HandleEvent(EventType.PRINT_ERROR, errorMessages);
         }
 
         private void Button_takePicture_Click(object sender, RoutedEventArgs e)
@@ -383,14 +413,12 @@ namespace MainApplication
 
         private void TakePicture()
         {
-            //if (_currentBatch.RemainingImageCount > 0)
-            //    _readyForCapture = true;
             _currentState.HandleEvent(EventType.TAKE_PICTURE_REQUEST, null);
         }
 
         private void IncreaseDepthThreshold()
         {
-            if (_depthThresholdInMeters + _depthChangeStep<= _maxDepthThreshold)
+            if (_depthThresholdInMeters + _depthChangeStep <= _maxDepthThreshold)
             {
                 _depthThresholdInMeters += _depthChangeStep;
                 UpdateDepthThreshold();
@@ -412,7 +440,7 @@ namespace MainApplication
         {
             _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("depthThreshold", _depthThresholdInMeters));
         }
-        
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             _imageProducer.Cleanup();

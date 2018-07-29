@@ -30,7 +30,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -145,6 +145,19 @@
       <Project>{ed52d96b-061b-4c2e-b7b4-1d6ff8e172b1}</Project>
       <Name>Printing</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgroundImages\blue_gradient.bmp" />
+    <Resource Include="backgroundImages\green_gradient.bmp" />
+    <Resource Include="backgroundImages\green_solid.bmp" />
+    <Resource Include="backgroundImages\grey_gradient.bmp" />
+    <Resource Include="backgroundImages\grey_solid.bmp" />
+    <Resource Include="backgroundImages\red_gradient.bmp" />
+    <Resource Include="backgroundImages\red_solid.bmp" />
+    <Resource Include="backgroundImages\splash.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\camera.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

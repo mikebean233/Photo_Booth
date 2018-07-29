@@ -111,7 +111,7 @@ namespace Printing
                     _printQueue.Enqueue(batch);
                     addedBatch = true;
 
-                    if (_printQueue.Count == 1)
+                    if (_printQueue.Count > 0)
                         doPrint = true;
                 }
             }
@@ -157,51 +157,48 @@ namespace Printing
             {
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
-                bool transitionedToErrorState = false;
-
-            // See if our printer is in an error state
-            if (CheckPrinterForErrorState())
-            {
-                if (!_inError)
-                    transitionedToErrorState = true;
-
-                _inError = true;
-            }
 
             // Get our current print Batch(if we don't already have it)
             if (_thisPrintBatch.BatchFinishedPrinting())
                 _thisPrintBatch = DeQueuePrintBatch();
 
-            if (!_inError && !_thisPrintBatch.BatchFinishedPrinting())
+            if (!_thisPrintBatch.BatchFinishedPrinting())
             {
                 try
                 {
-                    FixedPage page = _thisPrintBatch.Template.Render();
-                    _thisPrinter.UserPrintTicket.PageBorderless = PageBorderless.Borderless;
-                    _thisPrinter.UserPrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
-                    _thisPrinter.UserPrintTicket.PageMediaSize = new PageMediaSize(4, 6);
-                    _thisPrinter.Commit();
-                    XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(_thisPrinter);
-                    
-                    writer.Write(page);
-                    
-                    // Pretend we know that this print worked and tell our current print batch that it did.
-                    _thisPrintBatch.RegisterSucessfullPrint();
+                    // See if our printer is in an error state
+                    if (CheckPrinterForErrorState())
+                    {
+                        _inError = true;
+                    }
+                    else
+                    {
+                        FixedPage page = _thisPrintBatch.Template.Render();
+                        _thisPrinter.UserPrintTicket.PageBorderless = PageBorderless.Borderless;
+                        _thisPrinter.UserPrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
+                        _thisPrinter.UserPrintTicket.PageMediaSize = new PageMediaSize(4, 6);
+                        _thisPrinter.Commit();
+                        XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(_thisPrinter);
 
-                    _remainingPrintsInTray--;
+                        writer.Write(page);
 
-                    // Print the next page (eventually this should run out of batches or a print error will happen...)
-                    Print();
+                        // Pretend we know that this print worked and tell our current print batch that it did.
+                        _thisPrintBatch.RegisterSucessfullPrint();
+
+                        _remainingPrintsInTray--;
+
+                        // Print the next page (eventually this should run out of batches or a print error will happen...)
+                        Print();
+                    }
                 }
                 catch (Exception ex)
                 {
                     _printErrors = ex.Message;
-                    transitionedToErrorState = true;
                     _inError = true;
                 }
             }
 
-            if (transitionedToErrorState)
+            if(_inError)
             {
                 InformClientOfPrintProblems(_printErrors);
             }
