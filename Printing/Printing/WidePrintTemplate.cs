@@ -14,7 +14,7 @@ namespace Printing
     internal class WidePrintTemplate : PrintTemplate
     {
         private WideTemplate page;
-        public WidePrintTemplate() : base(2)
+        public WidePrintTemplate() : base(3)
         {
             page = new WideTemplate();
             page.BeginInit();
@@ -26,8 +26,9 @@ namespace Printing
         {
             page.Dispatcher.Invoke(new Action(()=>
             {
-                page.ImageTop.Source = imageSources[0];
-                page.ImageCenter.Source = imageSources[1];
+                page.Image1.Source = imageSources[0];
+                page.Image2.Source = imageSources[1];
+                page.Image3.Source = imageSources[2];
             }));
             return page.FixedPage;
         }

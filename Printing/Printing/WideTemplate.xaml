@@ -4,18 +4,56 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d" 
-      d:DesignHeight="576" d:DesignWidth="384"
-      Title="Page1" Margin="0">
+      Title="Page1" Margin="0"
+      >
 
-    <Grid Width="4in" Height="6in" Margin="0">
-        <Canvas Width="4In" Height="6in" Margin="0">
-            <FixedPage Name="FixedPage" Width="4in" Height="6in" Margin="0">
-                <Canvas Width="4in" Height="6in" Margin="0">
-                    <Image Name="ImageTop" Margin="0" Canvas.Left="0.125in" Canvas.Top="0.125in"  Width="3.75in" Height="2.10938in"/>
-                    <Image Name="ImageCenter"  Margin="0" Canvas.Left="0.125in" Canvas.Top="2.3438in" Width="3.75in" Height="2.10938in"/>
-                    <Image Name="Background" Source="background.png" Margin="0" Canvas.Left="0" Canvas.Top="0" Width="4in" Height="6in"/>
+    <Grid Width="5in" Height="7in" Margin="0">
+        <Canvas Width="5in" Height="7in">
+            <FixedPage Name="FixedPage" Width="5in" Height="7in" Margin="0">
+                <Canvas Width="5in" Height="7in" >
+                    <Image Name="Image1" Source="Kinect_Leaning.bmp" Height="155" Canvas.Left="-32" Canvas.Top="351" Width="270" RenderTransformOrigin="0.5,0.5">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                    <Image Name="Image2" Source="Kinect_Leaning.bmp" Height="132" Canvas.Left="151" Canvas.Top="88" Width="229" RenderTransformOrigin="0.5,0.5">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="97.198"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                    <Image Name="Image3" Source="Kinect_Leaning.bmp" Height="142" Canvas.Left="158" Canvas.Top="360" Width="254" RenderTransformOrigin="0.5,0.5">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="82.369"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                    <Image Name="backgroudn" Source="background2.gif" Stretch="Fill" Width="602" Height="434" RenderTransformOrigin="0.5,0.5" Canvas.Left="-109" Canvas.Top="80">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+
+                    </Image>
                 </Canvas>
-        </FixedPage>
+            </FixedPage>
         </Canvas>
     </Grid>
 </Page>

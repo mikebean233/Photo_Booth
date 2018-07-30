@@ -13,6 +13,7 @@ using ButtonDriver;
 using Printing;
 using System.Windows.Controls;
 
+
 namespace MainApplication
 {
     /// <summary>
@@ -93,7 +94,6 @@ namespace MainApplication
         public MainWindow()
         {
             InitializeComponent();
-
             _buttonListener = new ButtonListener(ButtonPressHandler);
 
             // Setup key actions
@@ -114,7 +114,7 @@ namespace MainApplication
             //StartDialog startDialog = new StartDialog();
             //startDialog.ShowDialog();
             //_printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
-            _printManager = PrintManager.GetInstance("pdf", 2);
+            _printManager = PrintManager.GetInstance("hiti", 2);
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
 
@@ -229,9 +229,9 @@ namespace MainApplication
                         ChangeState(PRINTING);
                         Dispatcher.Invoke(() => tabControl.SelectedIndex = 2);
 
-                        _currentBatch.CompleteBatch(1);
                         Thread waitThread = new Thread(() =>
                         {
+                            _currentBatch.CompleteBatch(1);
                             Thread.Sleep(3000);
 
                             while (_havePrintError)

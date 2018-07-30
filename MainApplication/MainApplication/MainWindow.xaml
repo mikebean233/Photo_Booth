@@ -49,7 +49,7 @@
                     <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Name="Label_remCount" FontSize="48" Background="{x:Null}" Foreground="Black">
                         <Label.RenderTransform>
                             <TransformGroup>
-                                <TranslateTransform Y="-20"/>
+                                <TranslateTransform Y="-10"/>
                             </TransformGroup>
                         </Label.RenderTransform>
                         picture 1 of 3

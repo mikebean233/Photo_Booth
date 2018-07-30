@@ -89,7 +89,6 @@
     <Compile Include="PrintManager.cs" />
     <Compile Include="PrintTemplateType.cs" />
     <Compile Include="StandardPrintTemplate.cs" />
-    <None Include="Tester.cs" />
     <Compile Include="WidePrintTemplate.cs" />
     <Page Include="WideTemplate.xaml">
       <SubType>Designer</SubType>
@@ -145,6 +144,17 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="background.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="background2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="background2.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Documents;
+using System.Windows.Controls;
 
 namespace Printing
 {
