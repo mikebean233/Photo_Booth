@@ -55,7 +55,7 @@
                         picture 1 of 3
                     </Label>
                     <Label Grid.Column="0" Grid.Row="0" Padding="0" Name="prompt" HorizontalAlignment="Center" VerticalAlignment="Stretch" FontSize="72" Background="{x:Null}" Foreground="Black" FontWeight="Bold">
-                    choose first background
+                        choose first background
                     </Label>
                     <Grid Grid.RowSpan="1" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">
                         <Grid.ColumnDefinitions>
@@ -92,10 +92,10 @@
         <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="countdownView" TabIndex="1">
             <Grid>
                 <Image Name="countdownPreview" Source="backgroundImages/beach.bmp"></Image>
-                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="72" HorizontalContentAlignment="Center" Margin="0" VerticalContentAlignment="Center" FontFamily="Arial Black" Name="countdownLabel" RenderTransformOrigin="0.5,0.5" Foreground="Black">
-                    <Label.BorderBrush>
-                        <ImageBrush/>
-                    </Label.BorderBrush>
+                <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="72" HorizontalContentAlignment="Center" Margin="0" VerticalContentAlignment="Center" FontFamily="Arial Black" Name="countdownLabel" RenderTransformOrigin="0.5,0.5" Background="Transparent" Foreground="Black" BorderThickness="0">
+                    <Label.Effect>
+                        <DropShadowEffect Color="White" RenderingBias="Quality" BlurRadius="20" Direction="0" ShadowDepth="0"/>
+                    </Label.Effect>
                     <Label.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform ScaleY="3" ScaleX="3"/>
@@ -130,11 +130,11 @@
 
                 <TextBlock Grid.Row ="0" Grid.Column="0" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"  HorizontalAlignment="Center" FontSize="72" Margin="0" FontFamily="Arial Black" Foreground="Black" Background="#00000000" RenderTransformOrigin="0.5,0.5" Text="please take your prints and make room for the next group">
                 </TextBlock>
-                
+
             </Grid>
         </TabItem>
-</TabControl>
+    </TabControl>
 
 
-    
+
 </Window>
