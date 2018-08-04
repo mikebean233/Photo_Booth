@@ -10,16 +10,20 @@ using System.Windows.Threading;
 
 namespace Printing
 {
-    internal abstract class PrintTemplate
+    internal abstract class PrintTemplate : ICloneable
     {
         private int _imageCapacity, _addedImageCount = 0;
+        private PrintTemplateType _type;
         public int ImageCapacity { get { return _imageCapacity; } }
 
         protected List<ImageSource> imageSources = new List<ImageSource>();
 
-        protected PrintTemplate(int imageCapacity)
+    
+
+        protected PrintTemplate(int imageCapacity, PrintTemplateType type)
         {
             _imageCapacity = imageCapacity;
+            _type = type;
         }
         
         public Boolean CanAddMoreImages()
@@ -51,5 +55,14 @@ namespace Printing
         }
 
         public abstract FixedPage Render();
+
+        public object Clone()
+        {
+            PrintTemplate clone = OfType(_type);
+            foreach(ImageSource thisImage in imageSources)
+                clone.AddImage(thisImage);
+
+            return clone;
+        }
     }
 }

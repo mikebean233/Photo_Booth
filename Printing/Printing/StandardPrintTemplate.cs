@@ -7,7 +7,7 @@ namespace Printing
 {
     internal class StandardPrintTemplate : PrintTemplate
     {
-        public StandardPrintTemplate() : base(2)
+        public StandardPrintTemplate() : base(2, PrintTemplateType.Standard)
         {
         }
             

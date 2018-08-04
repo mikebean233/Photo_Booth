@@ -14,7 +14,7 @@ namespace Printing
     internal class WidePrintTemplate : PrintTemplate
     {
         private WideTemplate page;
-        public WidePrintTemplate() : base(3)
+        public WidePrintTemplate() : base(3, PrintTemplateType.Wide)
         {
             page = new WideTemplate();
             page.BeginInit();

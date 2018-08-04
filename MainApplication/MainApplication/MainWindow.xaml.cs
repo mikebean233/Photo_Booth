@@ -40,6 +40,7 @@ namespace MainApplication
         private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
         private int _countdownLength = 3;
+        private int _copyCount = 3;
         
         private static string[] _numbers = {"first", "second", "third", "fourth", "five"};
 
@@ -114,7 +115,7 @@ namespace MainApplication
             //StartDialog startDialog = new StartDialog();
             //startDialog.ShowDialog();
             //_printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
-            _printManager = PrintManager.GetInstance("hiti", 2);
+            _printManager = PrintManager.GetInstance("pdf", 2);
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
 
@@ -229,9 +230,9 @@ namespace MainApplication
                         ChangeState(PRINTING);
                         Dispatcher.Invoke(() => tabControl.SelectedIndex = 2);
 
+                        _currentBatch.CompleteBatch(_copyCount);
                         Thread waitThread = new Thread(() =>
                         {
-                            _currentBatch.CompleteBatch(1);
                             Thread.Sleep(3000);
 
                             while (_havePrintError)
@@ -446,6 +447,7 @@ namespace MainApplication
             _imageProducer.Cleanup();
             _buttonListener.Cleanup();
             _consumer.Interrupt();
+            _printManager.Cleanup();
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)

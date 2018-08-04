@@ -19,7 +19,6 @@ namespace Printing
     {
         private static PrintManager _instance;
         private String _printerNameString;
-        private LocalPrintServer _printServer;
         private PrintQueue _thisPrinter;
         private String _printErrors = "";
         private bool _inError = false;
@@ -28,29 +27,38 @@ namespace Printing
         private int _remainingPrintsInTray;
         private IPrintBatch _thisPrintBatch;
         private Action<String> _printErrorInformer;
+        private ManualResetEvent _doPrintSignal;
+        private ManualResetEvent _killSignal;
+        private int _copyCount;
 
         #region Construction
         private PrintManager(String name, int remainingPrints)
         {
-            _remainingPrintsInTray = remainingPrints;
-            _printServer = new LocalPrintServer();
-            SetPrinterSearchString(name);
-            FindPrinter();
-            _thisPrinter.Refresh();
             _thisPrintBatch = NullPrintBatch.Instance;
+            _remainingPrintsInTray = remainingPrints;
+            _doPrintSignal = new ManualResetEvent(false);
+            _killSignal = new ManualResetEvent(false);
+
+
+            Thread printWorker = new Thread(() =>
+            {
+                SetPrinterSearchString(name);
+                FindPrinter();
+                _thisPrinter.Refresh();
+
+                while (!_killSignal.WaitOne(0))
+                {
+                    if (_doPrintSignal.WaitOne(0))
+                    {
+                        _doPrintSignal.Reset();
+                        Print();
+                    }
+                }
+            });
+            printWorker.SetApartmentState(ApartmentState.STA);
+            printWorker.Start();
         }
         
-        public static PrintManager GetInstance(int remainingPrints)
-        {
-            String printerName;
-            #if DEBUG
-                printerName = "pdf";
-            #else
-                printerName = "hiti";
-            #endif
-            return GetInstance(printerName, remainingPrints);
-        }
-
         public static PrintManager GetInstance(String name, int remainingPrints)
         {
             if (_instance == null)
@@ -58,6 +66,11 @@ namespace Printing
             return _instance;
         }
         #endregion
+
+        public void Cleanup()
+        {
+            _killSignal.Set();
+        }
 
 
         #region Setup
@@ -73,7 +86,9 @@ namespace Printing
             if (_thisPrinter != null)
                 return;
 
-            foreach (PrintQueue printQueue in _printServer.GetPrintQueues())
+            PrintServer printServer = new LocalPrintServer();
+
+            foreach (PrintQueue printQueue in printServer.GetPrintQueues())
             {
                 if (printQueue.Name.ToLower().Contains(_printerNameString))
                 {
@@ -116,7 +131,7 @@ namespace Printing
                 }
             }
             if (doPrint)
-                Print();
+                _doPrintSignal.Set();
 
             return addedBatch;
         }
@@ -170,10 +185,10 @@ namespace Printing
                     if (CheckPrinterForErrorState())
                     {
                         _inError = true;
-                    }
+                     }
                     else
                     {
-                        FixedPage page = _thisPrintBatch.Template.Render();
+                        FixedPage page = (_thisPrintBatch.Template.Clone() as PrintTemplate).Render();
                         _thisPrinter.UserPrintTicket.PageBorderless = PageBorderless.Borderless;
                         _thisPrinter.UserPrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
                         _thisPrinter.UserPrintTicket.PageMediaSize = new PageMediaSize(4, 6);
@@ -286,7 +301,7 @@ namespace Printing
         {
             return new PrintBatchHandler(printTemplateType, this);
         }
-        
+
         #region PrintBatchHandler
         public class PrintBatchHandler
         {
@@ -316,12 +331,11 @@ namespace Printing
                     return false;
                 }
             }
-
-            
-            public bool CompleteBatch(int copyCount)
+            public void CompleteBatch(int copyCount)
             {
-                return _printBatch.QueueBatchForPrinting(copyCount);
+                _printBatch.QueueBatchForPrinting(copyCount);
             }
+
         }
         #endregion
 
