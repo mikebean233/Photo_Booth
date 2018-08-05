@@ -4,10 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApplication"
-        ResizeMode="NoResize"
-        WindowStyle="SingleBorderWindow"
         mc:Ignorable="d"
-        Title="Printer Setup" Height="203.836" Width="280.427">
+        Title="Application Setup" Height="290.836" Width="666.427">
 
     <StackPanel Margin="10">
         <TextBlock TextWrapping="WrapWithOverflow" FontSize="16">
@@ -15,35 +13,40 @@
         </TextBlock>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <Button Name="Button_Ok" IsDefault="True" HorizontalAlignment="Center" Width="75" Click="Button_OK_Click" IsEnabled="False">
+                    OK
+                </Button>
 
-            <Grid Grid.Row="0" Grid.Column="0">
+            </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="50" />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Content="Name:"/>
+                <Label Grid.Row="0" Grid.Column="0" Content="Printer Name:" HorizontalAlignment="Right"/>
                 <TextBox Name="TextBox_name" Grid.Row="0" Grid.Column="1" TextChanged="TextBox_name_TextChanged"></TextBox>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Print Count:"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Print Media Remaining:" HorizontalAlignment="Right"/>
                 <TextBox Name="TextBox_printCount" Grid.Row="1" Grid.Column="1" Height="26" VerticalAlignment="Top" TextChanged="TextBox_printCount_TextChanged"></TextBox>
             </Grid>
-            <Button Name="Button_Ok" IsDefault="True" HorizontalAlignment="Center" Width="75" Grid.Row="0" Grid.Column="1" Click="Button_Click"
-                    IsEnabled="False">
-                OK
-            </Button>
+            <StackPanel Grid.Row="1" Grid.Column="1" FlowDirection="LeftToRight">
+                <Button Name="Button_ChooseDirectory" Click="Button_ChooseDirectory_Click">Choose an output directory</Button>
+                <TextBox Name="TextBox_SaveLocation" Text="Enter a path" TextWrapping="Wrap" TextChanged="TextBox_SaveLocation_TextChanged"/>
+            </StackPanel>
         </Grid>
     </StackPanel>
-
 </Window>

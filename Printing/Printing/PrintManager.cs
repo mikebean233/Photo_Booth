@@ -404,7 +404,7 @@ namespace Printing
                 _id = (printBatchCount++) + "_" + DateTime.Today.ToShortTimeString();
             }
 
-            public void RegisterSucessfullPrint()
+            public void RegisterSucessfullPrint() 
             {
                 if (!BatchFinishedPrinting())
                     _remainingCopiesInBatch--;

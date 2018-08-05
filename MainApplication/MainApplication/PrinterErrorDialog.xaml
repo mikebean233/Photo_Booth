@@ -5,24 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApplication"
         mc:Ignorable="d"
-        Title="Printer Error" Height="336.885" Width="700.893">
+        Title="Printer Error" Height="541.885" Width="1048.893" Background="White"
+        Name="Window"
+        >
     <StackPanel Margin="10">
-        <TextBlock Name="TextBlock_errorMessages" Foreground="Red" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow"  Text="TextBlock" VerticalAlignment="Top">Error...</TextBlock>
-        <TextBlock TextWrapping="WrapWithOverflow">please correct the printer problem(s) then click OK to continue</TextBlock>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Name="TextBlock_paper" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" TextWrapping="WrapWithOverflow" >it looks like the printer is out of paper, enter the remaining prints left in the tray after refilling the printer</TextBlock>
-            <Label Name="Label_printCount" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" HorizontalAlignment="Right" Content="Remaining Prints:" ></Label>
-            <TextBox Name="TextBox_printCount" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" Width="100" HorizontalAlignment="Left" TextChanged="TextBox_printCount_TextChanged" />
-            <Button Name="Button_Ok" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="1" Width="100" Click="Button_Click" IsEnabled="False">OK</Button>
+            <TextBlock Name="TextBlock_errorMessages" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  Foreground="Red" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow"  Text="Error..." VerticalAlignment="Top" FontSize="24"></TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="WrapWithOverflow" VerticalAlignment="Bottom" FontSize="22">please correct the printer problem(s) then click OK to continue</TextBlock>
+
+            <Label Name="Label_printCount" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Right" Content="Print Media Remaining:" FontSize="20" ></Label>
+            <TextBox Name="TextBox_printCount" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Width="235" HorizontalAlignment="Left" TextChanged="TextBox_printCount_TextChanged" FontSize="20" />
+            <Button Name="Button_Ok" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Width="200" Height="75" Click="Button_Click" IsEnabled="False" FontSize="20">OK</Button>
+            <Image Grid.Row="0" Grid.Column="2"  Grid.RowSpan="2"  Grid.ColumnSpan="2" Source="icons/printer-error.png"/>
         </Grid>
     </StackPanel>
 </Window>

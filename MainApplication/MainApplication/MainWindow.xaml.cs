@@ -12,7 +12,7 @@ using System.IO;
 using ButtonDriver;
 using Printing;
 using System.Windows.Controls;
-
+using System.Globalization;
 
 namespace MainApplication
 {
@@ -41,6 +41,7 @@ namespace MainApplication
         private double _carouselItemHeight;
         private int _countdownLength = 3;
         private int _copyCount = 3;
+        private String _imageSavePath = "";
         
         private static string[] _numbers = {"first", "second", "third", "fourth", "five"};
 
@@ -112,10 +113,10 @@ namespace MainApplication
             _buttonActions.Add(4, DecreaseDepthThreshold); // pin 6
 
 
-            //StartDialog startDialog = new StartDialog();
-            //startDialog.ShowDialog();
-            //_printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
-            _printManager = PrintManager.GetInstance("pdf", 2);
+            StartDialog startDialog = new StartDialog();
+            startDialog.ShowDialog();
+            _imageSavePath = startDialog.ImageSavePath;
+            _printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
 
@@ -205,7 +206,9 @@ namespace MainApplication
                             Dispatcher.Invoke(() => countdownPreview.Source = eventArgs as ImageSource);
                         break;
                     case EventType.IMAGE_CAPTURED:
-                        _currentBatch.AddImage(eventArgs as ImageSource);
+                        ImageSource image = eventArgs as ImageSource;
+                        _currentBatch.AddImage(image);
+                        WriteImageFile(image);
                         if (_currentBatch.TemplateFull)
                         {
                             Dispatcher.InvokeAsync(() => PRINTING.HandleEvent(EventType.TRANSITION_TO_STATE, null));
@@ -254,7 +257,10 @@ namespace MainApplication
         {
             _havePrintError = true;
             PrinterErrorDialog errorDialog = new PrinterErrorDialog(errorMessage);
+            
+            errorDialog.BringIntoView();
             errorDialog.ShowDialog();
+            
             _printManager.ResetRemainingPrintCount(errorDialog.PrintCount);
             _printManager.RetryPrintingAfterUserIntervention();
             _havePrintError = false;
@@ -286,6 +292,20 @@ namespace MainApplication
         {
             _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("selectBackgroundImage", _backgroundIterator.Current.Name));
         }
+
+        private void WriteImageFile(ImageSource imageSource)
+        {
+            DateTime now = DateTime.Now;
+
+            String filename = String.Format("{0}\\{1}.bmp", _imageSavePath, now.ToString("MMM_dd_yyyy_hh_mm_ss", CultureInfo.InvariantCulture));
+
+            FileStream stream = new FileStream(filename, FileMode.Create);
+            TiffBitmapEncoder encoder = new TiffBitmapEncoder();
+            TextBlock myTextBlock = new TextBlock();
+            myTextBlock.Text = "Codec Author is: " + encoder.CodecInfo.Author.ToString();
+            encoder.Frames.Add(BitmapFrame.Create((BitmapSource)imageSource));
+            encoder.Save(stream);
+    }
 
         private void Consume()
         {

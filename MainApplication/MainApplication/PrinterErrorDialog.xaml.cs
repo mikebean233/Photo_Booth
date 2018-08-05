@@ -32,13 +32,15 @@ namespace MainApplication
         public PrinterErrorDialog(String printErrors)
         {
             InitializeComponent();
+            Window.Topmost = true;
             _printErrors = printErrors ?? "";
             _needPrintCount = _printErrors.Contains("out of paper");
             TextBlock_errorMessages.Text = _printErrors;
             Button_Ok.IsEnabled = !_needPrintCount;
             TextBox_printCount.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
             Label_printCount.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
-            TextBlock_paper.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
+            Window.Title = _needPrintCount ? "OUT OF PAPER" : "Print Error";
+            Window.Activate();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
