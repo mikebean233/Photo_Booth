@@ -223,59 +223,59 @@ namespace Printing
         {
             PrintQueue pq = _thisPrinter;
 
-            String statusReport = "";
+            String statusReport = "The printer ";
             if ((pq.QueueStatus & PrintQueueStatus.PaperProblem) == PrintQueueStatus.PaperProblem)
             {
-                statusReport = statusReport + "Has a paper problem. ";
+                statusReport = statusReport + "has a paper problem. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.NoToner) == PrintQueueStatus.NoToner)
             {
-                statusReport = statusReport + "Is out of toner. ";
+                statusReport = statusReport + "is out of toner. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.DoorOpen) == PrintQueueStatus.DoorOpen)
             {
-                statusReport = statusReport + "Has an open door. ";
+                statusReport = statusReport + "has an open door. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.Error) == PrintQueueStatus.Error)
             {
-                statusReport = statusReport + "Is in an error state. ";
+                statusReport = statusReport + "is in an error state. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.NotAvailable) == PrintQueueStatus.NotAvailable)
             {
-                statusReport = statusReport + "Is not available. ";
+                statusReport = statusReport + "is not available. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.Offline) == PrintQueueStatus.Offline)
             {
-                statusReport = statusReport + "Is off line. ";
+                statusReport = statusReport + "is off line. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.OutOfMemory) == PrintQueueStatus.OutOfMemory)
             {
-                statusReport = statusReport + "Is out of memory. ";
+                statusReport = statusReport + "is out of memory. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.PaperOut) == PrintQueueStatus.PaperOut || _remainingPrintsInTray <= 0)
             {
                 _remainingPrintsInTray = 0;
-                statusReport = statusReport + "Is out of paper. ";
+                statusReport = statusReport + "is out of paper. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.OutputBinFull) == PrintQueueStatus.OutputBinFull)
             {
-                statusReport = statusReport + "Has a full output bin. ";
+                statusReport = statusReport + "has a full output bin. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.PaperJam) == PrintQueueStatus.PaperJam)
             {
-                statusReport = statusReport + "Has a paper jam. ";
+                statusReport = statusReport + "has a paper jam. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.Paused) == PrintQueueStatus.Paused)
             {
-                statusReport = statusReport + "Is paused. ";
+                statusReport = statusReport + "is paused. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.TonerLow) == PrintQueueStatus.TonerLow)
             {
-                statusReport = statusReport + "Is low on toner. ";
+                statusReport = statusReport + "is low on toner. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.UserIntervention) == PrintQueueStatus.UserIntervention)
             {
-                statusReport = statusReport + "Needs user intervention. ";
+                statusReport = statusReport + "needs user intervention. ";
             }
 
             if ("".Equals(statusReport))
