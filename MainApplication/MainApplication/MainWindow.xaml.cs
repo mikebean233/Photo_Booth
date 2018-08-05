@@ -260,8 +260,9 @@ namespace MainApplication
             
             errorDialog.BringIntoView();
             errorDialog.ShowDialog();
-            
-            _printManager.ResetRemainingPrintCount(errorDialog.PrintCount);
+
+            if(errorDialog.WasOutOfPaper)
+                _printManager.ResetRemainingPrintCount(errorDialog.PrintCount);
             _printManager.RetryPrintingAfterUserIntervention();
             _havePrintError = false;
         }

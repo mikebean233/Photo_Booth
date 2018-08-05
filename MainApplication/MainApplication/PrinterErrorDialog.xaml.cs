@@ -21,9 +21,11 @@ namespace MainApplication
     {
         private String _printErrors;
         private bool _needPrintCount;
+        public bool WasOutOfPaper { get { return _needPrintCount; } }
+
         private int _printCount;
         public int PrintCount {get{return _printCount;} }
-
+        
         public void ValidateInput()
         {
             Button_Ok.IsEnabled = _printCount > 0;
