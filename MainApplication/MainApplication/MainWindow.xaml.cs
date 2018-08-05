@@ -40,7 +40,7 @@ namespace MainApplication
         private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
         private int _countdownLength = 3;
-        private int _copyCount = 3;
+        private int _copyCount = 2;
         private String _imageSavePath = "";
         
         private static string[] _numbers = {"first", "second", "third", "fourth", "five"};
