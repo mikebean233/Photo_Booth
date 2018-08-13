@@ -577,8 +577,6 @@ namespace Imaging
                     Byte[] cleanedDepthMask = PerformConvolution(rawDepthMask, colorResolution, _boxBlur_5_by_5);
                     cleanedDepthMask = PerformConvolution(cleanedDepthMask, colorResolution, _boxBlur_3_by_3);
 
-
-                    colorPixelIndex = 0;
                     for (colorPixelIndex = 0; colorPixelIndex < colorResolution.Area; ++colorPixelIndex)
                     {
                         int colorBufferIndex = outputBytesPerPixel * colorPixelIndex;
@@ -614,9 +612,9 @@ namespace Imaging
                 int kernelCenterCol = kernelHeight / 2;
 
                 int accumulator;
-                for (int imageRow = 200; imageRow < size.Width - 200; ++imageRow)
+                for (int imageRow = 0; imageRow < size.Height; ++imageRow)
                 {
-                    for (int imageCol = 0; imageCol < size.Height; ++imageCol)
+                    for (int imageCol = 200; imageCol < size.Width - 200; ++imageCol)
                     {
                         byte outValue = 0;
                         accumulator = 0;
@@ -624,11 +622,11 @@ namespace Imaging
                         {
                             for (int kernelCol = 0; kernelCol < kernelWidth; ++kernelCol)
                             {
-                                accumulator += kernel.Kernel[kernelRow, kernelCol] * GetPixelAt(inImage, size, imageCol + (kernelCol - kernelCenterCol), imageRow + (kernelRow - kernelCenterRow), 0);
+                                accumulator += kernel.Kernel[kernelRow, kernelCol] * GetPixelAt(inImage, size, imageRow + (kernelRow - kernelCenterRow), imageCol + (kernelCol - kernelCenterCol), 0);
                             }
                         }
                         outValue = (byte)((float)accumulator * kernel.Multiplier);
-                        outImage[imageCol * size.Width + imageRow] = outValue;
+                        outImage[imageRow * size.Width + imageCol] = outValue;
                     }
                 }
                 return outImage;
