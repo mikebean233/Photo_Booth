@@ -207,6 +207,21 @@ namespace Imaging
             }
         }
 
+        private class ConvolutionKernel
+        {
+            private float _multiplier;
+            public float Multiplier {get{return _multiplier;} }
+
+            private int[,] _kernel;
+            public int[,] Kernel { get { return _kernel; } }
+
+            public ConvolutionKernel(float multiplier, int[,] kernel)
+            {
+                _multiplier = multiplier;
+                _kernel = kernel;
+            }
+        }
+
         private class FrameManager
         {
             private static readonly FrameManager _instance;
@@ -226,6 +241,19 @@ namespace Imaging
             private static readonly ushort[] _rawInfraredPixels;
             private static readonly byte[] _rawBodyIndexPixels;
             private static readonly CameraSpacePoint[] _cameraSpacePoints;
+
+            private static ConvolutionKernel _boxBlur_9_by_9;
+            private static ConvolutionKernel _boxBlur_5_by_5;
+            private static ConvolutionKernel _boxBlur_3_by_3;
+            private static ConvolutionKernel _gaussianBlur_3_by_3;
+            private static ConvolutionKernel _gaussianBlur_5_by_5;
+            private static ConvolutionKernel _identity_3_by_3;
+            private static ConvolutionKernel _edgeDetection;
+            private static ConvolutionKernel _experimental;
+            private static ConvolutionKernel _experimental2;
+
+            private Boolean rendering = false;
+
 
             static FrameManager()
             {
@@ -257,10 +285,86 @@ namespace Imaging
                 _rawInfraredPixels = new UInt16[_frameResolutions[SourceType.INFRARED].Area];
                 _rawBodyIndexPixels = new byte[_frameResolutions[SourceType.BODY_INDEX].Area];
                 _cameraSpacePoints = new CameraSpacePoint[Box.S_1920_1080.Area];
+
+                _boxBlur_3_by_3 = new ConvolutionKernel(1.0f / 9f, new int[,] {
+                    { 1, 1, 1},
+                    { 1, 1, 1},
+                    { 1, 1, 1},
+
+                });
+
+                _boxBlur_5_by_5 = new ConvolutionKernel(1.0f / 25f, new int[,] {
+                    { 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1},
+                });
+
+                _boxBlur_9_by_9 = new ConvolutionKernel(1.0f / 81f, new int[,] {
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1, 1, 1, 1 }
+                });
+
+                _identity_3_by_3 = new ConvolutionKernel(1, new int[,] {
+                    { 1, 0, 0 },
+                    { 0, 1, 0 },
+                    { 0, 0, 1 }
+                });
+
+                _gaussianBlur_5_by_5 = new ConvolutionKernel(1.0f / 256.0f, new int[,] {
+                    { 1,  4,  6,  4, 1},
+                    { 4, 16, 24, 16, 4 },
+                    { 6, 24, 36, 24, 6 },
+                    { 4, 16, 24, 16, 4 },
+                    { 1,  4,  6,  4, 1 },
+                });
+
+                _gaussianBlur_3_by_3 = new ConvolutionKernel(1.0f / 16.0f, new int[,] {
+                    { 1, 2, 1 },
+                    { 2, 4, 2 },
+                    { 1, 2, 1 }
+                });
+
+                _edgeDetection = new ConvolutionKernel(1.0f, new int[,] {
+                    { -1, -1, -1 },
+                    { -1,  8, -1 },
+                    { -1, -1, -1 }
+                });
+                /*
+                _experimental = new ConvolutionKernel(1, new float[,] {
+                    { 0.00401f,   0.005895f,    0.007763f,    0.009157f,    0.009675f,    0.009157f,    0.007763f,    0.005895f,    0.00401f},
+                    { 0.005895f,  0.008667f,    0.011412f,    0.013461f,    0.014223f,    0.013461f,    0.011412f,    0.008667f,    0.005895f},
+                    { 0.007763f,  0.011412f,    0.015028f,    0.017726f,    0.018729f,    0.017726f,    0.015028f,    0.011412f,    0.007763f},
+                    { 0.009157f,  0.013461f,    0.017726f,    0.020909f,    0.022092f,    0.020909f,    0.017726f,    0.013461f,    0.009157f},
+                    { 0.009675f,  0.014223f,    0.018729f,    0.022092f,    0.023342f,    0.022092f,    0.018729f,    0.014223f,    0.009675f},
+                    { 0.009157f,  0.013461f,    0.017726f,    0.020909f,    0.022092f,    0.020909f,    0.017726f,    0.013461f,    0.009157f},
+                    { 0.007763f,  0.011412f,    0.015028f,    0.017726f,    0.018729f,    0.017726f,    0.015028f,    0.011412f,    0.007763f},
+                    { 0.005895f,  0.008667f,    0.011412f,    0.013461f,    0.014223f,    0.013461f,    0.011412f,    0.008667f,    0.005895f},
+                    { 0.00401f,   0.005895f,    0.007763f,    0.009157f,    0.009675f,    0.009157f,    0.007763f,    0.005895f,    0.00401f}
+                });
+
+                _experimental2 = new ConvolutionKernel(1, new float[,] {
+                    { 0.000518f, 0.021715f, 0.00051f},
+                    { 0.021715f, 0.91107f , 0.021715f},
+                    { 0.000518f, 0.021715f, 0.000518f }
+                });
+                */
+
             }
+
+
+
             private FrameManager() { }
             public static FrameManager Instance { get { return _instance; } }
-            
+
             public CoordinateMapper CoordinateMapper
             {
                 set
@@ -280,7 +384,7 @@ namespace Imaging
                 {
                     Box dimensions = _frameResolutions[frameSourceType];
                     byte[] outPixels = _displayableBuffers[frameSourceType];
-                    BitmapSource output =  BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, _outputPixelFormat, null, outPixels, dimensions.Width * _outputPixelFormat.BitsPerPixel / 8);
+                    BitmapSource output = BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, _outputPixelFormat, null, outPixels, dimensions.Width * _outputPixelFormat.BitsPerPixel / 8);
                     output.Freeze();
                     return output;
                 }
@@ -299,7 +403,7 @@ namespace Imaging
                     {
                         byte shiftBits = (byte)(8 * bitIndex);
                         uint mask = (uint)(0xFF << shiftBits);
-                        backgroundBuffer[(pixelIndex* bytesPerPixel) + bitIndex] = (byte)((mask & color) >> shiftBits); 
+                        backgroundBuffer[(pixelIndex * bytesPerPixel) + bitIndex] = (byte)((mask & color) >> shiftBits);
                     }
                 }
             }
@@ -326,7 +430,7 @@ namespace Imaging
                     {
                         String key = entry.Key;
                         byte[] buffer = BuildBackgroundBuffer(entry.Value);
-                        
+
                         if (buffer != null)
                             outputMap.Add(key, buffer);
                     }
@@ -345,16 +449,16 @@ namespace Imaging
                 byte[] output = null;
 
                 PixelFormat inputFormat = image.Format;
-                if (image != null && 
-                    image.PixelHeight == _frameResolutions[SourceType.BACKGROUND].Height && 
-                    image.PixelWidth  == _frameResolutions[SourceType.BACKGROUND].Width)
+                if (image != null &&
+                    image.PixelHeight == _frameResolutions[SourceType.BACKGROUND].Height &&
+                    image.PixelWidth == _frameResolutions[SourceType.BACKGROUND].Width)
                 {
                     output = new byte[pixelCount * (_outputPixelFormat.BitsPerPixel / 8)];
                     int inputBytesPerPixel = inputFormat.BitsPerPixel / 8;
                     int stride = image.PixelWidth * (inputBytesPerPixel);
                     byte[] inputBuffer = new byte[(int)image.PixelHeight * stride];
                     image.CopyPixels(inputBuffer, stride, 0);
-                    
+
                     for (int pixelIndex = 0; pixelIndex < _frameResolutions[SourceType.BACKGROUND].Area; ++pixelIndex)
                     {
                         int inputBaseIndex = pixelIndex * inputBytesPerPixel;
@@ -369,9 +473,9 @@ namespace Imaging
                 }
                 return output;
             }
-            
+
             private void ProcessColorFrame(ColorFrame colorFrame)
-            { 
+            {
                 if (colorFrame != null)
                 {
                     colorFrame.CopyConvertedFrameDataToArray(_displayableBuffers[SourceType.COLOR], ColorImageFormat.Bgra);
@@ -383,7 +487,7 @@ namespace Imaging
                 if (depthFrame != null)
                 {
                     depthFrame.CopyFrameDataToArray(_rawDepthPixels);
-                    
+
                     int outIndex = 0;
                     for (int index = 0; index < _rawDepthPixels.Length; ++index)
                     {
@@ -448,40 +552,112 @@ namespace Imaging
                 if (_coordinateMapper != null && _rawDepthPixels != null && _cameraSpacePoints != null)
                 {
                     _coordinateMapper.MapColorFrameToCameraSpace(_rawDepthPixels, _cameraSpacePoints);
+                    Box colorResolution = _frameResolutions[SourceType.COLOR];
 
                     byte[] colorBuffer = _displayableBuffers[SourceType.COLOR];
+                    byte[] rawDepthMask = new byte[colorResolution.Area];
                     byte[] greenScreenBuffer = _displayableBuffers[SourceType.GREEN_SCREEN];
                     byte[] backgroundBuffer = _displayableBuffers[SourceType.BACKGROUND];
                     int outputBytesPerPixel = _outputPixelFormat.BitsPerPixel / 8;
+                    int maskMinValue = 50;
 
+
+                    // Build the raw mask from depth data
                     int colorPixelIndex = 0;
                     foreach (CameraSpacePoint thisPoint in _cameraSpacePoints)
                     {
-                        int colorBufferIndex = outputBytesPerPixel * colorPixelIndex;
                         float depthValue = thisPoint.Z;
+                        if (!float.IsNegativeInfinity(depthValue) && depthValue <= _depthThresholdInMeters)
+                            rawDepthMask[colorPixelIndex] = 255;
+                        colorPixelIndex++;
+                    }
 
-                        // Determine where this pixel will come from
-                        byte[] pixelSourceArray = (float.IsNegativeInfinity(depthValue) || depthValue > _depthThresholdInMeters) ? backgroundBuffer : colorBuffer;
+                    // Clean up the mask
+                    // TODO: Use a fast native library to do thiss so frame rates are better
+                    Byte[] cleanedDepthMask = PerformConvolution(rawDepthMask, colorResolution, _boxBlur_5_by_5);
+                    cleanedDepthMask = PerformConvolution(cleanedDepthMask, colorResolution, _boxBlur_3_by_3);
 
-                        for (int i = 0; i < outputBytesPerPixel; ++i)
-                            greenScreenBuffer[colorBufferIndex + i] = pixelSourceArray[colorBufferIndex + i];
-                    
-                        ++colorPixelIndex;
+
+                    colorPixelIndex = 0;
+                    for (colorPixelIndex = 0; colorPixelIndex < colorResolution.Area; ++colorPixelIndex)
+                    {
+                        int colorBufferIndex = outputBytesPerPixel * colorPixelIndex;
+                        byte thisMaskValue = cleanedDepthMask[colorPixelIndex];
+                        float normalizedMaskValue = thisMaskValue > maskMinValue ? ((float)thisMaskValue - (float)maskMinValue) / (255f - (float)maskMinValue) : 0f;
+
+                        for (int i = 0; i < outputBytesPerPixel - 1; ++i)
+                        {
+                            byte backgroundPixelValue = backgroundBuffer[colorBufferIndex + i];
+                            byte foregroundPixelValue = colorBuffer[colorBufferIndex + i];
+                            byte minValue = Math.Min(backgroundPixelValue, foregroundPixelValue);
+                            byte maxValue = Math.Max(backgroundPixelValue, foregroundPixelValue);
+                            float range = maxValue - minValue;
+                            float direction = backgroundPixelValue > foregroundPixelValue ? -1f : 1f;
+
+                            byte outputValue = (byte)((float)backgroundPixelValue + (direction * (range * normalizedMaskValue)));
+
+
+                            greenScreenBuffer[colorBufferIndex + i] = outputValue;
+                        }
+                        greenScreenBuffer[colorBufferIndex + (outputBytesPerPixel - 1)] = 255;
                     }
                 }
+            }
+
+            // One byte images only
+            private byte[] PerformConvolution(byte[] inImage, Box size, ConvolutionKernel kernel)
+            {
+                byte[] outImage = new byte[inImage.Length];
+                int kernelHeight = kernel.Kernel.GetLength(0);
+                int kernelWidth = kernel.Kernel.GetLength(1);
+                int kernelCenterRow = kernelWidth / 2;
+                int kernelCenterCol = kernelHeight / 2;
+
+                int accumulator;
+                for (int imageRow = 200; imageRow < size.Width - 200; ++imageRow)
+                {
+                    for (int imageCol = 0; imageCol < size.Height; ++imageCol)
+                    {
+                        byte outValue = 0;
+                        accumulator = 0;
+                        for (int kernelRow = 0; kernelRow < kernelHeight; ++kernelRow)
+                        {
+                            for (int kernelCol = 0; kernelCol < kernelWidth; ++kernelCol)
+                            {
+                                accumulator += kernel.Kernel[kernelRow, kernelCol] * GetPixelAt(inImage, size, imageCol + (kernelCol - kernelCenterCol), imageRow + (kernelRow - kernelCenterRow), 0);
+                            }
+                        }
+                        outValue = (byte)((float)accumulator * kernel.Multiplier);
+                        outImage[imageCol * size.Width + imageRow] = outValue;
+                    }
+                }
+                return outImage;
+            }
+
+            private byte GetPixelAt(byte[] array, Box size, int row, int col, byte defaultValue)
+            {
+                if (row < 0 || row >= size.Height || col < 0 || col >= size.Width)
+                    return defaultValue;
+                else
+                    return array[row * size.Width + col];
             }
 
             public void ProcessMultiSourceFrameEvent(MultiSourceFrameArrivedEventArgs eventArgs)
             {
                 MultiSourceFrame multiSourceFrame = eventArgs.FrameReference.AcquireFrame();
-                using (var colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+                    using (var colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
                     {
                         using (var depthFrame = multiSourceFrame.DepthFrameReference.AcquireFrame())
                         {
-                            ProcessColorFrame(colorFrame);
-                            ProcessDepthFrame(depthFrame);
-                            ProcessGreenScreenFrame();
-                        }
+                            if (!rendering)
+                            {
+                                rendering = true;
+                                ProcessColorFrame(colorFrame);
+                                ProcessDepthFrame(depthFrame);
+                                ProcessGreenScreenFrame();
+                                rendering = false;
+                            }
+                        }   
                     }
             }
             #endregion
