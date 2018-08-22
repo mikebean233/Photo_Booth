@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Imaging
 {
     public interface ImageProducer
     {
-        ConcurrentQueue<ImageSource> GetImageQueue();
+        ConcurrentQueue<BitmapSource> GetImageQueue();
         void SetConfiguration(ImageProducerConfiguration config);
         void Start();
         void Cleanup();

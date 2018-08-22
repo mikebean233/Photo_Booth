@@ -22,26 +22,29 @@ namespace MainApplication
     public partial class MainWindow : Window
     {
         private PrintManager _printManager;
-        private ConcurrentQueue<ImageSource> _queue;
+        private ConcurrentQueue<BitmapSource> _queue;
         private PrintManager.PrintBatchHandler _currentBatch;
         private ImageProducer _imageProducer;
         private bool _readyForCapture = false;
+        private bool _createNewBackground = false;
         private bool _havePrintError = false;
+        private bool _loadingBackgrounds = false;
         private Thread _consumer;
         private Dictionary<Key, Action> _keyActions = new Dictionary<Key, Action>();
         private Dictionary<int, Action> _buttonActions = new Dictionary<int, Action>();
         private ButtonListener _buttonListener;
         private float _depthThresholdInMeters = 2.0f;
-        private float _depthChangeStep = 0.25f;
+        private float _depthChangeStep = 0.10f;
         private float _minDepthThreshold = 0.5f;
         private float _maxDepthThreshold = 8.0f;
         private int _carouselSize = 7; // preferably an odd number
         private int _centerCarouselImageIndex;
         private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
-        private int _countdownLength = 3;
+        private int _countdownLength = 5;
         private int _copyCount = 2;
         private String _imageSavePath = "";
+        private String _backgroundImagePath = "backgroundImages";
         
         private static string[] _numbers = {"first", "second", "third", "fourth", "five"};
 
@@ -104,6 +107,7 @@ namespace MainApplication
             _keyActions.Add(Key.Up, IncreaseDepthThreshold);
             _keyActions.Add(Key.Down, DecreaseDepthThreshold);
             _keyActions.Add(Key.Space, TakePicture);
+            _keyActions.Add(Key.B, TakeBackgroundPicture);
 
             // Setup button actions
             _buttonActions.Add(0, TakePicture);            // pin 2
@@ -202,21 +206,36 @@ namespace MainApplication
                         countdownThread.Start();
                         break;
                     case EventType.PREVIEW_IMAGE_ARRIVED:
-                        if(!_havePrintError)
+                        if (!_havePrintError)
                             Dispatcher.Invoke(() => countdownPreview.Source = eventArgs as ImageSource);
                         break;
                     case EventType.IMAGE_CAPTURED:
-                        ImageSource image = eventArgs as ImageSource;
-                        _currentBatch.AddImage(image);
-                        WriteImageFile(image);
-                        if (_currentBatch.TemplateFull)
+                        BitmapSource image = eventArgs as BitmapSource;
+
+                        if (_createNewBackground)
                         {
-                            Dispatcher.InvokeAsync(() => PRINTING.HandleEvent(EventType.TRANSITION_TO_STATE, null));
+                            _createNewBackground = false;
+                            String timeStamp = BuildTimestampString();
+                            WriteImageFile(image, BuildAbsoluteFilePath(_backgroundImagePath, timeStamp, "bmp"));
+                            _backgroundIterator.Add(new BackgroundImage(timeStamp, image));
+                            _backgroundIterator.MoveLast();
+                            UpdateCarousel();
+
+                            Dictionary<String, BitmapSource> outMap = new Dictionary<string, BitmapSource>();
+                            outMap.Add(timeStamp, image);
+                            _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("addBackgroundImages", outMap));
                         }
                         else
                         {
-                            Dispatcher.InvokeAsync(() => SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null));
+                            _currentBatch.AddImage(image);
+                            WriteImageFile(image, BuildAbsoluteFilePath(_imageSavePath, BuildTimestampString(), "bmp"));
                         }
+
+                        if (_currentBatch.TemplateFull)
+                            Dispatcher.InvokeAsync(() => PRINTING.HandleEvent(EventType.TRANSITION_TO_STATE, null));
+                        else
+                            Dispatcher.InvokeAsync(() => SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null));
+
                         break;
                     case EventType.PRINT_ERROR:
                         DefaultPrintErrorHandler(eventArgs as String);
@@ -246,7 +265,7 @@ namespace MainApplication
                         waitThread.Start();
                         break;
                     case EventType.PRINT_ERROR:
-                        DefaultPrintErrorHandler(eventArgs as String);
+                        DefaultPrintErrorHandler(eventArgs as String); 
                         break;
                 }
             });
@@ -269,7 +288,7 @@ namespace MainApplication
 
         private void UpdateStatus()
         {
-            String statusText = String.Format("picture {0} of {1}", _currentBatch.AddedImageCount + 1, _currentBatch.TemplateImageCapacity);
+            String statusText = _loadingBackgrounds ? "loading background images..." : String.Format("picture {0} of {1}", _currentBatch.AddedImageCount + 1, _currentBatch.TemplateImageCapacity);
             String promptText = String.Format("choose {0} background", _numbers[_currentBatch.AddedImageCount]);
             Dispatcher.Invoke(() => Label_remCount.Content = statusText);
             Dispatcher.Invoke(() => prompt.Content = promptText);
@@ -294,17 +313,23 @@ namespace MainApplication
             _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("selectBackgroundImage", _backgroundIterator.Current.Name));
         }
 
-        private void WriteImageFile(ImageSource imageSource)
+        private String BuildTimestampString()
         {
-            DateTime now = DateTime.Now;
+            return DateTime.Now.ToString("MMM_dd_yyyy_hh_mm_ss", CultureInfo.InvariantCulture);
+        }
 
-            String filename = String.Format("{0}\\{1}.bmp", _imageSavePath, now.ToString("MMM_dd_yyyy_hh_mm_ss", CultureInfo.InvariantCulture));
+        private String BuildAbsoluteFilePath(String path, String filename, String extension)
+        {
+            return String.Format("{0}\\{1}.bmp", path, filename, extension);
+        }
 
+        private void WriteImageFile(BitmapSource imageSource, String filename)
+        {
             FileStream stream = new FileStream(filename, FileMode.Create);
             TiffBitmapEncoder encoder = new TiffBitmapEncoder();
             TextBlock myTextBlock = new TextBlock();
             myTextBlock.Text = "Codec Author is: " + encoder.CodecInfo.Author.ToString();
-            encoder.Frames.Add(BitmapFrame.Create((BitmapSource)imageSource));
+            encoder.Frames.Add(BitmapFrame.Create(imageSource));
             encoder.Save(stream);
     }
 
@@ -314,7 +339,7 @@ namespace MainApplication
             {
                 while (true)
                 {
-                    ImageSource thisImage = null;
+                    BitmapSource thisImage = null;
                     if (_queue.TryDequeue(out thisImage))
                     {
 
@@ -388,6 +413,8 @@ namespace MainApplication
 
         private void LoadBackgroundImages()
         {
+            _loadingBackgrounds = true;
+            UpdateStatus();
             String bmpDir = AppDomain.CurrentDomain.BaseDirectory + "backgroundImages";
             if (Directory.Exists(bmpDir))
             {
@@ -395,7 +422,7 @@ namespace MainApplication
 
                 int index = 0;
                 BackgroundImage[] backgroundImages = new BackgroundImage[filePaths.Count()];
-                Dictionary<string, BitmapImage> backgroundImageMap = new Dictionary<string, BitmapImage>();
+                Dictionary<string, BitmapSource> backgroundImageMap = new Dictionary<string, BitmapSource>();
 
                 foreach (String path in filePaths)
                 {
@@ -419,8 +446,10 @@ namespace MainApplication
                 Array.Resize<BackgroundImage>(ref backgroundImages, index);
 
                 _backgroundIterator = new ContinousIterator<BackgroundImage>(backgroundImages);
-                _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("loadBackgroundImages", backgroundImageMap));
+                _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("setBackgroundImages", backgroundImageMap));
             }
+            _loadingBackgrounds = false;
+            UpdateStatus();
         }
 
         private void HandlePrintError(String errorMessages)
@@ -432,6 +461,13 @@ namespace MainApplication
         {
             TakePicture();
         }
+
+        private void TakeBackgroundPicture()
+        {
+            _createNewBackground = true;
+            TakePicture();
+        }
+
 
         private void TakePicture()
         {

@@ -12,10 +12,10 @@ namespace MainApplication
         private String _name;
         public String Name { get { return _name; } }
 
-        private BitmapImage _image;
-        public BitmapImage Image { get { return _image; } }
+        private BitmapSource _image;
+        public BitmapSource Image { get { return _image; } }
 
-        public BackgroundImage(String name, BitmapImage image)
+        public BackgroundImage(String name, BitmapSource image)
         {
             _name = name;
             _image = image;

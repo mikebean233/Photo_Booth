@@ -14,10 +14,10 @@ namespace Imaging
     {
         private static TestImageProducer _instance;
         public static TestImageProducer Instance { get { return _instance; } }
-        private static List<ImageSource> _images = new List<ImageSource>();
+        private static List<BitmapSource> _images = new List<BitmapSource>();
         private static DispatcherTimer _timer;
 
-        private ConcurrentQueue<ImageSource> _queue = new ConcurrentQueue<ImageSource>();
+        private ConcurrentQueue<BitmapSource> _queue = new ConcurrentQueue<BitmapSource>();
         private int _curIndex = -1;
 
         static TestImageProducer()
@@ -45,7 +45,7 @@ namespace Imaging
             _timer = null;
         }
 
-        public ConcurrentQueue<ImageSource> GetImageQueue()
+        public ConcurrentQueue<BitmapSource> GetImageQueue()
         {
             return _queue; 
         }

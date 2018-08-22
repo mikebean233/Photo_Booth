@@ -15,7 +15,7 @@ namespace Imaging
 {
     class KinectImageProducer : ImageProducer
     {
-        private ConcurrentQueue<ImageSource> _queue;
+        private ConcurrentQueue<BitmapSource> _queue;
         private KinectSensor _sensor;
         private FrameManager _frameManager;
         private int _maxQueueSize = 100;
@@ -24,7 +24,7 @@ namespace Imaging
         
         private KinectImageProducer()
         {
-            _queue = new ConcurrentQueue<ImageSource>();
+            _queue = new ConcurrentQueue<BitmapSource>();
             _producer = new Thread(new ThreadStart(Setup));
         }
 
@@ -76,7 +76,7 @@ namespace Imaging
             return new KinectImageProducer();
         }
 
-        public ConcurrentQueue<ImageSource> GetImageQueue()
+        public ConcurrentQueue<BitmapSource> GetImageQueue()
         {
             return _queue;
         }
@@ -88,9 +88,10 @@ namespace Imaging
                 while (_frameManager == null)
                     Thread.Sleep(10);
 
-                DoThingIfPresent<Dictionary<String, BitmapImage>>("loadBackgroundImages" , config, _frameManager.LoadBackgroudBuffer);
-                DoThingIfPresent<String>                         ("selectBackgroundImage", config, _frameManager.SetBackgroundImage);
-                DoThingIfPresent<float>                          ("depthThreshold"       , config, _frameManager.SetDepthThreshold);
+                DoThingIfPresent<Dictionary<String, BitmapSource>>("setBackgroundImages"  , config, _frameManager.SetBackgroundImages);
+                DoThingIfPresent<Dictionary<String, BitmapSource>>("addBackgroundImages"  , config, _frameManager.AddBackgroundImages);
+                DoThingIfPresent<String>                          ("selectBackgroundImage", config, _frameManager.SelectBackgroundImage);
+                DoThingIfPresent<float>                           ("depthThreshold"       , config, _frameManager.SetDepthThreshold);
             };
 
             if (_frameManager == null)
@@ -408,7 +409,7 @@ namespace Imaging
                 }
             }
 
-            public void SetBackgroundImage(String imageName)
+            public void SelectBackgroundImage(String imageName)
             {
                 if (_backgroundImages.ContainsKey(imageName))
                     _displayableBuffers[SourceType.BACKGROUND] = _backgroundImages[imageName];
@@ -420,11 +421,23 @@ namespace Imaging
                     _depthThresholdInMeters = value;
             }
 
-            public void LoadBackgroudBuffer(Dictionary<String, BitmapImage> inputMap)
+            public void AddBackgroundImages(Dictionary<String, BitmapSource> inputMap)
+            {
+                AddBackgroundImages(inputMap, false);
+            }
+
+            
+            public void SetBackgroundImages(Dictionary<String, BitmapSource> inputMap)
+            {
+                AddBackgroundImages(inputMap, true);
+            }
+
+            private void AddBackgroundImages(Dictionary<String, BitmapSource> inputMap, bool replace)
             {
                 if (inputMap != null)
                 {
-                    Dictionary<String, byte[]> outputMap = new Dictionary<String, byte[]>();
+                    if (replace || _backgroundImages == null)
+                        _backgroundImages = new Dictionary<string, byte[]>();
 
                     foreach (var entry in inputMap)
                     {
@@ -432,16 +445,16 @@ namespace Imaging
                         byte[] buffer = BuildBackgroundBuffer(entry.Value);
 
                         if (buffer != null)
-                            outputMap.Add(key, buffer);
+                            _backgroundImages.Add(key, buffer);
                     }
-                    if (outputMap.Keys.Count > 0)
-                        _backgroundImages = outputMap;
 
-                    _instance.SetBackgroundImage(inputMap.Keys.First<String>());
+                    if (_backgroundImages.Keys.Count > 0)
+                        _instance.SelectBackgroundImage(inputMap.Keys.First<String>());
+
                 }
             }
-
-            public byte[] BuildBackgroundBuffer(BitmapImage image)
+            
+            public byte[] BuildBackgroundBuffer(BitmapSource image)
             {
                 int pixelCount = _frameResolutions[SourceType.BACKGROUND].Area;
                 int outputBytesPerPixel = _outputPixelFormat.BitsPerPixel / 8;
@@ -575,7 +588,6 @@ namespace Imaging
                     // Clean up the mask
                     // TODO: Use a fast native library to do thiss so frame rates are better
                     Byte[] cleanedDepthMask = PerformConvolution(rawDepthMask, colorResolution, _boxBlur_5_by_5);
-                    cleanedDepthMask = PerformConvolution(cleanedDepthMask, colorResolution, _boxBlur_3_by_3);
 
                     for (colorPixelIndex = 0; colorPixelIndex < colorResolution.Area; ++colorPixelIndex)
                     {

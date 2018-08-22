@@ -22,6 +22,21 @@ namespace MainApplication
             Reset();
         }
 
+        public int Add(T item)
+        {
+            if (item == null)
+                throw new ArgumentException("Item must not be null");
+
+            int oldSize = _items.Count();
+
+            T[] newItems = new T[oldSize + 1];
+            Array.Copy(_items, newItems, oldSize);
+            newItems[oldSize] = item;
+            _items = newItems;
+
+            return oldSize + 1;
+        }
+
         public int Count()
         {
             return _items.Count();
@@ -52,6 +67,11 @@ namespace MainApplication
         public void Dispose()
         {
             throw new NotImplementedException();
+        }
+
+        public T MoveLast()
+        {
+            return MoveToIndex(-1);
         }
 
         public T MoveToIndex(int index)
