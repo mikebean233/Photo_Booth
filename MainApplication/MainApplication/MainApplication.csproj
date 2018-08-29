@@ -21,7 +21,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -37,10 +37,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Imaging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Imaging\Imaging\bin\Debug\Imaging.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.3.3, Culture=neutral, PublicKeyToken=8985beaab7ea3f04, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft-WindowsAPICodePack-Core.1.1.3.3\lib\net452\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
@@ -137,37 +133,42 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgroundImages\enterprise-D-bridge.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="backgroundImages\beach.bmp" />
+    <Resource Include="backgroundImages\enterprise-D-bridge.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="backgroundImages\grey_solid.bmp" />
     <Resource Include="backgroundImages\LukeVaderDual.bmp" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="backgroundImages\splash.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="icons\down_arrow.gif" />
     <Resource Include="icons\up_arrow.gif" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Imaging\Imaging\Imaging.csproj">
+      <Project>{7bc5db9b-568b-48aa-85ba-92298d1c454f}</Project>
+      <Name>Imaging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Printing\Printing\Printing.csproj">
       <Project>{ed52d96b-061b-4c2e-b7b4-1d6ff8e172b1}</Project>
       <Name>Printing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="backgroundImages\blue_gradient.bmp" />
-    <Resource Include="backgroundImages\green_gradient.bmp" />
-    <Resource Include="backgroundImages\green_solid.bmp" />
-    <Resource Include="backgroundImages\grey_gradient.bmp" />
-    <Resource Include="backgroundImages\grey_solid.bmp" />
-    <Resource Include="backgroundImages\red_gradient.bmp" />
-    <Resource Include="backgroundImages\red_solid.bmp" />
-    <Resource Include="backgroundImages\splash.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="icons\camera.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icons\printer-error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="backgroundImages\battle_on_the_falcon.bmp" />
+    <Resource Include="backgroundImages\death_star_sky.bmp" />
+    <Resource Include="backgroundImages\hotel.bmp" />
+    <Resource Include="backgroundImages\mario.bmp" />
+    <Resource Include="backgroundImages\ocean.bmp" />
+    <Resource Include="backgroundImages\trex.bmp" />
+    <Resource Include="backgroundImages\zombies.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

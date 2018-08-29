@@ -15,7 +15,7 @@ namespace Imaging
 {
     class KinectImageProducer : ImageProducer
     {
-        private ConcurrentQueue<BitmapSource> _queue;
+        private ConcurrentQueue<ImageCapture> _queue;
         private KinectSensor _sensor;
         private FrameManager _frameManager;
         private int _maxQueueSize = 100;
@@ -24,7 +24,7 @@ namespace Imaging
         
         private KinectImageProducer()
         {
-            _queue = new ConcurrentQueue<BitmapSource>();
+            _queue = new ConcurrentQueue<ImageCapture>();
             _producer = new Thread(new ThreadStart(Setup));
         }
 
@@ -66,8 +66,10 @@ namespace Imaging
         {
             if (_queue.Count < _maxQueueSize && _frameRateMinder.canGrabNewFrame())
             {
-                _frameManager.ProcessMultiSourceFrameEvent(multiSourceFrameArrivedEventArgs);
-                _queue.Enqueue(_frameManager.BuildBitmapSourceFromFrame(SourceType.GREEN_SCREEN));
+                ImageCapture capture = _frameManager.ProcessMultiSourceFrameEvent(multiSourceFrameArrivedEventArgs);
+
+                if(capture != null)
+                    _queue.Enqueue(capture);
             }
         }
 
@@ -76,7 +78,7 @@ namespace Imaging
             return new KinectImageProducer();
         }
 
-        public ConcurrentQueue<BitmapSource> GetImageQueue()
+        public ConcurrentQueue<ImageCapture> GetImageQueue()
         {
             return _queue;
         }
@@ -92,6 +94,7 @@ namespace Imaging
                 DoThingIfPresent<Dictionary<String, BitmapSource>>("addBackgroundImages"  , config, _frameManager.AddBackgroundImages);
                 DoThingIfPresent<String>                          ("selectBackgroundImage", config, _frameManager.SelectBackgroundImage);
                 DoThingIfPresent<float>                           ("depthThreshold"       , config, _frameManager.SetDepthThreshold);
+                DoThingIfPresent<Object>                          ("captureHighQuality"   , config, _frameManager.CaptureHighQuality);
             };
 
             if (_frameManager == null)
@@ -254,7 +257,7 @@ namespace Imaging
             private static ConvolutionKernel _experimental2;
 
             private Boolean rendering = false;
-
+            private bool doHighQualityCapture = false;
 
             static FrameManager()
             {
@@ -379,17 +382,16 @@ namespace Imaging
                 }
             }
 
-            public BitmapSource BuildBitmapSourceFromFrame(SourceType frameSourceType)
+            public ImageCapture BuildImageCapture(Box dimensions, byte[] data, bool highQuality)
             {
-                if (_frameResolutions.ContainsKey(frameSourceType))
+                ImageCapture returnValue = null;
+                if (data != null && dimensions != null && data.Length == dimensions.Area * (_outputPixelFormat.BitsPerPixel / 8))
                 {
-                    Box dimensions = _frameResolutions[frameSourceType];
-                    byte[] outPixels = _displayableBuffers[frameSourceType];
-                    BitmapSource output = BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, _outputPixelFormat, null, outPixels, dimensions.Width * _outputPixelFormat.BitsPerPixel / 8);
+                    BitmapSource output = BitmapSource.Create(dimensions.Width, dimensions.Height, 96, 96, _outputPixelFormat, null, data, dimensions.Width * _outputPixelFormat.BitsPerPixel / 8);
                     output.Freeze();
-                    return output;
+                    returnValue =  ImageCapture.Build(output, highQuality ? CaptureType.PRINT : CaptureType.PREVIEW);
                 }
-                return null;
+                return returnValue;
             }
 
             private void InitializeBackgroundImage()
@@ -413,6 +415,11 @@ namespace Imaging
             {
                 if (_backgroundImages.ContainsKey(imageName))
                     _displayableBuffers[SourceType.BACKGROUND] = _backgroundImages[imageName];
+            }
+
+            public void CaptureHighQuality(Object foo)
+            {
+                doHighQualityCapture = true;
             }
 
             public void SetDepthThreshold(float value)
@@ -560,8 +567,9 @@ namespace Imaging
                 }
             }
 
-            private void ProcessGreenScreenFrame()
+            private byte[] ProcessGreenScreenFrame(bool highQuality)
             {
+                byte[] returnValue = null;
                 if (_coordinateMapper != null && _rawDepthPixels != null && _cameraSpacePoints != null)
                 {
                     _coordinateMapper.MapColorFrameToCameraSpace(_rawDepthPixels, _cameraSpacePoints);
@@ -569,6 +577,7 @@ namespace Imaging
 
                     byte[] colorBuffer = _displayableBuffers[SourceType.COLOR];
                     byte[] rawDepthMask = new byte[colorResolution.Area];
+                    byte[] cleanedDepthMask = null;
                     byte[] greenScreenBuffer = _displayableBuffers[SourceType.GREEN_SCREEN];
                     byte[] backgroundBuffer = _displayableBuffers[SourceType.BACKGROUND];
                     int outputBytesPerPixel = _outputPixelFormat.BitsPerPixel / 8;
@@ -585,9 +594,14 @@ namespace Imaging
                         colorPixelIndex++;
                     }
 
-                    // Clean up the mask
-                    // TODO: Use a fast native library to do thiss so frame rates are better
-                    Byte[] cleanedDepthMask = PerformConvolution(rawDepthMask, colorResolution, _boxBlur_5_by_5);
+                    if (highQuality)
+                    {
+                        // Clean up the mask
+                        // TODO: Use a fast native library to do this
+                        cleanedDepthMask = PerformConvolution(rawDepthMask, colorResolution, _boxBlur_9_by_9);
+                    }
+                    else
+                        cleanedDepthMask = rawDepthMask;
 
                     for (colorPixelIndex = 0; colorPixelIndex < colorResolution.Area; ++colorPixelIndex)
                     {
@@ -611,7 +625,9 @@ namespace Imaging
                         }
                         greenScreenBuffer[colorBufferIndex + (outputBytesPerPixel - 1)] = 255;
                     }
+                    returnValue = greenScreenBuffer;
                 }
+                return returnValue;
             }
 
             // One byte images only
@@ -652,24 +668,29 @@ namespace Imaging
                     return array[row * size.Width + col];
             }
 
-            public void ProcessMultiSourceFrameEvent(MultiSourceFrameArrivedEventArgs eventArgs)
+            public ImageCapture ProcessMultiSourceFrameEvent(MultiSourceFrameArrivedEventArgs eventArgs)
             {
+                ImageCapture output = null;
+                bool highQuality = doHighQualityCapture;
+                doHighQualityCapture = false;
                 MultiSourceFrame multiSourceFrame = eventArgs.FrameReference.AcquireFrame();
-                    using (var colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+                using (var colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+                {
+                    using (var depthFrame = multiSourceFrame.DepthFrameReference.AcquireFrame())
                     {
-                        using (var depthFrame = multiSourceFrame.DepthFrameReference.AcquireFrame())
+                        if (!rendering)
                         {
-                            if (!rendering)
-                            {
-                                rendering = true;
-                                ProcessColorFrame(colorFrame);
-                                ProcessDepthFrame(depthFrame);
-                                ProcessGreenScreenFrame();
-                                rendering = false;
-                            }
-                        }   
+                            rendering = true;
+                            ProcessColorFrame(colorFrame);
+                            ProcessDepthFrame(depthFrame);
+                            output = BuildImageCapture(_frameResolutions[SourceType.COLOR], ProcessGreenScreenFrame(highQuality), highQuality);
+                            rendering = false;
+                        }
                     }
+                }
+                return output;
             }
+
             #endregion
         }
     }

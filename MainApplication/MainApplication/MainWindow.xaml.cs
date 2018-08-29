@@ -22,10 +22,10 @@ namespace MainApplication
     public partial class MainWindow : Window
     {
         private PrintManager _printManager;
-        private ConcurrentQueue<BitmapSource> _queue;
+        private ConcurrentQueue<ImageCapture> _queue;
         private PrintManager.PrintBatchHandler _currentBatch;
         private ImageProducer _imageProducer;
-        private bool _readyForCapture = false;
+        //private bool _readyForCapture = false;
         private bool _createNewBackground = false;
         private bool _havePrintError = false;
         private bool _loadingBackgrounds = false;
@@ -41,7 +41,7 @@ namespace MainApplication
         private int _centerCarouselImageIndex;
         private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
-        private int _countdownLength = 5;
+        private int _countdownLength = 3;
         private int _copyCount = 2;
         private String _imageSavePath = "";
         private String _backgroundImagePath = "backgroundImages";
@@ -201,7 +201,8 @@ namespace MainApplication
                             Dispatcher.Invoke(() => countdownLabel.Content = "SMILE !");
                             Thread.Sleep(2000);
                             Dispatcher.Invoke(() => countdownLabel.Content = "");
-                            _readyForCapture = true;
+                            //_readyForCapture = true;
+                            _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("captureHighQuality"));
                         });
                         countdownThread.Start();
                         break;
@@ -339,18 +340,18 @@ namespace MainApplication
             {
                 while (true)
                 {
-                    BitmapSource thisImage = null;
+                    ImageCapture thisImage = null;
                     if (_queue.TryDequeue(out thisImage))
                     {
 
                         Dispatcher.Invoke(new Action(() =>
                         {
-                            _currentState.HandleEvent(EventType.PREVIEW_IMAGE_ARRIVED, thisImage);
-                            if (_readyForCapture)
-                            {
-                                _readyForCapture = false;
-                                _currentState.HandleEvent(EventType.IMAGE_CAPTURED, thisImage);
-                            }
+                            _currentState.HandleEvent(thisImage.CaptureType == CaptureType.PREVIEW ? EventType.PREVIEW_IMAGE_ARRIVED : EventType.IMAGE_CAPTURED, thisImage.Image);
+                            //if (_readyForCapture)
+                            //{
+                                //_readyForCapture = false;
+                                //_currentState.HandleEvent(EventType.IMAGE_CAPTURED, thisImage);
+                            //}
                         }));
                     }
                 }

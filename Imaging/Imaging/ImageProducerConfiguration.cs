@@ -11,6 +11,12 @@ namespace Imaging
         IDictionary<String, Object> config = new Dictionary<String, Object>();
         
         private ImageProducerConfiguration() { }
+
+        public static ImageProducerConfiguration Simple(String key)
+        {
+            return Simple(key, new object());
+        }
+
         public static ImageProducerConfiguration Simple(String key, Object value)
         {
             return Builder.addItem(key, value).Build();

@@ -11,7 +11,7 @@ namespace Imaging
 {
     public interface ImageProducer
     {
-        ConcurrentQueue<BitmapSource> GetImageQueue();
+        ConcurrentQueue<ImageCapture> GetImageQueue();
         void SetConfiguration(ImageProducerConfiguration config);
         void Start();
         void Cleanup();
