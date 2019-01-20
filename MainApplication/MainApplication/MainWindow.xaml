@@ -45,7 +45,7 @@
                     </Grid.RowDefinitions>
 
                     <Image Grid.RowSpan="3" Grid.Column="0" Grid.Row="0" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="/backgroundImages/splash.bmp"/>
-                    <Image Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" Width="900" HorizontalAlignment="Center" VerticalAlignment="Center" Name="backgroundPreview" Source="backgroundImages/enterprise-D-bridge.bmp"/>
+                    <Image Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" Width="900" HorizontalAlignment="Center" VerticalAlignment="Center" Name="backgroundPreview" />
                     <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Name="Label_remCount" FontSize="48" Background="{x:Null}" Foreground="Black">
                         <Label.RenderTransform>
                             <TransformGroup>
@@ -91,7 +91,7 @@
         <!-- ======================================= COUNT DOWN ===================================================== -->
         <TabItem HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="countdownView" TabIndex="1">
             <Grid>
-                <Image Name="countdownPreview" Source="backgroundImages/beach.bmp"></Image>
+                <Image Name="countdownPreview"></Image>
                 <Label VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="72" HorizontalContentAlignment="Center" Margin="0" VerticalContentAlignment="Center" FontFamily="Arial Black" Name="countdownLabel" RenderTransformOrigin="0.5,0.5" Background="Transparent" Foreground="Black" BorderThickness="0">
                     <Label.Effect>
                         <DropShadowEffect Color="White" RenderingBias="Quality" BlurRadius="20" Direction="0" ShadowDepth="0"/>
