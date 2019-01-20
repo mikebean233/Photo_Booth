@@ -41,8 +41,8 @@ namespace MainApplication
         private int _centerCarouselImageIndex;
         private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
-        private int _countdownLength = 3;
-        private int _copyCount = 2;
+        private int _countdownLength = 1;
+        private int _copyCount = 1;
         private String _imageSavePath = "";
         private String _backgroundImagePath = "backgroundImages";
         
@@ -436,8 +436,8 @@ namespace MainApplication
                         // Only accept images of the correct size
                         if (thisImage.PixelHeight == 1080 && thisImage.PixelWidth == 1920)
                         {
-                            backgroundImageMap.Add(name, thisImage);
-                            backgroundImages[index++] = new BackgroundImage(name, thisImage);
+                            BackgroundImage thisBackgroundImage = backgroundImages[index++] = new BackgroundImage(name, thisImage);
+                            backgroundImageMap.Add(name, thisBackgroundImage.FlippedImage);
                         }
                     }
                     catch (Exception ex)

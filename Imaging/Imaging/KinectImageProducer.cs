@@ -247,6 +247,7 @@ namespace Imaging
             private static readonly CameraSpacePoint[] _cameraSpacePoints;
 
             private static ConvolutionKernel _boxBlur_9_by_9;
+            private static ConvolutionKernel _boxBlur_7_by_7;
             private static ConvolutionKernel _boxBlur_5_by_5;
             private static ConvolutionKernel _boxBlur_3_by_3;
             private static ConvolutionKernel _gaussianBlur_3_by_3;
@@ -305,6 +306,16 @@ namespace Imaging
                     { 1, 1, 1, 1, 1},
                 });
 
+                _boxBlur_7_by_7 = new ConvolutionKernel(1.0f / 49f, new int[,] {
+                    { 1, 1, 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1, 1, 1},
+                    { 1, 1, 1, 1, 1, 1, 1},
+                });
+                
                 _boxBlur_9_by_9 = new ConvolutionKernel(1.0f / 81f, new int[,] {
                     { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
                     { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -582,6 +593,7 @@ namespace Imaging
                     byte[] backgroundBuffer = _displayableBuffers[SourceType.BACKGROUND];
                     int outputBytesPerPixel = _outputPixelFormat.BitsPerPixel / 8;
                     int maskMinValue = 50;
+                    int outIndex;
 
 
                     // Build the raw mask from depth data
@@ -598,7 +610,7 @@ namespace Imaging
                     {
                         // Clean up the mask
                         // TODO: Use a fast native library to do this
-                        cleanedDepthMask = PerformConvolution(rawDepthMask, colorResolution, _boxBlur_9_by_9);
+                        cleanedDepthMask = PerformConvolution(rawDepthMask, colorResolution, _boxBlur_7_by_7);
                     }
                     else
                         cleanedDepthMask = rawDepthMask;
@@ -606,6 +618,20 @@ namespace Imaging
                     for (colorPixelIndex = 0; colorPixelIndex < colorResolution.Area; ++colorPixelIndex)
                     {
                         int colorBufferIndex = outputBytesPerPixel * colorPixelIndex;
+
+                        if (highQuality)
+                        {
+                            //flip the image horizotally
+                            int inCol = colorPixelIndex % colorResolution.Width;
+                            int inRow = colorPixelIndex / colorResolution.Width;
+
+                            int flippedCol = (colorResolution.Width - 1) - inCol;
+                            outIndex = outputBytesPerPixel * ((colorResolution.Width * inRow) + flippedCol);
+                        }
+                        else
+                            outIndex = colorBufferIndex;
+
+                        
                         byte thisMaskValue = cleanedDepthMask[colorPixelIndex];
                         float normalizedMaskValue = thisMaskValue > maskMinValue ? ((float)thisMaskValue - (float)maskMinValue) / (255f - (float)maskMinValue) : 0f;
 
@@ -621,9 +647,9 @@ namespace Imaging
                             byte outputValue = (byte)((float)backgroundPixelValue + (direction * (range * normalizedMaskValue)));
 
 
-                            greenScreenBuffer[colorBufferIndex + i] = outputValue;
+                            greenScreenBuffer[outIndex + i] = outputValue;
                         }
-                        greenScreenBuffer[colorBufferIndex + (outputBytesPerPixel - 1)] = 255;
+                        greenScreenBuffer[outIndex + (outputBytesPerPixel - 1)] = 255;
                     }
                     returnValue = greenScreenBuffer;
                 }
@@ -666,7 +692,7 @@ namespace Imaging
                     return defaultValue;
                 else
                     return array[row * size.Width + col];
-            }
+           }
 
             public ImageCapture ProcessMultiSourceFrameEvent(MultiSourceFrameArrivedEventArgs eventArgs)
             {
