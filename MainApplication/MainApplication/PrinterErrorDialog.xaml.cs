@@ -37,7 +37,7 @@ namespace MainApplication
             Window.Topmost = true;
             _printErrors = printErrors ?? "";
             _needPrintCount = _printErrors.Contains("out of paper");
-            TextBlock_errorMessages.Text = _printErrors;
+            TextBlock_errorMessages.Text = _needPrintCount ? "The printer is out of paper, please find the groom and ask him to refill the printer." : _printErrors;
             Button_Ok.IsEnabled = !_needPrintCount;
             TextBox_printCount.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
             Label_printCount.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
