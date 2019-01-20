@@ -45,13 +45,16 @@ namespace ButtonDriver
                             while (_port == null && !HaveStopSignal())
                                 _port = getArduinoPort();
 
-                            _port.Open();
-                            while (_port.IsOpen && !HaveStopSignal())
+                            if (!HaveStopSignal())
                             {
-                                byte value = (byte)_port.ReadByte();
-                                var newButtonPresses = GetNewButtonPresses(value);
-                                if (newButtonPresses.Count > 0)
-                                    _handler.BeginInvoke(newButtonPresses, null, null);
+                                _port.Open();
+                                while (_port.IsOpen && !HaveStopSignal())
+                                {
+                                    byte value = (byte)_port.ReadByte();
+                                    var newButtonPresses = GetNewButtonPresses(value);
+                                    if (newButtonPresses.Count > 0)
+                                        _handler.BeginInvoke(newButtonPresses, null, null);
+                                }
                             }
                         }
                         catch (Exception ex)
