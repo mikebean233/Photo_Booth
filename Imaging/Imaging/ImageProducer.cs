@@ -12,7 +12,7 @@ namespace Imaging
     public interface ImageProducer
     {
         ConcurrentQueue<ImageCapture> GetImageQueue();
-        void SetConfiguration(ImageProducerConfiguration config);
+        void SetConfiguration(IDictionary<string, object> config);
         void Start();
         void Pause();
         void Continue();

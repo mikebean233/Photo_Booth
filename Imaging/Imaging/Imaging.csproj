@@ -91,7 +91,6 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="ImageCapture.cs" />
-    <Compile Include="ImageProducerConfiguration.cs" />
     <Compile Include="KinectImageProducer.cs" />
     <Compile Include="TestImageProducer.cs" />
     <None Include="Tester.xaml">

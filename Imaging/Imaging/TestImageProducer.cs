@@ -56,7 +56,7 @@ namespace Imaging
             return _queue; 
         }
         
-        public void SetConfiguration(ImageProducerConfiguration config)
+        public void SetConfiguration(IDictionary<string, object> config)
         {
             // do nothing
         }

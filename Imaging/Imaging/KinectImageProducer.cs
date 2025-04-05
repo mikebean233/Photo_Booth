@@ -94,7 +94,7 @@ namespace Imaging
             return _queue;
         }
 
-        public void SetConfiguration(ImageProducerConfiguration config)
+        public void SetConfiguration(IDictionary<string, object> config)
         {
             Action action = () =>
             {
@@ -114,11 +114,11 @@ namespace Imaging
                 action.Invoke();
         }
         
-        private void DoThingIfPresent<T>(String key, ImageProducerConfiguration config, Action<T> action)
+        private void DoThingIfPresent<T>(String key, IDictionary<string, object> config, Action<T> action)
         {
             if (config.ContainsKey(key))
             {
-                Object value = config.Get(key);
+                Object value = config[key];
                 if(value is T)
                     action.BeginInvoke((T)value, null, null);
             }
