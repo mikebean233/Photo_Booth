@@ -28,12 +28,12 @@ namespace MainApplication
 
         public void Run()
         {
-            try
+            try 
             {
                 ImageSource[] images = new ImageSource[]
                 {
-                    GetImageSourceFromPath("backgroundImages/beach.bmp"),
-                    GetImageSourceFromPath("backgroundImages/LukeVaderDual.bmp")
+                    GetImageSourceFromPath("backgroundImages/beach2.bmp"),
+                    GetImageSourceFromPath("backgroundImages/mario.bmp")
 
                 };
 

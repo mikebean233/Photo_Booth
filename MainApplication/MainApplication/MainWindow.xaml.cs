@@ -41,11 +41,12 @@ namespace MainApplication
         private int _centerCarouselImageIndex;
         private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
-        private int _countdownLength = 1;
-        private int _copyCount = 1;
+        private int _countdownLength = 3;
+        private int _copyCount = 2;
         private String _imageSavePath = "";
         private String _backgroundImagePath = "backgroundImages";
-        
+        private bool _debugEnabled = false;
+
         private static string[] _numbers = {"first", "second", "third", "fourth", "five"};
 
 
@@ -119,10 +120,12 @@ namespace MainApplication
 
             StartDialog startDialog = new StartDialog();
             startDialog.ShowDialog();
+            _copyCount = startDialog.CopyCount;
             _imageSavePath = startDialog.ImageSavePath;
             _printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
+            _debugEnabled = startDialog.DebugEnabled;
 
             _imageProducer = ImageProducerFactory.GetImageProducer();
             _imageProducer.Start();
@@ -255,12 +258,13 @@ namespace MainApplication
 
                         _currentBatch.CompleteBatch(_copyCount);
                         Thread waitThread = new Thread(() =>
-                        {
+                        {   _imageProducer.Pause();
                             Thread.Sleep(3000);
 
                             while (_havePrintError)
                             { }
 
+                            _imageProducer.Continue();
                             Dispatcher.Invoke(() => SELECT_BACKGROUND.HandleEvent(EventType.TRANSITION_TO_STATE, null));
                         });
                         waitThread.Start();
@@ -336,29 +340,26 @@ namespace MainApplication
 
         private void Consume()
         {
-            try
+            while (true)
             {
-                while (true)
+                try
                 {
+                    Thread.Sleep(1);
                     ImageCapture thisImage = null;
                     if (_queue.TryDequeue(out thisImage))
                     {
 
-                        Dispatcher.Invoke(new Action(() =>
+                        Dispatcher.Invoke(() =>
                         {
                             _currentState.HandleEvent(thisImage.CaptureType == CaptureType.PREVIEW ? EventType.PREVIEW_IMAGE_ARRIVED : EventType.IMAGE_CAPTURED, thisImage.Image);
-                            //if (_readyForCapture)
-                            //{
-                                //_readyForCapture = false;
-                                //_currentState.HandleEvent(EventType.IMAGE_CAPTURED, thisImage);
-                            //}
-                        }));
+                        });
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-
+                catch (ThreadInterruptedException ex)
+                {
+                    Console.WriteLine(ex);
+                    break;
+                }
             }
         }
 

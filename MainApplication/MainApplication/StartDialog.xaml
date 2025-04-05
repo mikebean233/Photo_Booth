@@ -31,6 +31,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
@@ -42,10 +43,17 @@
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Print Media Remaining:" HorizontalAlignment="Right"/>
                 <TextBox Name="TextBox_printCount" Grid.Row="1" Grid.Column="1" Height="26" VerticalAlignment="Top" TextChanged="TextBox_printCount_TextChanged"></TextBox>
+            
+                <Label Grid.Row="2" Grid.Column="0" Content="Print Copy Count" HorizontalAlignment="Right"/>
+                <TextBox Name="TextBox_CopyCount" Grid.Row="2" Grid.Column="2" Height="26" VerticalAlignment="Top" TextChanged="TextBox_CopyCount_TextChanged"></TextBox>
             </Grid>
             <StackPanel Grid.Row="1" Grid.Column="1" FlowDirection="LeftToRight">
                 <Button Name="Button_ChooseDirectory" Click="Button_ChooseDirectory_Click">Choose an output directory</Button>
                 <TextBox Name="TextBox_SaveLocation" Text="Enter a path" TextWrapping="Wrap" TextChanged="TextBox_SaveLocation_TextChanged"/>
+                <Grid>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Debug Enabled" HorizontalAlignment="Left"/>
+                    <CheckBox Grid.Row="0" Grid.Column="1" Name="CheckBox_DebugEnabled" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
             </StackPanel>
         </Grid>
     </StackPanel>

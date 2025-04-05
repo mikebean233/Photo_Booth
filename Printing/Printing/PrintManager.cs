@@ -416,7 +416,12 @@ namespace Printing
 
             public override bool Equals(object obj)
             {
-                return obj != null && obj.GetType() == this.GetType() && ((PrintBatch)obj).Id == _id;
+                return obj != null && obj.GetType() == GetType() && ((PrintBatch)obj).Id == _id;
+            }
+
+            public override int GetHashCode()
+            {
+                return 2108858624 + EqualityComparer<string>.Default.GetHashCode(Id);
             }
         }
         #endregion
