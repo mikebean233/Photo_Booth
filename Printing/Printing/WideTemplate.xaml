@@ -11,7 +11,7 @@
         <Canvas Width="5in" Height="7in">
             <FixedPage Name="FixedPage" Width="5in" Height="7in" Margin="0">
                 <Canvas Width="5in" Height="7in" >
-                    <Image Name="Image1" Source="Kinect_Leaning.bmp" Height="155" Canvas.Left="-32" Canvas.Top="351" Width="270" RenderTransformOrigin="0.5,0.5">
+                    <Image Name="Image1" Source="Kinect_Leaning.bmp" Height="155" Canvas.Left="-34" Canvas.Top="345" Width="270" RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
@@ -21,27 +21,28 @@
                             </TransformGroup>
                         </Image.RenderTransform>
                     </Image>
-                    <Image Name="Image2" Source="Kinect_Leaning.bmp" Height="132" Canvas.Left="151" Canvas.Top="88" Width="229" RenderTransformOrigin="0.5,0.5">
+                    <Image Name="Image2" Source="Kinect_Leaning.bmp" Height="134" Canvas.Left="147" Canvas.Top="93" Width="234" RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
                                 <SkewTransform/>
-                                <RotateTransform Angle="97.198"/>
+                                <RotateTransform Angle="97.471"/>
                                 <TranslateTransform/>
                             </TransformGroup>
                         </Image.RenderTransform>
                     </Image>
-                    <Image Name="Image3" Source="Kinect_Leaning.bmp" Height="142" Canvas.Left="158" Canvas.Top="360" Width="254" RenderTransformOrigin="0.5,0.5">
+                    <Image Name="Image3" Source="Kinect_Leaning.bmp" Height="142" Canvas.Left="158" Canvas.Top="350" Width="254" RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
                                 <SkewTransform/>
-                                <RotateTransform Angle="82.369"/>
+                                <RotateTransform Angle="82"/>
                                 <TranslateTransform/>
                             </TransformGroup>
                         </Image.RenderTransform>
                     </Image>
-                    <Image Name="backgroudn" Source="background2.gif" Stretch="Fill" Width="602" Height="434" RenderTransformOrigin="0.5,0.5" Canvas.Left="-109" Canvas.Top="80">
+                    <Image Name="Background" Source="PhotoBoothTemplate_5thBDay.png
+                           " Stretch="Fill" Width="626" Height="434" RenderTransformOrigin="0.5,0.5" Canvas.Left="-123" Canvas.Top="77">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>

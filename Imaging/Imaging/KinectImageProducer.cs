@@ -21,11 +21,22 @@ namespace Imaging
         private int _maxQueueSize = 100;
         private MaxFrameRateMinder _frameRateMinder;
         private Thread _producer;
+        private bool _sendingFrames = true;
         
         private KinectImageProducer()
         {
             _queue = new ConcurrentQueue<ImageCapture>();
             _producer = new Thread(new ThreadStart(Setup));
+        }
+
+        public void Pause()
+        {
+            _sendingFrames = false;
+        }
+
+        public void Continue()
+        {
+            _sendingFrames = true;
         }
 
         public void Start() { _producer.Start();}
@@ -64,7 +75,7 @@ namespace Imaging
 
         private void OnMultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs multiSourceFrameArrivedEventArgs)
         {
-            if (_queue.Count < _maxQueueSize && _frameRateMinder.canGrabNewFrame())
+            if (_queue.Count < _maxQueueSize && _frameRateMinder.canGrabNewFrame() && _sendingFrames)
             {
                 ImageCapture capture = _frameManager.ProcessMultiSourceFrameEvent(multiSourceFrameArrivedEventArgs);
 

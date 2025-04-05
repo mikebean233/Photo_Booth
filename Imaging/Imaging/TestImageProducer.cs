@@ -16,6 +16,7 @@ namespace Imaging
         public static TestImageProducer Instance { get { return _instance; } }
         private static List<BitmapSource> _images = new List<BitmapSource>();
         private static DispatcherTimer _timer;
+        private bool _sendingFrames = true;
 
         private ConcurrentQueue<ImageCapture> _queue = new ConcurrentQueue<ImageCapture>();
         private int _curIndex = -1;
@@ -32,7 +33,12 @@ namespace Imaging
         {
             _timer = new DispatcherTimer();
             _timer.Interval = new TimeSpan(0, 0, 0, 0, 5);
-            _timer.Tick += (sender, e) => _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex + 1) % _images.Count], CaptureType.PREVIEW));
+            _timer.Tick += (sender, e) =>
+            {
+                if (_sendingFrames)
+                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex + 1) % _images.Count],
+                        CaptureType.PREVIEW));
+            };
         }
 
         public void Start() { _timer.Start(); }
@@ -53,6 +59,16 @@ namespace Imaging
         public void SetConfiguration(ImageProducerConfiguration config)
         {
             // do nothing
+        }
+
+        public void Pause()
+        {
+            _sendingFrames = false;
+        }
+
+        public void Continue()
+        {
+            _sendingFrames = true;
         }
     }
 }

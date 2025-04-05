@@ -29,23 +29,28 @@ namespace MainApplication
         private int _printCount;
         public int PrintCount { get { return _printCount; } }
 
+        private int _copyCount;
+        public int CopyCount { get { return _copyCount; } }
+
         private String _imageSavePath = "";
         public String ImageSavePath { get { return _imageSavePath; } }
 
+        private bool _debugEnabled = false;
+        public bool DebugEnabled { get { return _debugEnabled; } }
 
         private void ValidateInput()
         {
             bool isValid = true;
             isValid &= IsUsableString(_name);
             isValid &= IsUsableString(_imageSavePath)
-                
+
                 && Directory.Exists(_imageSavePath);
             isValid &= _printCount > 0;
 
             Button_Ok.IsEnabled = isValid;
 
         }
-        
+
         private bool IsUsableString(String input)
         {
             return !String.IsNullOrEmpty(input) && !String.IsNullOrWhiteSpace(input);
@@ -63,13 +68,13 @@ namespace MainApplication
 
         private void TextBox_name_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _name = ((TextBox) sender).Text;
+            _name = ((TextBox)sender).Text;
             ValidateInput();
         }
 
         private void TextBox_printCount_TextChanged(object sender, TextChangedEventArgs e)
         {
-            bool parseSucceded = int.TryParse( ((TextBox) sender).Text , out _printCount);
+            bool parseSucceded = int.TryParse(((TextBox)sender).Text, out _printCount);
             _printCount = parseSucceded ? _printCount : -1;
             ValidateInput();
         }
@@ -86,8 +91,8 @@ namespace MainApplication
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
-            if(dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                TextBox_SaveLocation.Text =  dialog.FileName;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                TextBox_SaveLocation.Text = dialog.FileName;
         }
 
         private void TextBox_SaveLocation_TextChanged(object sender, TextChangedEventArgs e)
@@ -95,6 +100,19 @@ namespace MainApplication
             String value = ((TextBox)sender).Text;
             _imageSavePath = value;
             ValidateInput();
+        }
+
+        private void TextBox_CopyCount_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int copyCount = 3;
+            string textValue = ((TextBox)sender).Text;
+            int.TryParse(textValue, out copyCount);
+            _copyCount = copyCount;
+        }
+
+        private void CheckBox_DebugEnabled_Changed(object sender, RoutedEventArgs e)
+        {
+            _debugEnabled = (sender as CheckBox).IsChecked == true;
         }
     }
 }
