@@ -28,7 +28,6 @@ namespace Imaging
 
         static TestImageProducer()
         {
-            System.Drawing.Bitmap thing = Resources.nerds_1;
             _images.Add(Resources.nerds_1.ToBitmapSource());
             _images.Add(Resources.nerds_2.ToBitmapSource());
             _images.Add(Resources.nerds_3.ToBitmapSource());
