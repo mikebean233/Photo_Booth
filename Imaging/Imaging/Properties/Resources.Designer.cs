@@ -19,7 +19,7 @@ namespace Imaging.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -63,9 +63,9 @@ namespace Imaging.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Kinect_Leaning {
+        internal static System.Drawing.Bitmap nerds_1 {
             get {
-                object obj = ResourceManager.GetObject("Kinect_Leaning", resourceCulture);
+                object obj = ResourceManager.GetObject("nerds_1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,19 @@ namespace Imaging.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Kinect_Standing {
+        internal static System.Drawing.Bitmap nerds_2 {
             get {
-                object obj = ResourceManager.GetObject("Kinect_Standing", resourceCulture);
+                object obj = ResourceManager.GetObject("nerds_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap nerds_3 {
+            get {
+                object obj = ResourceManager.GetObject("nerds_3", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -10,11 +10,11 @@ namespace Imaging
     {
         public static ImageProducer GetImageProducer()
         {
-            //#if DEBUG
-                //return TestImageProducer.Instance;
-            //#else
+            #if DEBUG
+                return TestImageProducer.Instance;
+            #else
                 return KinectImageProducer.GetInstance();
-            //#endif
+            #endif
         }
     }
 }

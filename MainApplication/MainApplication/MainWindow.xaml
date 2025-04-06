@@ -44,7 +44,7 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
 
-                    <Image Grid.RowSpan="3" Grid.Column="0" Grid.Row="0" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="/backgroundImages/splash.bmp"/>
+                    <Image Grid.RowSpan="3" Grid.Column="0" Grid.Row="0" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="Resources/splash.png"/>
                     <Image Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" Width="900" HorizontalAlignment="Center" VerticalAlignment="Center" Name="backgroundPreview" />
                     <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Name="Label_remCount" FontSize="48" Background="{x:Null}" Foreground="Black">
                         <Label.RenderTransform>
@@ -69,7 +69,7 @@
                         <Label Grid.RowSpan="1" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="72" Background="{x:Null}" Foreground="Black" FontWeight="Bold">
                             then press
                         </Label>
-                        <Image Grid.RowSpan="1" Grid.Row="0" Grid.Column="1" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Top"  Source="/icons/camera.png"/>
+                        <Image Grid.RowSpan="1" Grid.Row="0" Grid.Column="1" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Top"  Source="Resources/camera.png"/>
                     </Grid>
                 </Grid>
                 <ListView Grid.Column="1" Grid.Row="0" Background="Black" VerticalAlignment="Center"  VerticalContentAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Name="ListView_Carousal" Padding="0" BorderThickness="0">
@@ -79,8 +79,8 @@
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
                 </ListView>
-                <Image Grid.Column="1" Source="icons/down_arrow.gif" Width="150px" VerticalAlignment="Bottom"/>
-                <Image Grid.Column="1" Source="icons/up_arrow.gif"   Width="150px" VerticalAlignment="Top"/>
+                <Image Grid.Column="1" Source="Resources/down_arrow.gif" Width="150px" VerticalAlignment="Bottom"/>
+                <Image Grid.Column="1" Source="Resources/up_arrow.gif"   Width="150px" VerticalAlignment="Top"/>
             </Grid>
         </TabItem>
 
@@ -119,7 +119,7 @@
             </TabItem.Background>
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                 <Grid.Background>
-                    <ImageBrush ImageSource="backgroundImages/splash.bmp" Opacity="0.7"/>
+                    <ImageBrush ImageSource="Resources/splash.png" Opacity="0.7"/>
                 </Grid.Background>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
