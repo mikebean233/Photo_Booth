@@ -205,7 +205,7 @@ namespace MainApplication
                             Thread.Sleep(2000);
                             Dispatcher.Invoke(() => countdownLabel.Content = "");
                             //_readyForCapture = true;
-                            _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("captureHighQuality"));
+                            _imageProducer.SetConfiguration(new Dictionary<string, object> { { "captureHighQuality", true } });
                         });
                         countdownThread.Start();
                         break;
@@ -227,7 +227,7 @@ namespace MainApplication
 
                             Dictionary<String, BitmapSource> outMap = new Dictionary<string, BitmapSource>();
                             outMap.Add(timeStamp, image);
-                            _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("addBackgroundImages", outMap));
+                            _imageProducer.SetConfiguration(new Dictionary<string, object> { { "addBackgroundImages", outMap } });
                         }
                         else
                         {
@@ -315,7 +315,7 @@ namespace MainApplication
 
         private void SetBackgroundImage()
         {
-            _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("selectBackgroundImage", _backgroundIterator.Current.Name));
+            _imageProducer.SetConfiguration(new Dictionary<string, object> { { "selectBackgroundImage", _backgroundIterator.Current.Name } });
         }
 
         private String BuildTimestampString()
@@ -448,7 +448,7 @@ namespace MainApplication
                 Array.Resize<BackgroundImage>(ref backgroundImages, index);
 
                 _backgroundIterator = new ContinousIterator<BackgroundImage>(backgroundImages);
-                _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("setBackgroundImages", backgroundImageMap));
+                _imageProducer.SetConfiguration(new Dictionary<string, object> { { "setBackgroundImages", backgroundImageMap } });
             }
             _loadingBackgrounds = false;
             UpdateStatus();
@@ -498,7 +498,7 @@ namespace MainApplication
 
         private void UpdateDepthThreshold()
         {
-            _imageProducer.SetConfiguration(ImageProducerConfiguration.Simple("depthThreshold", _depthThresholdInMeters));
+            _imageProducer.SetConfiguration(new Dictionary<string, object> { { "depthThreshold", _depthThresholdInMeters } });
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

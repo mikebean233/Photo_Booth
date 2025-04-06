@@ -27,7 +27,7 @@
             <Label Name="Label_printCount" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Right" Content="Print Media Remaining:" FontSize="20" ></Label>
             <TextBox Name="TextBox_printCount" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Width="235" HorizontalAlignment="Left" TextChanged="TextBox_printCount_TextChanged" FontSize="20" />
             <Button Name="Button_Ok" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Width="200" Height="75" Click="Button_Click" IsEnabled="False" FontSize="20">OK</Button>
-            <Image Grid.Row="0" Grid.Column="2"  Grid.RowSpan="2"  Grid.ColumnSpan="2" Source="icons/printer-error.png"/>
+            <Image Grid.Row="0" Grid.Column="2"  Grid.RowSpan="2"  Grid.ColumnSpan="2" Source="Resources/printer-error.png"/>
         </Grid>
     </StackPanel>
 </Window>

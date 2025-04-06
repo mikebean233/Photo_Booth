@@ -11,7 +11,7 @@
         <Canvas Width="5in" Height="7in">
             <FixedPage Name="FixedPage" Width="5in" Height="7in" Margin="0">
                 <Canvas Width="5in" Height="7in" >
-                    <Image Name="Image1" Source="Kinect_Leaning.bmp" Height="155" Canvas.Left="-34" Canvas.Top="345" Width="270" RenderTransformOrigin="0.5,0.5">
+                    <Image Name="Image1" Source="Resources/nerds_1.png" Height="155" Canvas.Left="-34" Canvas.Top="345" Width="270" RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
@@ -21,7 +21,7 @@
                             </TransformGroup>
                         </Image.RenderTransform>
                     </Image>
-                    <Image Name="Image2" Source="Kinect_Leaning.bmp" Height="134" Canvas.Left="147" Canvas.Top="93" Width="234" RenderTransformOrigin="0.5,0.5">
+                    <Image Name="Image2" Source="Resources/nerds_2.png" Height="134" Canvas.Left="147" Canvas.Top="93" Width="234" RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
@@ -31,7 +31,7 @@
                             </TransformGroup>
                         </Image.RenderTransform>
                     </Image>
-                    <Image Name="Image3" Source="Kinect_Leaning.bmp" Height="142" Canvas.Left="158" Canvas.Top="350" Width="254" RenderTransformOrigin="0.5,0.5">
+                    <Image Name="Image3" Source="Resources/nerds_3.png" Height="142" Canvas.Left="158" Canvas.Top="350" Width="254" RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
@@ -41,8 +41,7 @@
                             </TransformGroup>
                         </Image.RenderTransform>
                     </Image>
-                    <Image Name="Background" Source="PhotoBoothTemplate_5thBDay.png
-                           " Stretch="Fill" Width="626" Height="434" RenderTransformOrigin="0.5,0.5" Canvas.Left="-123" Canvas.Top="77">
+                    <Image Name="Background" Source="resources/print_template.png" Stretch="Fill" Width="626" Height="434" RenderTransformOrigin="0.5,0.5" Canvas.Left="-123" Canvas.Top="77">
                         <Image.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>
