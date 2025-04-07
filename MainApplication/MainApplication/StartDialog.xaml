@@ -47,14 +47,26 @@
                 <Label Grid.Row="2" Grid.Column="0" Content="Print Copy Count" HorizontalAlignment="Right"/>
                 <TextBox Name="TextBox_CopyCount" Grid.Row="2" Grid.Column="2" Height="26" VerticalAlignment="Top" TextChanged="TextBox_CopyCount_TextChanged"></TextBox>
             </Grid>
-            <StackPanel Grid.Row="1" Grid.Column="1" FlowDirection="LeftToRight">
-                <Button Name="Button_ChooseDirectory" Click="Button_ChooseDirectory_Click">Choose an output directory</Button>
-                <TextBox Name="TextBox_SaveLocation" Text="Enter a path" TextWrapping="Wrap" TextChanged="TextBox_SaveLocation_TextChanged"/>
-                <Grid>
-                    <Label Grid.Row="0" Grid.Column="0" Content="Debug Enabled" HorizontalAlignment="Left"/>
-                    <CheckBox Grid.Row="0" Grid.Column="1" Name="CheckBox_DebugEnabled" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="50" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Row="0" Grid.Column="1" Name="Button_Output" Click="Button_Output_Click">Browse</Button>
+                    <TextBox Grid.Row="0" Grid.Column="0" Name="TextBox_Output" Text="Output Directory" TextWrapping="Wrap" TextChanged="TextBox_Output_TextChanged"/>
+                    <Button Grid.Row="1" Grid.Column="1" Name="Button_BackgroundImages" Click="Button_BackgroundImages_Click">Browse</Button>
+                    <TextBox Grid.Row="1" Grid.Column="0" Name="TextBox_BackgroundImages" Text="Background Images Directory" TextWrapping="Wrap" TextChanged="TextBox_BackgroundImages_TextChanged"/>
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="Debug Enabled" HorizontalAlignment="Left"/>
+                    <CheckBox Grid.Row="2" Grid.Column="1" Name="CheckBox_DebugEnabled" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
                 </Grid>
-            </StackPanel>
         </Grid>
     </StackPanel>
 </Window>
