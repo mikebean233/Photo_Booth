@@ -23,37 +23,35 @@ namespace MainApplication
     /// </summary>
     public partial class StartDialog : Window
     {
-        private String _name = "";
-        public String Name { get { return _name; } }
+        public string Name { get; private set; } = "";
 
         private int _printCount;
-        public int PrintCount { get { return _printCount; } }
+        public int PrintCount => _printCount;
 
-        private int _copyCount;
-        public int CopyCount { get { return _copyCount; } }
+        public int CopyCount { get; private set; }
 
-        private String _imageSavePath = "";
-        public String ImageSavePath { get { return _imageSavePath; } }
+        public string ImageSavePath { get; private set; } = "";
 
-        private bool _debugEnabled = false;
-        public bool DebugEnabled { get { return _debugEnabled; } }
+        public string BackgroundImagesPath { get; private set; } = "";
+
+        public bool DebugEnabled { get; private set; } = false;
 
         private void ValidateInput()
         {
-            bool isValid = true;
-            isValid &= IsUsableString(_name);
-            isValid &= IsUsableString(_imageSavePath)
+            var isValid = true;
+            isValid &= IsUsableString(Name);
+            isValid &= IsUsableString(ImageSavePath)
 
-                && Directory.Exists(_imageSavePath);
+                && Directory.Exists(ImageSavePath);
             isValid &= _printCount > 0;
 
             Button_Ok.IsEnabled = isValid;
 
         }
 
-        private bool IsUsableString(String input)
+        private bool IsUsableString(string input)
         {
-            return !String.IsNullOrEmpty(input) && !String.IsNullOrWhiteSpace(input);
+            return !string.IsNullOrEmpty(input) && !string.IsNullOrWhiteSpace(input);
         }
 
         public StartDialog()
@@ -68,51 +66,57 @@ namespace MainApplication
 
         private void TextBox_name_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _name = ((TextBox)sender).Text;
+            Name = ((TextBox)sender).Text;
             ValidateInput();
         }
 
         private void TextBox_printCount_TextChanged(object sender, TextChangedEventArgs e)
         {
-            bool parseSucceded = int.TryParse(((TextBox)sender).Text, out _printCount);
+            var parseSucceded = int.TryParse(((TextBox)sender).Text, out _printCount);
             _printCount = parseSucceded ? _printCount : -1;
             ValidateInput();
         }
 
-        /*
-        private void TextBox_SaveLocation_TextChanged(object sender, TextChangedEventArgs e)
+        private void Button_Output_Click(object sender, RoutedEventArgs e)
         {
-            String value = (sender as TextBox).Text;
-            _imageSavePath = value;
-            ValidateInput();
-        }*/
-
-        private void Button_ChooseDirectory_Click(object sender, RoutedEventArgs e)
-        {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                TextBox_SaveLocation.Text = dialog.FileName;
+                TextBox_Output.Text = dialog.FileName;
         }
 
-        private void TextBox_SaveLocation_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_Output_TextChanged(object sender, TextChangedEventArgs e)
         {
-            String value = ((TextBox)sender).Text;
-            _imageSavePath = value;
+            var value = ((TextBox)sender).Text;
+            ImageSavePath = value;
             ValidateInput();
         }
 
         private void TextBox_CopyCount_TextChanged(object sender, TextChangedEventArgs e)
         {
-            int copyCount = 3;
-            string textValue = ((TextBox)sender).Text;
-            int.TryParse(textValue, out copyCount);
-            _copyCount = copyCount;
+            var textValue = ((TextBox)sender).Text;
+            int.TryParse(textValue, out var copyCount);
+            CopyCount = copyCount;
         }
 
         private void CheckBox_DebugEnabled_Changed(object sender, RoutedEventArgs e)
         {
-            _debugEnabled = (sender as CheckBox).IsChecked == true;
+            DebugEnabled = (sender as CheckBox).IsChecked == true;
+        }
+
+        private void Button_BackgroundImages_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                TextBox_BackgroundImages.Text = dialog.FileName;
+        }
+
+        private void TextBox_BackgroundImages_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var value = ((TextBox)sender).Text;
+            BackgroundImagesPath = value;
+            ValidateInput();
         }
     }
 }

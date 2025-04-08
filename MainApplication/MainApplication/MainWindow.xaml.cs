@@ -134,7 +134,7 @@ namespace MainApplication
             _centerCarouselImageIndex = _carouselSize / 2;
             _carouselItemHeight = (double)_carouselWidth * (108.0f / 192.0f);
 
-            LoadBackgroundImages();
+            LoadBackgroundImages(startDialog.BackgroundImagesPath);
             SetBackgroundImage();
             BuildCarousel();
 
@@ -413,11 +413,10 @@ namespace MainApplication
             ListView_Carousal.Height = _carouselItemHeight * _carouselSize;
         }
 
-        private void LoadBackgroundImages()
+        private void LoadBackgroundImages(String bmpDir)
         {
             _loadingBackgrounds = true;
             UpdateStatus();
-            String bmpDir = AppDomain.CurrentDomain.BaseDirectory + "backgroundImages";
             if (Directory.Exists(bmpDir))
             {
                 String[] filePaths = Directory.GetFiles(bmpDir, "*.bmp");
