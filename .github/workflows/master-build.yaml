@@ -27,7 +27,7 @@ jobs:
 
     - name: Install Kinect SDK v2.0
       run: |
-        $sdkUrl = "https://download.microsoft.com/download/1/0/C/10C5A84F-CABC-44C4-8224-2585E1C62C0E/KinectSDK-v2.0_1409-Setup.exe"
+        $sdkUrl = "https://download.microsoft.com/download/f/2/d/f2d1012e-3bc6-49c5-b8b3-5acff58af7b8/KinectSDK-v2.0_1409-Setup.exe"
         $sdkInstaller = "$env:TEMP\KinectSDK-v2.0_1409-Setup.exe"
 
         Invoke-WebRequest -Uri $sdkUrl -OutFile $sdkInstaller
