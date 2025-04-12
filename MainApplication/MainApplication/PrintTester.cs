@@ -19,7 +19,7 @@ namespace MainApplication
             System.Diagnostics.Debug.WriteLine(String.Format("================= PRINT ERRORS RECEIVED =================="));
             System.Diagnostics.Debug.WriteLine(errorMessages);
 
-            // If there was a paper outage, simulate refilling the printerr
+            // If there was a paper outage, simulate refilling the printer
             if (errorMessages.Contains("out of paper"))
                 _printManager.ResetRemainingPrintCount(200);
 
