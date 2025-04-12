@@ -1,0 +1,74 @@
+name: Build and Release Installer
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    name: Build Setup Project and Release
+    runs-on: windows-latest
+
+    env:
+      SOLUTION_FILE: MainApplication\MainApplication.sln
+      SETUP_PROJECT_PATH: MainApplication\Setup\Setup.vdproj
+      OUTPUT_DIR: build\output
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.SOLUTION_FILE }}
+
+    - name: Build main solution (including Setup project)
+      run: |
+        msbuild ${{ env.SOLUTION_FILE }} /t:Rebuild /p:Configuration=Release
+
+    - name: Find MSI file
+      id: find-msi
+      run: |
+        $msi = Get-ChildItem -Recurse -Filter *.msi | Select-Object -First 1
+        if (!$msi) {
+          Write-Error "No MSI file found"
+          exit 1
+        }
+        echo "Found MSI at $($msi.FullName)"
+        echo "msi_path=$($msi.FullName)" >> $env:GITHUB_OUTPUT
+
+    - name: Get latest tag and bump version
+      id: versioning
+      shell: bash
+      run: |
+        LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+        echo "Latest tag: $LATEST_TAG"
+
+        VERSION=${LATEST_TAG#v}
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+        NEW_MINOR=$((MINOR + 1))
+        NEW_TAG="v$MAJOR.$NEW_MINOR.0"
+
+        echo "New tag: $NEW_TAG"
+        echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
+    - name: Create new tag
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@users.noreply.github.com"
+        git tag ${{ steps.versioning.outputs.new_tag }}
+        git push origin ${{ steps.versioning.outputs.new_tag }}
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.versioning.outputs.new_tag }}
+        name: Release ${{ steps.versioning.outputs.new_tag }}
+        files: ${{ steps.find-msi.outputs.msi_path }}
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
