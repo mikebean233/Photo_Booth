@@ -1,0 +1,76 @@
+﻿<Window x:Class="MainApplication.Configuration.Setup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MainApplication.Configuration"
+        mc:Ignorable="d"
+        Title="Setup" Height="270" Width="700" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" 
+                            Value="{Binding RelativeSource={RelativeSource Self}, 
+                                        Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="BorderBrush" Value="Red"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="170"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Printer Name -->
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="Printer Name:"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Width="50" HorizontalAlignment="Left" Margin="5" Text="{Binding PrinterName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+
+        <!-- Remaining Prints -->
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Text="Remaining Prints:"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Width="50" HorizontalAlignment="Left" Margin="5" Text="{Binding RemainingPrints, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+
+        <!-- Copy Count -->
+        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Text="Copy Count:"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Width="50" HorizontalAlignment="Left" Margin="5" Text="{Binding CopyCount, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+
+        <!-- Output Directory -->
+        <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Text="Output Directory:"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Name="TextBoxOutputDirectory"  IsReadOnly="True" Text="{Binding OutputDir, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+        <Button Grid.Row="3" Grid.Column="2" Margin="5" Name="ButtonOutputDirectory" Click="PickerButtonClick" Tag="Output Directory">
+            <TextBlock Text="Browse"/>
+        </Button>
+
+        <!-- Background Images Directory -->
+        <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Text="Background Images Directory:"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Name="TextBoxBackgroundImagesDirectory" IsReadOnly="True" Text="{Binding BackgroundImagesDir , UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+        <Button Grid.Row="4" Grid.Column="2" Margin="5" Name="ButtonBackgroundImagesDirectory" Click="PickerButtonClick" Tag="Background Images Directory">
+            <TextBlock Text="Browse"/>
+        </Button>
+
+        <!-- PrintTemplatePath -->
+        <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Text="Print Template Path:"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Name="TextBoxPrintTemplatePath" IsReadOnly="True" Text="{Binding PrintTemplatePath, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+        <Button Grid.Row="5" Grid.Column="2" Margin="5" Name="ButtonPrintTemplatePath" Click="PickerButtonClick" Tag="Print Template File">
+            <TextBlock Text="Browse"/>
+        </Button>
+
+
+        <!-- Submit Button -->
+        <Button Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Name="ButtonSubmit" Click="PickerButtonClick" HorizontalAlignment="Right" Width="100" Margin="5" Content="Submit"/>
+    </Grid>
+</Window>

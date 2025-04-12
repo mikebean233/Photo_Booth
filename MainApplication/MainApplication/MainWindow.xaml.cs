@@ -13,6 +13,7 @@ using ButtonDriver;
 using Printing;
 using System.Windows.Controls;
 using System.Globalization;
+using MainApplication.Configuration;
 
 namespace MainApplication
 {
@@ -25,7 +26,6 @@ namespace MainApplication
         private ConcurrentQueue<ImageCapture> _queue;
         private PrintManager.PrintBatchHandler _currentBatch;
         private ImageProducer _imageProducer;
-        //private bool _readyForCapture = false;
         private bool _createNewBackground = false;
         private bool _havePrintError = false;
         private bool _loadingBackgrounds = false;
@@ -42,11 +42,7 @@ namespace MainApplication
         private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
         private int _countdownLength = 3;
-        private int _copyCount = 2;
-        private String _imageSavePath = "";
-        private String _backgroundImagePath = "backgroundImages";
-        private bool _debugEnabled = false;
-
+        private Configuration.Config _config;
         private static string[] _numbers = {"first", "second", "third", "fourth", "five"};
 
 
@@ -118,15 +114,11 @@ namespace MainApplication
             _buttonActions.Add(4, DecreaseDepthThreshold); // pin 6
 
 
-            StartDialog startDialog = new StartDialog();
-            startDialog.ShowDialog();
-            _copyCount = startDialog.CopyCount;
-            _imageSavePath = startDialog.ImageSavePath;
-            _printManager = PrintManager.GetInstance(startDialog.Name, startDialog.PrintCount);
+            _config = ConfigUtil.GetConfig();
+            AppDomain.CurrentDomain.ProcessExit += (x, y) => ConfigUtil.SaveConfig(_config);
+            _printManager = PrintManager.GetInstance(_config.PrinterName, _config.CopyCount);
             _printManager.SetPrintErrorInformer(HandlePrintError);
             _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
-            _debugEnabled = startDialog.DebugEnabled;
-
             _imageProducer = ImageProducerFactory.GetImageProducer();
             _imageProducer.Start();
 
@@ -134,7 +126,7 @@ namespace MainApplication
             _centerCarouselImageIndex = _carouselSize / 2;
             _carouselItemHeight = (double)_carouselWidth * (108.0f / 192.0f);
 
-            LoadBackgroundImages(startDialog.BackgroundImagesPath);
+            LoadBackgroundImages(_config.BackgroundImagesDir);
             SetBackgroundImage();
             BuildCarousel();
 
@@ -146,6 +138,7 @@ namespace MainApplication
 
             SetupStates();
         }
+
 
         private void SetupStates()
         {
@@ -220,7 +213,7 @@ namespace MainApplication
                         {
                             _createNewBackground = false;
                             String timeStamp = BuildTimestampString();
-                            WriteImageFile(image, BuildAbsoluteFilePath(_backgroundImagePath, timeStamp, "bmp"));
+                            WriteImageFile(image, BuildAbsoluteFilePath(_config.BackgroundImagesDir, timeStamp, "bmp"));
                             _backgroundIterator.Add(new BackgroundImage(timeStamp, image));
                             _backgroundIterator.MoveLast();
                             UpdateCarousel();
@@ -232,7 +225,7 @@ namespace MainApplication
                         else
                         {
                             _currentBatch.AddImage(image);
-                            WriteImageFile(image, BuildAbsoluteFilePath(_imageSavePath, BuildTimestampString(), "bmp"));
+                            WriteImageFile(image, BuildAbsoluteFilePath(_config.OutputDir, BuildTimestampString(), "bmp"));
                         }
 
                         if (_currentBatch.TemplateFull)
@@ -256,7 +249,7 @@ namespace MainApplication
                         ChangeState(PRINTING);
                         Dispatcher.Invoke(() => tabControl.SelectedIndex = 2);
 
-                        _currentBatch.CompleteBatch(_copyCount);
+                        _currentBatch.CompleteBatch(_config.CopyCount);
                         Thread waitThread = new Thread(() =>
                         {   _imageProducer.Pause();
                             Thread.Sleep(3000);
