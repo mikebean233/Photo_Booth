@@ -95,48 +95,55 @@ namespace MainApplication
         private ContinousIterator<BackgroundImage> _backgroundIterator;
         public MainWindow()
         {
-            InitializeComponent();
-            _buttonListener = new ButtonListener(ButtonPressHandler);
+            try
+            {
+                InitializeComponent();
+                _buttonListener = new ButtonListener(ButtonPressHandler);
 
-            // Setup key actions
-            _keyActions.Add(Key.Left, NextBackgroundImage);
-            _keyActions.Add(Key.Right, PrevBackgroundImage);
-            _keyActions.Add(Key.Up, IncreaseDepthThreshold);
-            _keyActions.Add(Key.Down, DecreaseDepthThreshold);
-            _keyActions.Add(Key.Space, TakePicture);
-            _keyActions.Add(Key.B, TakeBackgroundPicture);
+                // Setup key actions
+                _keyActions.Add(Key.Left, NextBackgroundImage);
+                _keyActions.Add(Key.Right, PrevBackgroundImage);
+                _keyActions.Add(Key.Up, IncreaseDepthThreshold);
+                _keyActions.Add(Key.Down, DecreaseDepthThreshold);
+                _keyActions.Add(Key.Space, TakePicture);
+                _keyActions.Add(Key.B, TakeBackgroundPicture);
 
-            // Setup button actions
-            _buttonActions.Add(0, TakePicture);            // pin 2
-            _buttonActions.Add(1, NextBackgroundImage);    // pin 3
-            _buttonActions.Add(2, PrevBackgroundImage);    // pin 4
-            _buttonActions.Add(3, IncreaseDepthThreshold); // pin 5
-            _buttonActions.Add(4, DecreaseDepthThreshold); // pin 6
+                // Setup button actions
+                _buttonActions.Add(0, TakePicture); // pin 2
+                _buttonActions.Add(1, NextBackgroundImage); // pin 3
+                _buttonActions.Add(2, PrevBackgroundImage); // pin 4
+                _buttonActions.Add(3, IncreaseDepthThreshold); // pin 5
+                _buttonActions.Add(4, DecreaseDepthThreshold); // pin 6
 
 
-            _config = ConfigUtil.GetConfig();
-            AppDomain.CurrentDomain.ProcessExit += (x, y) => ConfigUtil.SaveConfig(_config);
-            _printManager = PrintManager.GetInstance(_config.PrinterName, _config.CopyCount);
-            _printManager.SetPrintErrorInformer(HandlePrintError);
-            _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
-            _imageProducer = ImageProducerFactory.GetImageProducer();
-            _imageProducer.Start();
+                _config = ConfigUtil.GetConfig();
+                AppDomain.CurrentDomain.ProcessExit += (x, y) => ConfigUtil.SaveConfig(_config);
+                _printManager = PrintManager.GetInstance(_config.PrinterName, _config.CopyCount);
+                _printManager.SetPrintErrorInformer(HandlePrintError);
+                _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
+                _imageProducer = ImageProducerFactory.GetImageProducer();
+                _imageProducer.Start();
 
-            // Setup the background images
-            _centerCarouselImageIndex = _carouselSize / 2;
-            _carouselItemHeight = (double)_carouselWidth * (108.0f / 192.0f);
+                // Setup the background images
+                _centerCarouselImageIndex = _carouselSize / 2;
+                _carouselItemHeight = (double)_carouselWidth * (108.0f / 192.0f);
 
-            LoadBackgroundImages(_config.BackgroundImagesDir);
-            SetBackgroundImage();
-            BuildCarousel();
+                LoadBackgroundImages(_config.BackgroundImagesDir);
+                SetBackgroundImage();
+                BuildCarousel();
 
-            _queue = _imageProducer.GetImageQueue();
+                _queue = _imageProducer.GetImageQueue();
 
-            _consumer = new Thread(new ThreadStart(Consume));
-            _consumer.Start();
-            UpdateStatus();
+                _consumer = new Thread(new ThreadStart(Consume));
+                _consumer.Start();
+                UpdateStatus();
 
-            SetupStates();
+                SetupStates();
+            } catch (Exception ex)
+            {
+                Console.Error.WriteLine($"{ex.Message}: {ex.StackTrace}");
+                throw ex;
+            }
         }
 
 
@@ -344,7 +351,10 @@ namespace MainApplication
 
                         Dispatcher.Invoke(() =>
                         {
-                            _currentState.HandleEvent(thisImage.CaptureType == CaptureType.PREVIEW ? EventType.PREVIEW_IMAGE_ARRIVED : EventType.IMAGE_CAPTURED, thisImage.Image);
+                            _currentState.HandleEvent(
+                                thisImage.CaptureType == CaptureType.PREVIEW
+                                    ? EventType.PREVIEW_IMAGE_ARRIVED
+                                    : EventType.IMAGE_CAPTURED, thisImage.Image);
                         });
                     }
                 }
@@ -352,6 +362,10 @@ namespace MainApplication
                 {
                     Console.WriteLine(ex);
                     break;
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"{ex.Message} : {ex.StackTrace}");
                 }
             }
         }
