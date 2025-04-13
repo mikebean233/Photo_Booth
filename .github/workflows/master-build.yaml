@@ -11,7 +11,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      SOLUTION_FILE: MainApplication\MainApplication.sln
+      SOLUTION_FILE: PhotoBooth.sln
       SETUP_PROJECT_PATH: MainApplication\Setup\Setup.vdproj
       OUTPUT_DIR: build\output
 
