@@ -31,8 +31,8 @@ jobs:
         $sdkInstaller = "$env:TEMP\KinectSDK-v2.0_1409-Setup.exe"
 
         Invoke-WebRequest -Uri $sdkUrl -OutFile $sdkInstaller
-        Start-Process -FilePath $sdkInstaller -ArgumentList "/quiet" -Wait
-    
+        Start-Process -FilePath $sdkInstaller -ArgumentList "/quiet /norestart" -Wait
+
     - name: Build main solution (including Setup project)
       run: |
         msbuild ${{ env.SOLUTION_FILE }} /t:Rebuild /p:Configuration=Release
