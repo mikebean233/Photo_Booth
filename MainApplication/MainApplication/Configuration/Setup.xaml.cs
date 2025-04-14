@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using Button = System.Windows.Controls.Button;
-
+using PhotoBooth.Configuration;
 
 namespace MainApplication.Configuration
 {
@@ -12,7 +12,7 @@ namespace MainApplication.Configuration
     /// </summary>
     public partial class Setup : Window
     {
-        public Config Input { get; } = new Config();
+        public Config Input { get; }
         public Boolean SubmitClicked { get; internal set; } = false;
 
         public Setup(Config input)

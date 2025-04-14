@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MainApplication.Configuration
+namespace PhotoBooth.Configuration
 {
     public class Config(
         string printerName = "",
@@ -27,6 +23,9 @@ namespace MainApplication.Configuration
         public bool Valid => IsValid();
         [JsonIgnore]
         public string? Error => ConcatErrors();
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+
 
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
@@ -67,8 +66,6 @@ namespace MainApplication.Configuration
             return JsonSerializer.Serialize(this, _jsonOptions);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -82,7 +79,8 @@ namespace MainApplication.Configuration
             return true;
         }
 
-        public string? this[string columnName] {
+        public string? this[string columnName]
+        {
             get
             {
                 var validations = new Dictionary<string, Func<string?>>
