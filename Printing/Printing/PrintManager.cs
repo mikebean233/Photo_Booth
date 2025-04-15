@@ -5,7 +5,8 @@ using System.Windows.Media;
 using System.Windows.Documents;
 using System.Windows.Xps;
 using System.Threading;
-using PhotoBooth.Configuration;
+using System.Windows.Xps.Packaging;
+using Libs;
 
 namespace Printing
 {
@@ -188,6 +189,7 @@ namespace Printing
                         XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(_thisPrinter);
 
                         writer.Write(page);
+                        SaveRenderedTemplate(page);
 
                         // Pretend we know that this print worked and tell our current print batch that it did.
                         _thisPrintBatch.RegisterSucessfullPrint();
@@ -208,6 +210,18 @@ namespace Printing
             if(_inError)
             {
                 InformClientOfPrintProblems(_printErrors);
+            }
+        }
+
+        private void SaveRenderedTemplate(FixedPage page)
+        {
+            try
+            {
+                ImageFileService.WriteImageFile("Template", page, _config);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"{ex.Message}: {ex.StackTrace}");
             }
         }
 

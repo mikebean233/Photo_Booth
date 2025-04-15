@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace PhotoBooth.Configuration
+namespace Libs
 {
     public class Config(
         string printerName = "",
@@ -94,7 +94,7 @@ namespace PhotoBooth.Configuration
                         nameof(CopyCount),
                         () => CopyCount > RemainingPrints
                             ? "There are more copies than prints available"
-                            : (CopyCount <= 0 ? "There must be at least one copy" : (CopyCount > 5 ? "There cannot be more than 5 copies" : null))
+                            : CopyCount <= 0 ? "There must be at least one copy" : CopyCount > 5 ? "There cannot be more than 5 copies" : null
                     },
                     {
                         nameof(OutputDir),

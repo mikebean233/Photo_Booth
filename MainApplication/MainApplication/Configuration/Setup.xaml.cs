@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using Button = System.Windows.Controls.Button;
-using PhotoBooth.Configuration;
+using Libs;
 
 namespace MainApplication.Configuration
 {
