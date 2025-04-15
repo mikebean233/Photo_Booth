@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using PhotoBooth.Configuration;
 
 namespace MainApplication.Configuration
 {

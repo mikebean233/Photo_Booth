@@ -14,6 +14,7 @@ using Printing;
 using System.Windows.Controls;
 using System.Globalization;
 using MainApplication.Configuration;
+using PhotoBooth.Configuration;
 
 namespace MainApplication
 {
@@ -42,9 +43,9 @@ namespace MainApplication
         private int _carouselWidth = 350;  // in pixels
         private double _carouselItemHeight;
         private int _countdownLength = 3;
-        private Configuration.Config _config;
+        private Config _config;
         private static string[] _numbers = {"first", "second", "third", "fourth", "five"};
-
+        private ImageSource _printTemplateImage;
 
         // State
         private State _prevState;
@@ -65,18 +66,18 @@ namespace MainApplication
 
         private class State
         {
-            private Action<EventType, Object, Dictionary<String, Object>> _eventHandler;
+            private Action<EventType, object?, Dictionary<string, object>> _eventHandler;
             private Dictionary<String, Object> _stateData;
             private String _name;
 
-            public State(String name, Action<EventType, Object, Dictionary<String, Object>> eventHandler)
+            public State(String name, Action<EventType, object?, Dictionary<string, object>> eventHandler)
             {
                 _name = name;
                 _eventHandler = eventHandler;
                 _stateData = new Dictionary<string, object>();
             }
 
-            public void HandleEvent(EventType thisEvent, Object args)
+            public void HandleEvent(EventType thisEvent, object? args)
             {
                 _eventHandler.Invoke(thisEvent, args, _stateData);
             }
@@ -117,10 +118,13 @@ namespace MainApplication
 
 
                 _config = ConfigUtil.GetConfig();
+                _printTemplateImage = new BitmapImage(new Uri(_config.PrintTemplatePath, UriKind.RelativeOrAbsolute));
+                _printTemplateImage.Freeze();
+
                 AppDomain.CurrentDomain.ProcessExit += (x, y) => ConfigUtil.SaveConfig(_config);
-                _printManager = PrintManager.GetInstance(_config.PrinterName, _config.CopyCount);
+                _printManager = PrintManager.GetInstance(_config.PrinterName, _config);
                 _printManager.SetPrintErrorInformer(HandlePrintError);
-                _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
+                _currentBatch = _printManager.startNewBatch(_printTemplateImage);
                 _imageProducer = ImageProducerFactory.GetImageProducer();
                 _imageProducer.Start();
 
@@ -158,7 +162,7 @@ namespace MainApplication
                         Dispatcher.Invoke(() => tabControl.SelectedIndex = 0);
 
                         if (_currentBatch.TemplateFull)
-                            _currentBatch = _printManager.startNewBatch(PrintTemplateType.Wide);
+                            _currentBatch = _printManager.startNewBatch(_printTemplateImage);
 
                         UpdateStatus();
                         break;
@@ -443,12 +447,15 @@ namespace MainApplication
                         // Only accept images of the correct size
                         if (thisImage.PixelHeight == 1080 && thisImage.PixelWidth == 1920)
                         {
-                            BackgroundImage thisBackgroundImage = backgroundImages[index++] = new BackgroundImage(name, thisImage);
+                            BackgroundImage thisBackgroundImage =
+                                backgroundImages[index++] = new BackgroundImage(name, thisImage);
                             backgroundImageMap.Add(name, thisBackgroundImage.FlippedImage);
                         }
                     }
                     catch (Exception ex)
-                    { }
+                    {
+                        Console.Error.WriteLine($"{ex.Message}: {ex.StackTrace}");
+                    }
                 }
                 // Trim the array in case we didn't use all of the images
                 Array.Resize<BackgroundImage>(ref backgroundImages, index);
@@ -460,7 +467,7 @@ namespace MainApplication
             UpdateStatus();
         }
 
-        private void HandlePrintError(String errorMessages)
+        private void HandlePrintError(string? errorMessages)
         {
             _currentState.HandleEvent(EventType.PRINT_ERROR, errorMessages);
         }

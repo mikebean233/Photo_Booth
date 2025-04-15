@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Printing;
 using System.Windows.Media;
 using System.Windows.Documents;
 using System.Windows.Xps;
-using static System.Net.Mime.MediaTypeNames;
-using System.Windows.Documents.Serialization;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
 using System.Threading;
+using PhotoBooth.Configuration;
 
 namespace Printing
 {
@@ -24,21 +18,19 @@ namespace Printing
         private bool _inError = false;
         private Queue<IPrintBatch> _printQueue = new Queue<IPrintBatch>();
         private Object _queueLock = new Object();
-        private int _remainingPrintsInTray;
         private IPrintBatch _thisPrintBatch;
         private Action<String> _printErrorInformer;
         private ManualResetEvent _doPrintSignal;
         private ManualResetEvent _killSignal;
-        private int _copyCount;
+        private Config _config;
 
         #region Construction
-        private PrintManager(String name, int remainingPrints)
+        private PrintManager(String name, Config config)
         {
             _thisPrintBatch = NullPrintBatch.Instance;
-            _remainingPrintsInTray = remainingPrints;
             _doPrintSignal = new ManualResetEvent(false);
             _killSignal = new ManualResetEvent(false);
-
+            _config = config;
 
             Thread printWorker = new Thread(() =>
             {
@@ -59,10 +51,10 @@ namespace Printing
             printWorker.Start();
         }
         
-        public static PrintManager GetInstance(String name, int remainingPrints)
+        public static PrintManager GetInstance(String name, Config config)
         {
             if (_instance == null)
-                _instance = new PrintManager(name, remainingPrints);
+                _instance = new PrintManager(name, config);
             return _instance;
         }
         #endregion
@@ -158,7 +150,7 @@ namespace Printing
         // Call this before RetryPrinting() if we refilled the printer with paper
         public void ResetRemainingPrintCount(int remainingPrints)
         {
-            _remainingPrintsInTray = remainingPrints;
+            _config.RemainingPrints = remainingPrints;
         }
 
         // TODO: Make this thread safe
@@ -200,7 +192,7 @@ namespace Printing
                         // Pretend we know that this print worked and tell our current print batch that it did.
                         _thisPrintBatch.RegisterSucessfullPrint();
 
-                        _remainingPrintsInTray--;
+                        _config.RemainingPrints--;
 
                         // Print the next page (eventually this should run out of batches or a print error will happen...)
                         Print();
@@ -251,9 +243,9 @@ namespace Printing
             {
                 statusReport = statusReport + "The printer is out of memory. ";
             }
-            if ((pq.QueueStatus & PrintQueueStatus.PaperOut) == PrintQueueStatus.PaperOut || _remainingPrintsInTray <= 0)
+            if ((pq.QueueStatus & PrintQueueStatus.PaperOut) == PrintQueueStatus.PaperOut || _config.RemainingPrints <= 0)
             {
-                _remainingPrintsInTray = 0;
+                _config.RemainingPrints = 0;
                 statusReport = statusReport + "The printer is out of paper. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.OutputBinFull) == PrintQueueStatus.OutputBinFull)
@@ -296,9 +288,9 @@ namespace Printing
                 _printErrorInformer(problemDescription);
         }
  
-        public PrintBatchHandler startNewBatch(PrintTemplateType printTemplateType)
+        public PrintBatchHandler startNewBatch(ImageSource templateImage)
         {
-            return new PrintBatchHandler(printTemplateType, this);
+            return new PrintBatchHandler(templateImage, this);
         }
 
         #region PrintBatchHandler
@@ -313,9 +305,10 @@ namespace Printing
             public int AddedImageCount        { get { return _addedImageCount;}}
             public bool BatchFinishedPrinting { get { return _printBatch.BatchFinishedPrinting(); }}
 
-            public PrintBatchHandler(PrintTemplateType templateType, PrintManager printManager)
+            public PrintBatchHandler(ImageSource templateImage, PrintManager printManager)
             {
-                _printBatch = new PrintBatch(PrintTemplate.OfType(templateType), printManager);
+                var templateInstance = new WidePrintTemplate(templateImage);
+                _printBatch = new PrintBatch(templateInstance, printManager);
             }
 
             public Boolean AddImage(ImageSource imageSource)
@@ -385,7 +378,7 @@ namespace Printing
             public bool QueueBatchForPrinting(int totalCopiesInBatch)
             {
                 if (totalCopiesInBatch < 1)
-                    throw new ArgumentOutOfRangeException("PrintBatch must have at least one copy to print");
+                    throw new ArgumentOutOfRangeException("Print batch must have at least one copy to print");
 
                 if (_template.CanAddMoreImages())
                 {

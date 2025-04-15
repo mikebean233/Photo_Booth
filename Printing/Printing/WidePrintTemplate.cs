@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Printing;
 using System.Threading;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Printing
@@ -14,9 +14,14 @@ namespace Printing
     internal class WidePrintTemplate : PrintTemplate
     {
         private WideTemplate page;
-        public WidePrintTemplate() : base(3, PrintTemplateType.Wide)
+
+        public ImageSource TemplateImage { get; private set; }
+
+        public WidePrintTemplate(ImageSource templateImage) : base(3)
         {
             page = new WideTemplate();
+            TemplateImage = templateImage;
+            page.Background.Source = templateImage;
             page.BeginInit();
             page.InitializeComponent();
             page.EndInit();
@@ -31,6 +36,15 @@ namespace Printing
                 page.Image3.Source = imageSources[2];
             }));
             return page.FixedPage;
+        }
+
+        public override object Clone()
+        {
+            PrintTemplate clone = new WidePrintTemplate(TemplateImage);
+            foreach (ImageSource thisImage in imageSources)
+                clone.AddImage(thisImage);
+
+            return clone;
         }
     }
 }

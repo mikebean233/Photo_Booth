@@ -15,7 +15,7 @@ namespace MainApplication
 
         public ContinousIterator(T[] items)
         {
-            if (items == null || items.Count() == 0)
+            if (items == null || !items.Any())
                 throw new ArgumentException("Must have at least one item");
 
             _items = items;
@@ -60,9 +60,9 @@ namespace MainApplication
             return _items[GetCorrectedIndex(index)];
         }
 
-        public T Current { get { return _currentItem; } }
+        public T Current => _currentItem;
 
-        object IEnumerator.Current { get { return _currentItem; } }
+        object IEnumerator.Current => _currentItem;
 
         public void Dispose()
         {

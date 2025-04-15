@@ -61,6 +61,7 @@ namespace Imaging
             catch (Exception ex)
             {
                 _sensor.Close();
+                Console.Out.WriteLine($"{ex.Message}: {ex.StackTrace}");
                 System.Diagnostics.Debug.WriteLine("Kinect image producer thread shutting down...");
             }
         }
@@ -265,8 +266,7 @@ namespace Imaging
             private static ConvolutionKernel _gaussianBlur_5_by_5;
             private static ConvolutionKernel _identity_3_by_3;
             private static ConvolutionKernel _edgeDetection;
-            private static ConvolutionKernel _experimental;
-            private static ConvolutionKernel _experimental2;
+
 
             private Boolean rendering = false;
             private bool doHighQualityCapture = false;
