@@ -14,7 +14,7 @@ using Printing;
 using System.Windows.Controls;
 using System.Globalization;
 using MainApplication.Configuration;
-using PhotoBooth.Configuration;
+using Libs;
 
 namespace MainApplication
 {
@@ -218,13 +218,12 @@ namespace MainApplication
                             Dispatcher.Invoke(() => countdownPreview.Source = eventArgs as ImageSource);
                         break;
                     case EventType.IMAGE_CAPTURED:
-                        BitmapSource image = eventArgs as BitmapSource;
+                        var image = eventArgs as BitmapSource;
 
                         if (_createNewBackground)
                         {
                             _createNewBackground = false;
-                            String timeStamp = BuildTimestampString();
-                            WriteImageFile(image, BuildAbsoluteFilePath(_config.BackgroundImagesDir, timeStamp, "bmp"));
+                            var timeStamp = ImageFileService.WriteImageFile("Capture", image, _config);
                             _backgroundIterator.Add(new BackgroundImage(timeStamp, image));
                             _backgroundIterator.MoveLast();
                             UpdateCarousel();
@@ -236,7 +235,7 @@ namespace MainApplication
                         else
                         {
                             _currentBatch.AddImage(image);
-                            WriteImageFile(image, BuildAbsoluteFilePath(_config.OutputDir, BuildTimestampString(), "bmp"));
+                            ImageFileService.WriteImageFile("Capture", image, _config);
                         }
 
                         if (_currentBatch.TemplateFull)
@@ -321,26 +320,6 @@ namespace MainApplication
         {
             _imageProducer.SetConfiguration(new Dictionary<string, object> { { "selectBackgroundImage", _backgroundIterator.Current.Name } });
         }
-
-        private String BuildTimestampString()
-        {
-            return DateTime.Now.ToString("MMM_dd_yyyy_hh_mm_ss", CultureInfo.InvariantCulture);
-        }
-
-        private String BuildAbsoluteFilePath(String path, String filename, String extension)
-        {
-            return String.Format("{0}\\{1}.bmp", path, filename, extension);
-        }
-
-        private void WriteImageFile(BitmapSource imageSource, String filename)
-        {
-            FileStream stream = new FileStream(filename, FileMode.Create);
-            TiffBitmapEncoder encoder = new TiffBitmapEncoder();
-            TextBlock myTextBlock = new TextBlock();
-            myTextBlock.Text = "Codec Author is: " + encoder.CodecInfo.Author.ToString();
-            encoder.Frames.Add(BitmapFrame.Create(imageSource));
-            encoder.Save(stream);
-    }
 
         private void Consume()
         {
