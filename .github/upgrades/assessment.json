@@ -1,0 +1,3276 @@
+{
+  "settings": {
+    "components": {
+      "code": false,
+      "binaries": false
+    },
+    "targetId": "net8.0",
+    "targetDisplayName": ".NETCoreApp,Version=v8.0"
+  },
+  "analysisStartTime": "2026-01-11T11:16:23.653817Z",
+  "analysisEndTime": "2026-01-11T11:16:24.8870886Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 4,
+      "issues": 10,
+      "incidents": 137,
+      "effort": 137
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 109,
+        "Optional": 0,
+        "Potential": 28,
+        "Information": 0
+      },
+      "category": {
+        "Project": 7,
+        "Api": 118,
+        "NuGet": 12
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "Imaging\\Imaging\\Imaging.csproj",
+      "startingProject": true,
+      "issues": 4,
+      "storyPoints": 72,
+      "properties": {
+        "appName": "Imaging",
+        "projectKind": "ClassicWpf",
+        "frameworks": [
+          "net48"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": false,
+        "numberOfFiles": 10,
+        "numberOfCodeFiles": 9,
+        "linesTotal": 1249,
+        "linesOfCode": 1119,
+        "totalApiScanned": 340,
+        "minLinesOfCodeToChange": 70,
+        "maxLinesOfCodeToChange": 70
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "088026bc-95dc-4232-a786-c0a96e4251aa",
+          "ruleId": "Project.0001",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Imaging.csproj"
+          }
+        },
+        {
+          "incidentId": "26e261d0-aa19-4278-80b6-e288b7946793",
+          "ruleId": "Project.0002",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+              "protected": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Imaging.csproj",
+            "snippet": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+            "protectedSnippet": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+            "properties": {
+              "CurrentTargetFramework": ".NETFramework,Version=v4.8",
+              "RecommendedTargetFramework": "net8.0-windows"
+            }
+          }
+        },
+        {
+          "incidentId": "feea1b24-d84b-40a9-ac9a-fff498fc8329",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "get {\r\n                object obj = ResourceManager.GetObject(\u0022nerds_3\u0022, resourceCulture);\r\n                return ((System.Drawing.Bitmap)(obj));\r\n            }",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Properties\\Resources.Designer.cs",
+            "snippet": "get {\r\n                object obj = ResourceManager.GetObject(\u0022nerds_3\u0022, resourceCulture);\r\n                return ((System.Drawing.Bitmap)(obj));\r\n            }",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 86,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "99eabf6b-a993-4251-9820-20f6f7ae510f",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "internal static System.Drawing.Bitmap nerds_3",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Properties\\Resources.Designer.cs",
+            "snippet": "internal static System.Drawing.Bitmap nerds_3",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 85,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "3053fc78-c557-46df-9162-a1b88353e803",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "get {\r\n                object obj = ResourceManager.GetObject(\u0022nerds_2\u0022, resourceCulture);\r\n                return ((System.Drawing.Bitmap)(obj));\r\n            }",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Properties\\Resources.Designer.cs",
+            "snippet": "get {\r\n                object obj = ResourceManager.GetObject(\u0022nerds_2\u0022, resourceCulture);\r\n                return ((System.Drawing.Bitmap)(obj));\r\n            }",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 76,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "6f92342e-e15a-49cf-832e-70187cb2b4c9",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "internal static System.Drawing.Bitmap nerds_2",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Properties\\Resources.Designer.cs",
+            "snippet": "internal static System.Drawing.Bitmap nerds_2",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 75,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "4b511c35-0e23-4f4e-9097-62e72e8d811f",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "get {\r\n                object obj = ResourceManager.GetObject(\u0022nerds_1\u0022, resourceCulture);\r\n                return ((System.Drawing.Bitmap)(obj));\r\n            }",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Properties\\Resources.Designer.cs",
+            "snippet": "get {\r\n                object obj = ResourceManager.GetObject(\u0022nerds_1\u0022, resourceCulture);\r\n                return ((System.Drawing.Bitmap)(obj));\r\n            }",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 66,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "2da4fe12-e5d7-4fe4-b00a-d7ecc987592f",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "internal static System.Drawing.Bitmap nerds_1",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Properties\\Resources.Designer.cs",
+            "snippet": "internal static System.Drawing.Bitmap nerds_1",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 65,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "eef118a5-5ef2-49a3-b94c-d660dae48386",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Configuration.ConfigurationManager, 9.0.0-preview.6.24302.3. Add package reference to System.Configuration.ConfigurationManager, 9.0.0-preview.6.24302.3",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "ApplicationSettingsBase",
+              "protected": "M:System.Configuration.ApplicationSettingsBase.#ctor"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Properties\\Settings.Designer.cs",
+            "snippet": "ApplicationSettingsBase",
+            "protectedSnippet": "M:System.Configuration.ApplicationSettingsBase.#ctor",
+            "label": "M:System.Configuration.ApplicationSettingsBase.#ctor",
+            "properties": {
+              "PackageId": "System.Configuration.ConfigurationManager",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 15,
+            "column": 74
+          }
+        },
+        {
+          "incidentId": "7c272ec3-3a46-4d0a-bb48-ae5420857785",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Configuration.ConfigurationManager, 9.0.0-preview.6.24302.3. Add package reference to System.Configuration.ConfigurationManager, 9.0.0-preview.6.24302.3",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "ApplicationSettingsBase",
+              "protected": "T:System.Configuration.ApplicationSettingsBase"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\Properties\\Settings.Designer.cs",
+            "snippet": "ApplicationSettingsBase",
+            "protectedSnippet": "T:System.Configuration.ApplicationSettingsBase",
+            "label": "T:System.Configuration.ApplicationSettingsBase",
+            "properties": {
+              "PackageId": "System.Configuration.ConfigurationManager",
+              "PackageNewVersion": "9.0.0-preview.6.24302.3"
+            },
+            "line": 15,
+            "column": 74
+          }
+        },
+        {
+          "incidentId": "a55f206d-964a-4924-b983-add7fcb00cee",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public static ImageCapture Build(BitmapSource image, CaptureType captureType)",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "public static ImageCapture Build(BitmapSource image, CaptureType captureType)",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 23,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "054163a9-8d42-4c03-8eb0-e4c327c42c93",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "private ImageCapture(BitmapSource image, CaptureType captureType)\r\n        {\r\n            _image = image;\r\n            _captureType = captureType;\r\n        }",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "private ImageCapture(BitmapSource image, CaptureType captureType)\r\n        {\r\n            _image = image;\r\n            _captureType = captureType;\r\n        }",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 17,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "487671c2-b2c7-48cb-8103-1be992aace04",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_image = image;",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "_image = image;",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 19,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4fbb2b2e-f9e7-4698-a4aa-21578b99c06e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "get { return _image; }",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "get { return _image; }",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 15,
+            "column": 36
+          }
+        },
+        {
+          "incidentId": "172f753e-1fb3-40bd-9dc0-3205289760e9",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return _image;",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "return _image;",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 15,
+            "column": 42
+          }
+        },
+        {
+          "incidentId": "ee9fabee-5717-4770-acba-45899c55e7d1",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public BitmapSource Image",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "public BitmapSource Image",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 15,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "f609e77a-2fac-466e-9236-cb391252598d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_image",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "_image",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 14,
+            "column": 38
+          }
+        },
+        {
+          "incidentId": "ad94fc75-22b4-4fcb-a572-7b55c5df287c",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "private ImageCapture(BitmapSource image, CaptureType captureType)\r\n        {\r\n            _image = image;\r\n            _captureType = captureType;\r\n        }",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "private ImageCapture(BitmapSource image, CaptureType captureType)\r\n        {\r\n            _image = image;\r\n            _captureType = captureType;\r\n        }",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 17,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "1fd4bb3e-ff47-4e57-8aff-de477b9c3852",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_image = image;",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\ImageCapture.cs",
+            "snippet": "_image = image;",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 19,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "83156615-d10a-4073-91b3-1a427d483f75",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public static BitmapSource ToBitmapSource(this System.Drawing.Bitmap bitmap)",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "public static BitmapSource ToBitmapSource(this System.Drawing.Bitmap bitmap)",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 96,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "7211e6f2-416e-464a-8be1-a0f2ddbd4f90",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public static BitmapSource ToBitmapSource(this System.Drawing.Bitmap bitmap)",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "public static BitmapSource ToBitmapSource(this System.Drawing.Bitmap bitmap)",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 96,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "8711d53f-712a-4015-ade6-bc0068a0f93b",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.Freeze();",
+              "protected": "M:System.Windows.Freezable.Freeze"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.Freeze();",
+            "protectedSnippet": "M:System.Windows.Freezable.Freeze",
+            "label": "M:System.Windows.Freezable.Freeze",
+            "line": 111,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "7330707b-9f95-474e-8ada-8ea9d7d9a72e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.EndInit();",
+              "protected": "M:System.Windows.Media.Imaging.BitmapImage.EndInit"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.EndInit();",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.BitmapImage.EndInit",
+            "label": "M:System.Windows.Media.Imaging.BitmapImage.EndInit",
+            "line": 110,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "20da0f64-a29e-497b-8ace-b67511048731",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.StreamSource = memory;",
+              "protected": "P:System.Windows.Media.Imaging.BitmapImage.StreamSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.StreamSource = memory;",
+            "protectedSnippet": "P:System.Windows.Media.Imaging.BitmapImage.StreamSource",
+            "label": "P:System.Windows.Media.Imaging.BitmapImage.StreamSource",
+            "line": 109,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "e67c3b96-f624-48f6-8567-0b37fb31d506",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+              "protected": "T:System.Windows.Media.Imaging.BitmapCacheOption"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapCacheOption",
+            "label": "T:System.Windows.Media.Imaging.BitmapCacheOption",
+            "line": 108,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "1cac879d-d9dc-4c8e-84cc-9b0bfd0df39b",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+              "protected": "T:System.Windows.Media.Imaging.BitmapCacheOption"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapCacheOption",
+            "label": "T:System.Windows.Media.Imaging.BitmapCacheOption",
+            "line": 108,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "1423776b-0542-46ff-a6f8-e27dcdf05499",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+              "protected": "F:System.Windows.Media.Imaging.BitmapCacheOption.OnLoad"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+            "protectedSnippet": "F:System.Windows.Media.Imaging.BitmapCacheOption.OnLoad",
+            "label": "F:System.Windows.Media.Imaging.BitmapCacheOption.OnLoad",
+            "line": 108,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "6cfbce34-e2aa-4c75-980f-9bbd8bc33d5f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+              "protected": "T:System.Windows.Media.Imaging.BitmapCacheOption"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapCacheOption",
+            "label": "T:System.Windows.Media.Imaging.BitmapCacheOption",
+            "line": 108,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "d71b1a00-6edd-423c-9a6c-5570744d7f4e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+              "protected": "P:System.Windows.Media.Imaging.BitmapImage.CacheOption"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.CacheOption = BitmapCacheOption.OnLoad;",
+            "protectedSnippet": "P:System.Windows.Media.Imaging.BitmapImage.CacheOption",
+            "label": "P:System.Windows.Media.Imaging.BitmapImage.CacheOption",
+            "line": 108,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "cbe94389-18ed-46c0-9020-0fd8caa88b63",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmapImage.BeginInit();",
+              "protected": "M:System.Windows.Media.Imaging.BitmapImage.BeginInit"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmapImage.BeginInit();",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.BitmapImage.BeginInit",
+            "label": "M:System.Windows.Media.Imaging.BitmapImage.BeginInit",
+            "line": 107,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "951acaeb-bf38-4ee6-bdea-a055c01bb542",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var bitmapImage = new BitmapImage();",
+              "protected": "T:System.Windows.Media.Imaging.BitmapImage"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "var bitmapImage = new BitmapImage();",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapImage",
+            "label": "T:System.Windows.Media.Imaging.BitmapImage",
+            "line": 106,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "214db1b9-4c7e-40f2-b444-e76626bb1fc6",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var bitmapImage = new BitmapImage();",
+              "protected": "M:System.Windows.Media.Imaging.BitmapImage.#ctor"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "var bitmapImage = new BitmapImage();",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.BitmapImage.#ctor",
+            "label": "M:System.Windows.Media.Imaging.BitmapImage.#ctor",
+            "line": 106,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "501e3ff8-fb6d-4510-a035-6c1d86633312",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);",
+              "protected": "T:System.Drawing.Imaging.ImageFormat"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);",
+            "protectedSnippet": "T:System.Drawing.Imaging.ImageFormat",
+            "label": "T:System.Drawing.Imaging.ImageFormat",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 101,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "81389c1e-f2ec-429b-a17b-d410613ea6cc",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);",
+              "protected": "T:System.Drawing.Imaging.ImageFormat"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);",
+            "protectedSnippet": "T:System.Drawing.Imaging.ImageFormat",
+            "label": "T:System.Drawing.Imaging.ImageFormat",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 101,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "2c07775d-49bb-4f98-b9ce-ee879d1657dd",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);",
+              "protected": "P:System.Drawing.Imaging.ImageFormat.Png"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);",
+            "protectedSnippet": "P:System.Drawing.Imaging.ImageFormat.Png",
+            "label": "P:System.Drawing.Imaging.ImageFormat.Png",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 101,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "d7ae5548-503e-4beb-a39a-a3d625e718d2",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);",
+              "protected": "M:System.Drawing.Image.Save(System.IO.Stream,System.Drawing.Imaging.ImageFormat)"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Png);",
+            "protectedSnippet": "M:System.Drawing.Image.Save(System.IO.Stream,System.Drawing.Imaging.ImageFormat)",
+            "label": "M:System.Drawing.Image.Save(System.IO.Stream,System.Drawing.Imaging.ImageFormat)",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 101,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "becae7af-6e91-4229-95cc-41f9032699e0",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer = null;",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer = null;",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 66,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "f663c210-802d-4b43-97f5-1f8b228e2d9c",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Stop();",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Stop();",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 63,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a9be4bc9-46bb-4447-a2d0-4ee07ef33bd7",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Stop();",
+              "protected": "M:System.Windows.Threading.DispatcherTimer.Stop"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Stop();",
+            "protectedSnippet": "M:System.Windows.Threading.DispatcherTimer.Stop",
+            "label": "M:System.Windows.Threading.DispatcherTimer.Stop",
+            "line": 63,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "c307c817-70ba-433f-b43d-3c0d2a0c5fb8",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Start();",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Start();",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 59,
+            "column": 30
+          }
+        },
+        {
+          "incidentId": "1f825bce-ea60-4fbd-bd02-78384d3f5c9d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Start();",
+              "protected": "M:System.Windows.Threading.DispatcherTimer.Start"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Start();",
+            "protectedSnippet": "M:System.Windows.Threading.DispatcherTimer.Start",
+            "label": "M:System.Windows.Threading.DispatcherTimer.Start",
+            "line": 59,
+            "column": 30
+          }
+        },
+        {
+          "incidentId": "3f260d46-efb0-41e6-8b94-1c25c14f974c",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 51,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "10629b4c-a6a2-4fa4-9cf4-7e14ab73c4d0",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Tick \u002B= (sender, e) =\u003E\r\n            {\r\n                if (_sendingFrames)\r\n                {\r\n                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));\r\n\r\n                    _sendHighQualityImage = false;\r\n                }\r\n            };",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Tick \u002B= (sender, e) =\u003E\r\n            {\r\n                if (_sendingFrames)\r\n                {\r\n                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));\r\n\r\n                    _sendHighQualityImage = false;\r\n                }\r\n            };",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 47,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a37cc14b-c50a-42c8-b175-3cf796b6e7d7",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Tick \u002B= (sender, e) =\u003E\r\n            {\r\n                if (_sendingFrames)\r\n                {\r\n                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));\r\n\r\n                    _sendHighQualityImage = false;\r\n                }\r\n            };",
+              "protected": "E:System.Windows.Threading.DispatcherTimer.Tick"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Tick \u002B= (sender, e) =\u003E\r\n            {\r\n                if (_sendingFrames)\r\n                {\r\n                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));\r\n\r\n                    _sendHighQualityImage = false;\r\n                }\r\n            };",
+            "protectedSnippet": "E:System.Windows.Threading.DispatcherTimer.Tick",
+            "label": "E:System.Windows.Threading.DispatcherTimer.Tick",
+            "line": 47,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d85e87cf-180e-438c-a968-1092cce97ee8",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "ba7e3550-3a96-4033-9f44-764bf55cf87a",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);",
+              "protected": "P:System.Windows.Threading.DispatcherTimer.Interval"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);",
+            "protectedSnippet": "P:System.Windows.Threading.DispatcherTimer.Interval",
+            "label": "P:System.Windows.Threading.DispatcherTimer.Interval",
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "26d3df42-9d06-40b2-96f4-89b63ba559ee",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer = new DispatcherTimer();",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer = new DispatcherTimer();",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 45,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "e70fb169-a05c-4733-906c-e09b580157a4",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer = new DispatcherTimer();",
+              "protected": "M:System.Windows.Threading.DispatcherTimer.#ctor"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer = new DispatcherTimer();",
+            "protectedSnippet": "M:System.Windows.Threading.DispatcherTimer.#ctor",
+            "label": "M:System.Windows.Threading.DispatcherTimer.#ctor",
+            "line": 45,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a7e47544-f66f-4d9e-80a1-cd65fa26c4e4",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer = new DispatcherTimer();",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer = new DispatcherTimer();",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 45,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "450f8174-4c52-4867-8ec1-fc1ed39e4d0f",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_3.ToBitmapSource());",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_3.ToBitmapSource());",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 32,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a485153d-a6b0-414b-ac91-e99cc1bad314",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_3.ToBitmapSource());",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_3.ToBitmapSource());",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 32,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "6fa781f5-f5d4-4c8f-b5ab-bda5a981f72b",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_2.ToBitmapSource());",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_2.ToBitmapSource());",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 31,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "9cc2b82f-0729-4df8-9ca1-23cbfa4bf647",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_2.ToBitmapSource());",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_2.ToBitmapSource());",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 31,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "19c28906-4dc5-4d3b-b905-35abd48a6562",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_1.ToBitmapSource());",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_1.ToBitmapSource());",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 30,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "bc5fa673-6d08-4954-854c-7194c33b5191",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_1.ToBitmapSource());",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_1.ToBitmapSource());",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 30,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "1864a9ac-194a-45a5-9e65-356d5dfd0a50",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 21,
+            "column": 39
+          }
+        },
+        {
+          "incidentId": "4c86b54b-03e5-453d-82f6-35d2eaf6d705",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_3.ToBitmapSource());",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_3.ToBitmapSource());",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 32,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "fb7b2eac-b356-498f-ac01-ab490e46c61f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_3.ToBitmapSource());",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_3.ToBitmapSource());",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 32,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "bd82df5d-5bde-4a4e-9b10-bad7a3dc99bd",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_2.ToBitmapSource());",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_2.ToBitmapSource());",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 31,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "7be706e8-1c78-4fff-904f-5786d9f2652d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_2.ToBitmapSource());",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_2.ToBitmapSource());",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 31,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "49994fef-e00c-485c-bbbf-395e419c69a9",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_1.ToBitmapSource());",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_1.ToBitmapSource());",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 30,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "17cb4d39-85bd-494a-8b6b-4464fc57c5e8",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_images.Add(Resources.nerds_1.ToBitmapSource());",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_images.Add(Resources.nerds_1.ToBitmapSource());",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 30,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "36fac296-0c25-4d9f-b6e1-61479c770ba0",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 51,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "73ae908f-cee6-4136-8232-b722282a1f48",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Tick \u002B= (sender, e) =\u003E\r\n            {\r\n                if (_sendingFrames)\r\n                {\r\n                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));\r\n\r\n                    _sendHighQualityImage = false;\r\n                }\r\n            };",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Tick \u002B= (sender, e) =\u003E\r\n            {\r\n                if (_sendingFrames)\r\n                {\r\n                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));\r\n\r\n                    _sendHighQualityImage = false;\r\n                }\r\n            };",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 47,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "1d0feaf7-c897-4750-a643-42bb4e87623a",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Tick \u002B= (sender, e) =\u003E\r\n            {\r\n                if (_sendingFrames)\r\n                {\r\n                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));\r\n\r\n                    _sendHighQualityImage = false;\r\n                }\r\n            };",
+              "protected": "E:System.Windows.Threading.DispatcherTimer.Tick"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Tick \u002B= (sender, e) =\u003E\r\n            {\r\n                if (_sendingFrames)\r\n                {\r\n                    _queue.Enqueue(ImageCapture.Build(_images[_curIndex = (_curIndex \u002B 1) % _images.Count],\r\n                        _sendHighQualityImage ? CaptureType.PRINT : CaptureType.PREVIEW));\r\n\r\n                    _sendHighQualityImage = false;\r\n                }\r\n            };",
+            "protectedSnippet": "E:System.Windows.Threading.DispatcherTimer.Tick",
+            "label": "E:System.Windows.Threading.DispatcherTimer.Tick",
+            "line": 47,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "2feb4baf-093e-47cb-b845-196023944562",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5d454e64-a527-4c23-ab76-258817c6877a",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);",
+              "protected": "P:System.Windows.Threading.DispatcherTimer.Interval"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer.Interval = new TimeSpan(0, 0, 0, 0, 500);",
+            "protectedSnippet": "P:System.Windows.Threading.DispatcherTimer.Interval",
+            "label": "P:System.Windows.Threading.DispatcherTimer.Interval",
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "8f632d69-5cb0-46b1-9525-897669338327",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer = new DispatcherTimer();",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer = new DispatcherTimer();",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 45,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b6394fea-c2a8-4415-9219-a273c88b384e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer = new DispatcherTimer();",
+              "protected": "M:System.Windows.Threading.DispatcherTimer.#ctor"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer = new DispatcherTimer();",
+            "protectedSnippet": "M:System.Windows.Threading.DispatcherTimer.#ctor",
+            "label": "M:System.Windows.Threading.DispatcherTimer.#ctor",
+            "line": 45,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "7d4b61f6-95fd-4138-8660-55aeeb1a6ef6",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_timer = new DispatcherTimer();",
+              "protected": "T:System.Windows.Threading.DispatcherTimer"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\TestImageProducer.cs",
+            "snippet": "_timer = new DispatcherTimer();",
+            "protectedSnippet": "T:System.Windows.Threading.DispatcherTimer",
+            "label": "T:System.Windows.Threading.DispatcherTimer",
+            "line": 45,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "66f0d753-cfb4-40c2-8d3b-4fe6b9ad459d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Application",
+              "protected": "M:System.Windows.Application.#ctor"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\App.xaml.cs",
+            "snippet": "Application",
+            "protectedSnippet": "M:System.Windows.Application.#ctor",
+            "label": "M:System.Windows.Application.#ctor",
+            "line": 13,
+            "column": 31
+          }
+        },
+        {
+          "incidentId": "43cdb823-54f0-42ce-95d3-4340a1b95aa2",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Imaging\\Imaging\\Imaging.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Application",
+              "protected": "T:System.Windows.Application"
+            },
+            "kind": "File",
+            "path": "Imaging\\Imaging\\App.xaml.cs",
+            "snippet": "Application",
+            "protectedSnippet": "T:System.Windows.Application",
+            "label": "T:System.Windows.Application",
+            "line": 13,
+            "column": 31
+          }
+        }
+      ],
+      "features": [
+        {
+          "featureId": "LegacyConfiguration",
+          "incidents": [
+            "7c272ec3-3a46-4d0a-bb48-ae5420857785",
+            "eef118a5-5ef2-49a3-b94c-d660dae48386"
+          ]
+        },
+        {
+          "featureId": "GdiDrawing",
+          "incidents": [
+            "49994fef-e00c-485c-bbbf-395e419c69a9",
+            "bd82df5d-5bde-4a4e-9b10-bad7a3dc99bd",
+            "4c86b54b-03e5-453d-82f6-35d2eaf6d705",
+            "19c28906-4dc5-4d3b-b905-35abd48a6562",
+            "6fa781f5-f5d4-4c8f-b5ab-bda5a981f72b",
+            "450f8174-4c52-4867-8ec1-fc1ed39e4d0f",
+            "d7ae5548-503e-4beb-a39a-a3d625e718d2",
+            "2c07775d-49bb-4f98-b9ce-ee879d1657dd",
+            "81389c1e-f2ec-429b-a17b-d410613ea6cc",
+            "501e3ff8-fb6d-4510-a035-6c1d86633312",
+            "83156615-d10a-4073-91b3-1a427d483f75",
+            "2da4fe12-e5d7-4fe4-b00a-d7ecc987592f",
+            "4b511c35-0e23-4f4e-9097-62e72e8d811f",
+            "6f92342e-e15a-49cf-832e-70187cb2b4c9",
+            "3053fc78-c557-46df-9162-a1b88353e803",
+            "99eabf6b-a993-4251-9820-20f6f7ae510f",
+            "feea1b24-d84b-40a9-ac9a-fff498fc8329"
+          ]
+        },
+        {
+          "featureId": "Wpf",
+          "incidents": [
+            "7d4b61f6-95fd-4138-8660-55aeeb1a6ef6",
+            "b6394fea-c2a8-4415-9219-a273c88b384e",
+            "8f632d69-5cb0-46b1-9525-897669338327",
+            "5d454e64-a527-4c23-ab76-258817c6877a",
+            "2feb4baf-093e-47cb-b845-196023944562",
+            "1d0feaf7-c897-4750-a643-42bb4e87623a",
+            "73ae908f-cee6-4136-8232-b722282a1f48",
+            "36fac296-0c25-4d9f-b6e1-61479c770ba0",
+            "17cb4d39-85bd-494a-8b6b-4464fc57c5e8",
+            "7be706e8-1c78-4fff-904f-5786d9f2652d",
+            "fb7b2eac-b356-498f-ac01-ab490e46c61f",
+            "1864a9ac-194a-45a5-9e65-356d5dfd0a50",
+            "bc5fa673-6d08-4954-854c-7194c33b5191",
+            "9cc2b82f-0729-4df8-9ca1-23cbfa4bf647",
+            "a485153d-a6b0-414b-ac91-e99cc1bad314",
+            "a7e47544-f66f-4d9e-80a1-cd65fa26c4e4",
+            "e70fb169-a05c-4733-906c-e09b580157a4",
+            "26d3df42-9d06-40b2-96f4-89b63ba559ee",
+            "ba7e3550-3a96-4033-9f44-764bf55cf87a",
+            "d85e87cf-180e-438c-a968-1092cce97ee8",
+            "a37cc14b-c50a-42c8-b175-3cf796b6e7d7",
+            "10629b4c-a6a2-4fa4-9cf4-7e14ab73c4d0",
+            "3f260d46-efb0-41e6-8b94-1c25c14f974c",
+            "1f825bce-ea60-4fbd-bd02-78384d3f5c9d",
+            "c307c817-70ba-433f-b43d-3c0d2a0c5fb8",
+            "a9be4bc9-46bb-4447-a2d0-4ee07ef33bd7",
+            "f663c210-802d-4b43-97f5-1f8b228e2d9c",
+            "becae7af-6e91-4229-95cc-41f9032699e0",
+            "214db1b9-4c7e-40f2-b444-e76626bb1fc6",
+            "951acaeb-bf38-4ee6-bdea-a055c01bb542",
+            "cbe94389-18ed-46c0-9020-0fd8caa88b63",
+            "d71b1a00-6edd-423c-9a6c-5570744d7f4e",
+            "6cfbce34-e2aa-4c75-980f-9bbd8bc33d5f",
+            "1423776b-0542-46ff-a6f8-e27dcdf05499",
+            "1cac879d-d9dc-4c8e-84cc-9b0bfd0df39b",
+            "e67c3b96-f624-48f6-8567-0b37fb31d506",
+            "20da0f64-a29e-497b-8ace-b67511048731",
+            "7330707b-9f95-474e-8ada-8ea9d7d9a72e",
+            "7211e6f2-416e-464a-8be1-a0f2ddbd4f90",
+            "1fd4bb3e-ff47-4e57-8aff-de477b9c3852",
+            "ad94fc75-22b4-4fcb-a572-7b55c5df287c",
+            "f609e77a-2fac-466e-9236-cb391252598d",
+            "ee9fabee-5717-4770-acba-45899c55e7d1",
+            "172f753e-1fb3-40bd-9dc0-3205289760e9",
+            "4fbb2b2e-f9e7-4698-a4aa-21578b99c06e",
+            "487671c2-b2c7-48cb-8103-1be992aace04",
+            "054163a9-8d42-4c03-8eb0-e4c327c42c93",
+            "a55f206d-964a-4924-b983-add7fcb00cee"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Libs\\Libs.csproj",
+      "startingProject": true,
+      "issues": 4,
+      "storyPoints": 50,
+      "properties": {
+        "appName": "Libs",
+        "projectKind": "Wpf",
+        "frameworks": [
+          "net4.7.1"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 3,
+        "numberOfCodeFiles": 3,
+        "linesTotal": 235,
+        "linesOfCode": 235,
+        "totalApiScanned": 316,
+        "minLinesOfCodeToChange": 48,
+        "maxLinesOfCodeToChange": 48
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "fbdde973-411a-4f65-98b0-4daa641d8792",
+          "ruleId": "NuGet.0002",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Text.Json, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 8.0.6",
+              "protected": "System.Text.Json, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 8.0.6"
+            },
+            "kind": "File",
+            "path": "Libs\\Libs.csproj",
+            "snippet": "System.Text.Json, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 8.0.6",
+            "protectedSnippet": "System.Text.Json, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 8.0.6",
+            "label": "System.Text.Json 9.0.4",
+            "properties": {
+              "PackageId": "System.Text.Json",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "8.0.6",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "d3411958-728b-492c-99f7-3cd3e1c50e17",
+          "ruleId": "Project.0002",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net4.7.1\nRecommended target framework: net8.0-windows",
+              "protected": "Current target framework: net4.7.1\nRecommended target framework: net8.0-windows"
+            },
+            "kind": "File",
+            "path": "Libs\\Libs.csproj",
+            "snippet": "Current target framework: net4.7.1\nRecommended target framework: net8.0-windows",
+            "protectedSnippet": "Current target framework: net4.7.1\nRecommended target framework: net8.0-windows",
+            "properties": {
+              "CurrentTargetFramework": "net4.7.1",
+              "RecommendedTargetFramework": "net8.0-windows"
+            }
+          }
+        },
+        {
+          "incidentId": "7cb7f7f6-54bd-4b55-8b56-d61e53bf46f6",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public static Bitmap ToBMP(this FixedPage page, Config config)",
+              "protected": "T:System.Windows.Documents.FixedPage"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "public static Bitmap ToBMP(this FixedPage page, Config config)",
+            "protectedSnippet": "T:System.Windows.Documents.FixedPage",
+            "label": "T:System.Windows.Documents.FixedPage",
+            "line": 14,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "b435542d-fe47-43cb-946e-1b94b9de1730",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public static Bitmap ToBMP(this FixedPage page, Config config)",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "public static Bitmap ToBMP(this FixedPage page, Config config)",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 14,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "6c714497-46f9-4d51-bd81-64f9b634f7c9",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return new Bitmap(ms);",
+              "protected": "T:System.Drawing.Bitmap"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "return new Bitmap(ms);",
+            "protectedSnippet": "T:System.Drawing.Bitmap",
+            "label": "T:System.Drawing.Bitmap",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 35,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a82b6010-2e0e-4333-8e00-d8e6aca2ee38",
+          "ruleId": "Api.0002",
+          "description": "API is available in package System.Drawing.Common, 8.0.6. Add package reference to System.Drawing.Common, 8.0.6",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return new Bitmap(ms);",
+              "protected": "M:System.Drawing.Bitmap.#ctor(System.IO.Stream)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "return new Bitmap(ms);",
+            "protectedSnippet": "M:System.Drawing.Bitmap.#ctor(System.IO.Stream)",
+            "label": "M:System.Drawing.Bitmap.#ctor(System.IO.Stream)",
+            "properties": {
+              "PackageId": "System.Drawing.Common",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 35,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "44a7bed7-5b1c-4d93-b745-737854fa6f4f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Save(ms);",
+              "protected": "M:System.Windows.Media.Imaging.BitmapEncoder.Save(System.IO.Stream)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "encoder.Save(ms);",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.BitmapEncoder.Save(System.IO.Stream)",
+            "label": "M:System.Windows.Media.Imaging.BitmapEncoder.Save(System.IO.Stream)",
+            "line": 32,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "496c96cf-06ff-4b47-b71c-f7d165a9992f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Frames.Add(BitmapFrame.Create(rtb));",
+              "protected": "T:System.Windows.Media.Imaging.BitmapFrame"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "encoder.Frames.Add(BitmapFrame.Create(rtb));",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapFrame",
+            "label": "T:System.Windows.Media.Imaging.BitmapFrame",
+            "line": 29,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a3105725-391c-4ada-9ba7-cc612c9be598",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Frames.Add(BitmapFrame.Create(rtb));",
+              "protected": "T:System.Windows.Media.Imaging.BitmapFrame"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "encoder.Frames.Add(BitmapFrame.Create(rtb));",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapFrame",
+            "label": "T:System.Windows.Media.Imaging.BitmapFrame",
+            "line": 29,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "57ff520c-2848-4ea7-9a9b-cd6bf5cfdbb0",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Frames.Add(BitmapFrame.Create(rtb));",
+              "protected": "M:System.Windows.Media.Imaging.BitmapFrame.Create(System.Windows.Media.Imaging.BitmapSource)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "encoder.Frames.Add(BitmapFrame.Create(rtb));",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.BitmapFrame.Create(System.Windows.Media.Imaging.BitmapSource)",
+            "label": "M:System.Windows.Media.Imaging.BitmapFrame.Create(System.Windows.Media.Imaging.BitmapSource)",
+            "line": 29,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "3c6246f6-22aa-41fb-aa8d-94e9cf9d5312",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Frames.Add(BitmapFrame.Create(rtb));",
+              "protected": "P:System.Windows.Media.Imaging.BitmapEncoder.Frames"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "encoder.Frames.Add(BitmapFrame.Create(rtb));",
+            "protectedSnippet": "P:System.Windows.Media.Imaging.BitmapEncoder.Frames",
+            "label": "P:System.Windows.Media.Imaging.BitmapEncoder.Frames",
+            "line": 29,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "fa144f67-4588-4f30-b86c-59813948c745",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var encoder = new PngBitmapEncoder();",
+              "protected": "T:System.Windows.Media.Imaging.PngBitmapEncoder"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "var encoder = new PngBitmapEncoder();",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.PngBitmapEncoder",
+            "label": "T:System.Windows.Media.Imaging.PngBitmapEncoder",
+            "line": 28,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d8a85c8f-8ad3-4e91-bec7-9ce91c144361",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var encoder = new PngBitmapEncoder();",
+              "protected": "M:System.Windows.Media.Imaging.PngBitmapEncoder.#ctor"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "var encoder = new PngBitmapEncoder();",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.PngBitmapEncoder.#ctor",
+            "label": "M:System.Windows.Media.Imaging.PngBitmapEncoder.#ctor",
+            "line": 28,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "114c7eb2-09f7-4398-b407-b0b2e20840a6",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "rtb.Render(page);",
+              "protected": "M:System.Windows.Media.Imaging.RenderTargetBitmap.Render(System.Windows.Media.Visual)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "rtb.Render(page);",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.RenderTargetBitmap.Render(System.Windows.Media.Visual)",
+            "label": "M:System.Windows.Media.Imaging.RenderTargetBitmap.Render(System.Windows.Media.Visual)",
+            "line": 25,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "60eee3a9-eae7-489e-9334-1d505a96dff4",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+              "protected": "T:System.Windows.Media.PixelFormats"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+            "protectedSnippet": "T:System.Windows.Media.PixelFormats",
+            "label": "T:System.Windows.Media.PixelFormats",
+            "line": 23,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "ccaf07c5-dd01-4b06-8b50-755020a7d3cf",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+              "protected": "T:System.Windows.Media.PixelFormat"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+            "protectedSnippet": "T:System.Windows.Media.PixelFormat",
+            "label": "T:System.Windows.Media.PixelFormat",
+            "line": 23,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "0f95e292-63c0-4684-a07c-94f509ce8452",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+              "protected": "P:System.Windows.Media.PixelFormats.Pbgra32"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+            "protectedSnippet": "P:System.Windows.Media.PixelFormats.Pbgra32",
+            "label": "P:System.Windows.Media.PixelFormats.Pbgra32",
+            "line": 23,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b29fe051-7e3b-4c1e-bf28-ecfc53f670cb",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+              "protected": "T:System.Windows.Media.Imaging.RenderTargetBitmap"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.RenderTargetBitmap",
+            "label": "T:System.Windows.Media.Imaging.RenderTargetBitmap",
+            "line": 23,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "2c1a1a35-caa4-4497-bf12-344c517acd22",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+              "protected": "M:System.Windows.Media.Imaging.RenderTargetBitmap.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Windows.Media.PixelFormat)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "var rtb = new RenderTargetBitmap(pixelWidth,pixelHeight,config.PrintDPI,config.PrintDPI,PixelFormats.Pbgra32);",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.RenderTargetBitmap.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Windows.Media.PixelFormat)",
+            "label": "M:System.Windows.Media.Imaging.RenderTargetBitmap.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Windows.Media.PixelFormat)",
+            "line": 23,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "09400655-d5ba-448d-a510-dbb39b1c34b0",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "int pixelHeight = (int)(page.Height * config.PrintDPI / 96.0);",
+              "protected": "P:System.Windows.FrameworkElement.Height"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "int pixelHeight = (int)(page.Height * config.PrintDPI / 96.0);",
+            "protectedSnippet": "P:System.Windows.FrameworkElement.Height",
+            "label": "P:System.Windows.FrameworkElement.Height",
+            "line": 21,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d91f9dcf-c421-4652-ae4c-cc3fd295f068",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "int pixelWidth = (int)(page.Width * config.PrintDPI / 96.0);",
+              "protected": "P:System.Windows.FrameworkElement.Width"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "int pixelWidth = (int)(page.Width * config.PrintDPI / 96.0);",
+            "protectedSnippet": "P:System.Windows.FrameworkElement.Width",
+            "label": "P:System.Windows.FrameworkElement.Width",
+            "line": 20,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "c9586b76-20e3-4e3d-9a19-36a49e8e5d3a",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.UpdateLayout();",
+              "protected": "M:System.Windows.UIElement.UpdateLayout"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.UpdateLayout();",
+            "protectedSnippet": "M:System.Windows.UIElement.UpdateLayout",
+            "label": "M:System.Windows.UIElement.UpdateLayout",
+            "line": 18,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "9a5a5441-701f-4e04-8122-d52c3ff77f6f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+              "protected": "P:System.Windows.FrameworkElement.Height"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+            "protectedSnippet": "P:System.Windows.FrameworkElement.Height",
+            "label": "P:System.Windows.FrameworkElement.Height",
+            "line": 17,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "529b6315-2b9b-4736-89ac-e661d003eb93",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+              "protected": "P:System.Windows.FrameworkElement.Width"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+            "protectedSnippet": "P:System.Windows.FrameworkElement.Width",
+            "label": "P:System.Windows.FrameworkElement.Width",
+            "line": 17,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4801f008-2af8-480b-9bf8-3d594a898793",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+              "protected": "T:System.Windows.Rect"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+            "protectedSnippet": "T:System.Windows.Rect",
+            "label": "T:System.Windows.Rect",
+            "line": 17,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "69844e8c-9a02-47eb-8bf2-6e0292c6bec9",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+              "protected": "M:System.Windows.Rect.#ctor(System.Double,System.Double,System.Double,System.Double)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+            "protectedSnippet": "M:System.Windows.Rect.#ctor(System.Double,System.Double,System.Double,System.Double)",
+            "label": "M:System.Windows.Rect.#ctor(System.Double,System.Double,System.Double,System.Double)",
+            "line": 17,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4777bef1-32c1-42c1-ac09-fbb6080fbf33",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+              "protected": "M:System.Windows.UIElement.Arrange(System.Windows.Rect)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Arrange(new System.Windows.Rect(0, 0, page.Width, page.Height));",
+            "protectedSnippet": "M:System.Windows.UIElement.Arrange(System.Windows.Rect)",
+            "label": "M:System.Windows.UIElement.Arrange(System.Windows.Rect)",
+            "line": 17,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b43f7b65-82e7-4bbc-a834-fc3a6a5b4e02",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+              "protected": "P:System.Windows.FrameworkElement.Height"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+            "protectedSnippet": "P:System.Windows.FrameworkElement.Height",
+            "label": "P:System.Windows.FrameworkElement.Height",
+            "line": 16,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "dc4aef6d-21fe-40be-9480-275e5c553d83",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+              "protected": "P:System.Windows.FrameworkElement.Width"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+            "protectedSnippet": "P:System.Windows.FrameworkElement.Width",
+            "label": "P:System.Windows.FrameworkElement.Width",
+            "line": 16,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "6a2f3a22-aeaf-446c-8909-2bf494f03922",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+              "protected": "T:System.Windows.Size"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+            "protectedSnippet": "T:System.Windows.Size",
+            "label": "T:System.Windows.Size",
+            "line": 16,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "eca0719d-246e-41b2-9df3-be454200fa73",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+              "protected": "M:System.Windows.Size.#ctor(System.Double,System.Double)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+            "protectedSnippet": "M:System.Windows.Size.#ctor(System.Double,System.Double)",
+            "label": "M:System.Windows.Size.#ctor(System.Double,System.Double)",
+            "line": 16,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "1a4f90a0-9b1e-4cf3-a7a1-d78de666a6ba",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+              "protected": "M:System.Windows.UIElement.Measure(System.Windows.Size)"
+            },
+            "kind": "File",
+            "path": "Libs\\Extensions.cs",
+            "snippet": "page.Measure(new System.Windows.Size(page.Width, page.Height));",
+            "protectedSnippet": "M:System.Windows.UIElement.Measure(System.Windows.Size)",
+            "label": "M:System.Windows.UIElement.Measure(System.Windows.Size)",
+            "line": 16,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "22ec707e-75dc-48ec-b1d2-d5abd0f15751",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "private static void WriteImageFile(BitmapSource imageSource, string filename)",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "private static void WriteImageFile(BitmapSource imageSource, string filename)",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 43,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "602260a2-bf27-4f00-b32b-d6f80fabcaa7",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Save(stream);",
+              "protected": "M:System.Windows.Media.Imaging.BitmapEncoder.Save(System.IO.Stream)"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "encoder.Save(stream);",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.BitmapEncoder.Save(System.IO.Stream)",
+            "label": "M:System.Windows.Media.Imaging.BitmapEncoder.Save(System.IO.Stream)",
+            "line": 48,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b5380595-8816-4a34-bcfd-34f347140023",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Frames.Add(BitmapFrame.Create(imageSource));",
+              "protected": "T:System.Windows.Media.Imaging.BitmapFrame"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "encoder.Frames.Add(BitmapFrame.Create(imageSource));",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapFrame",
+            "label": "T:System.Windows.Media.Imaging.BitmapFrame",
+            "line": 47,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "c29f8e8d-67f0-40c0-937d-d2c5f8cf1a32",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Frames.Add(BitmapFrame.Create(imageSource));",
+              "protected": "T:System.Windows.Media.Imaging.BitmapFrame"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "encoder.Frames.Add(BitmapFrame.Create(imageSource));",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapFrame",
+            "label": "T:System.Windows.Media.Imaging.BitmapFrame",
+            "line": 47,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "7c33dcde-c5b9-49b7-b497-42aa5c7c006d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Frames.Add(BitmapFrame.Create(imageSource));",
+              "protected": "M:System.Windows.Media.Imaging.BitmapFrame.Create(System.Windows.Media.Imaging.BitmapSource)"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "encoder.Frames.Add(BitmapFrame.Create(imageSource));",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.BitmapFrame.Create(System.Windows.Media.Imaging.BitmapSource)",
+            "label": "M:System.Windows.Media.Imaging.BitmapFrame.Create(System.Windows.Media.Imaging.BitmapSource)",
+            "line": 47,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "bc677282-3fe0-4912-87a8-3039507c8e79",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "encoder.Frames.Add(BitmapFrame.Create(imageSource));",
+              "protected": "P:System.Windows.Media.Imaging.BitmapEncoder.Frames"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "encoder.Frames.Add(BitmapFrame.Create(imageSource));",
+            "protectedSnippet": "P:System.Windows.Media.Imaging.BitmapEncoder.Frames",
+            "label": "P:System.Windows.Media.Imaging.BitmapEncoder.Frames",
+            "line": 47,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "14257cb1-b3c7-4391-805c-d606812d6e2f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var encoder = new TiffBitmapEncoder();",
+              "protected": "T:System.Windows.Media.Imaging.TiffBitmapEncoder"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var encoder = new TiffBitmapEncoder();",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.TiffBitmapEncoder",
+            "label": "T:System.Windows.Media.Imaging.TiffBitmapEncoder",
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b966a89a-ee29-4214-bb78-6b843f13e419",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var encoder = new TiffBitmapEncoder();",
+              "protected": "M:System.Windows.Media.Imaging.TiffBitmapEncoder.#ctor"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var encoder = new TiffBitmapEncoder();",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.TiffBitmapEncoder.#ctor",
+            "label": "M:System.Windows.Media.Imaging.TiffBitmapEncoder.#ctor",
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "da483cb8-272b-4cb1-adec-1e86d011832e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public static string WriteImageFile(string prefix, BitmapSource imageSource, Config config)",
+              "protected": "T:System.Windows.Media.Imaging.BitmapSource"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "public static string WriteImageFile(string prefix, BitmapSource imageSource, Config config)",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.BitmapSource",
+            "label": "T:System.Windows.Media.Imaging.BitmapSource",
+            "line": 24,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "ab69c678-400c-47b5-ad71-7a4ed1d8f547",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "public static string WriteImageFile(string prefix, FixedPage fixedPage, Config config)",
+              "protected": "T:System.Windows.Documents.FixedPage"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "public static string WriteImageFile(string prefix, FixedPage fixedPage, Config config)",
+            "protectedSnippet": "T:System.Windows.Documents.FixedPage",
+            "label": "T:System.Windows.Documents.FixedPage",
+            "line": 9,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "642d1b4a-349d-4f9e-897d-bfa8e91622ed",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "renderTarget.Render(fixedPage);",
+              "protected": "M:System.Windows.Media.Imaging.RenderTargetBitmap.Render(System.Windows.Media.Visual)"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "renderTarget.Render(fixedPage);",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.RenderTargetBitmap.Render(System.Windows.Media.Visual)",
+            "label": "M:System.Windows.Media.Imaging.RenderTargetBitmap.Render(System.Windows.Media.Visual)",
+            "line": 19,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "54c6a728-f312-4a6f-b9fd-e5f938a1d355",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+              "protected": "T:System.Windows.Media.PixelFormats"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+            "protectedSnippet": "T:System.Windows.Media.PixelFormats",
+            "label": "T:System.Windows.Media.PixelFormats",
+            "line": 12,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "e44c65dc-8b2c-4c8c-bfd6-547163db158e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+              "protected": "T:System.Windows.Media.PixelFormat"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+            "protectedSnippet": "T:System.Windows.Media.PixelFormat",
+            "label": "T:System.Windows.Media.PixelFormat",
+            "line": 12,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a8b141f5-575a-4362-8c71-b5abecaada7f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+              "protected": "P:System.Windows.Media.PixelFormats.Pbgra32"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+            "protectedSnippet": "P:System.Windows.Media.PixelFormats.Pbgra32",
+            "label": "P:System.Windows.Media.PixelFormats.Pbgra32",
+            "line": 12,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "ffbeb676-19f4-4492-b2db-bf53d7b455c7",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+              "protected": "P:System.Windows.FrameworkElement.ActualHeight"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+            "protectedSnippet": "P:System.Windows.FrameworkElement.ActualHeight",
+            "label": "P:System.Windows.FrameworkElement.ActualHeight",
+            "line": 12,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "93f60cfe-522c-4b81-aaed-9c35d8b1fcd8",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+              "protected": "P:System.Windows.FrameworkElement.ActualWidth"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+            "protectedSnippet": "P:System.Windows.FrameworkElement.ActualWidth",
+            "label": "P:System.Windows.FrameworkElement.ActualWidth",
+            "line": 12,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4becc1dc-f6c4-4500-83b5-09b2965f6f88",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+              "protected": "T:System.Windows.Media.Imaging.RenderTargetBitmap"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+            "protectedSnippet": "T:System.Windows.Media.Imaging.RenderTargetBitmap",
+            "label": "T:System.Windows.Media.Imaging.RenderTargetBitmap",
+            "line": 12,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "81b532dd-99ff-48e5-8c99-0a6f431e5f7b",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "Libs\\Libs.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+              "protected": "M:System.Windows.Media.Imaging.RenderTargetBitmap.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Windows.Media.PixelFormat)"
+            },
+            "kind": "File",
+            "path": "Libs\\ImageFileService.cs",
+            "snippet": "var renderTarget = new RenderTargetBitmap(\r\n                (int)((fixedPage.ActualWidth) * dpi / 96),\r\n                (int)((fixedPage.ActualHeight) * dpi / 96),\r\n                dpi,\r\n                dpi,\r\n                PixelFormats.Pbgra32);",
+            "protectedSnippet": "M:System.Windows.Media.Imaging.RenderTargetBitmap.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Windows.Media.PixelFormat)",
+            "label": "M:System.Windows.Media.Imaging.RenderTargetBitmap.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Windows.Media.PixelFormat)",
+            "line": 12,
+            "column": 12
+          }
+        }
+      ],
+      "features": [
+        {
+          "featureId": "GdiDrawing",
+          "incidents": [
+            "a82b6010-2e0e-4333-8e00-d8e6aca2ee38",
+            "6c714497-46f9-4d51-bd81-64f9b634f7c9",
+            "b435542d-fe47-43cb-946e-1b94b9de1730"
+          ]
+        },
+        {
+          "featureId": "Wpf",
+          "incidents": [
+            "81b532dd-99ff-48e5-8c99-0a6f431e5f7b",
+            "4becc1dc-f6c4-4500-83b5-09b2965f6f88",
+            "a8b141f5-575a-4362-8c71-b5abecaada7f",
+            "e44c65dc-8b2c-4c8c-bfd6-547163db158e",
+            "54c6a728-f312-4a6f-b9fd-e5f938a1d355",
+            "642d1b4a-349d-4f9e-897d-bfa8e91622ed",
+            "ab69c678-400c-47b5-ad71-7a4ed1d8f547",
+            "da483cb8-272b-4cb1-adec-1e86d011832e",
+            "b966a89a-ee29-4214-bb78-6b843f13e419",
+            "14257cb1-b3c7-4391-805c-d606812d6e2f",
+            "bc677282-3fe0-4912-87a8-3039507c8e79",
+            "7c33dcde-c5b9-49b7-b497-42aa5c7c006d",
+            "c29f8e8d-67f0-40c0-937d-d2c5f8cf1a32",
+            "b5380595-8816-4a34-bcfd-34f347140023",
+            "602260a2-bf27-4f00-b32b-d6f80fabcaa7",
+            "22ec707e-75dc-48ec-b1d2-d5abd0f15751",
+            "2c1a1a35-caa4-4497-bf12-344c517acd22",
+            "b29fe051-7e3b-4c1e-bf28-ecfc53f670cb",
+            "0f95e292-63c0-4684-a07c-94f509ce8452",
+            "ccaf07c5-dd01-4b06-8b50-755020a7d3cf",
+            "60eee3a9-eae7-489e-9334-1d505a96dff4",
+            "114c7eb2-09f7-4398-b407-b0b2e20840a6",
+            "d8a85c8f-8ad3-4e91-bec7-9ce91c144361",
+            "fa144f67-4588-4f30-b86c-59813948c745",
+            "3c6246f6-22aa-41fb-aa8d-94e9cf9d5312",
+            "57ff520c-2848-4ea7-9a9b-cd6bf5cfdbb0",
+            "a3105725-391c-4ada-9ba7-cc612c9be598",
+            "496c96cf-06ff-4b47-b71c-f7d165a9992f",
+            "44a7bed7-5b1c-4d93-b745-737854fa6f4f",
+            "7cb7f7f6-54bd-4b55-8b56-d61e53bf46f6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+      "startingProject": true,
+      "issues": 5,
+      "storyPoints": 13,
+      "properties": {
+        "appName": "MainApplication",
+        "projectKind": "ClassicWinForms",
+        "frameworks": [
+          "net48"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": false,
+        "numberOfFiles": 12,
+        "numberOfCodeFiles": 11,
+        "linesTotal": 1364,
+        "linesOfCode": 1228,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "1d27887f-0cf3-439b-af6e-b5cc52bb5c65",
+          "ruleId": "NuGet.0002",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Bcl.AsyncInterfaces, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.Bcl.AsyncInterfaces, and replace with new package Microsoft.Bcl.AsyncInterfaces 8.0.0",
+              "protected": "Microsoft.Bcl.AsyncInterfaces, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.Bcl.AsyncInterfaces, and replace with new package Microsoft.Bcl.AsyncInterfaces 8.0.0"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "Microsoft.Bcl.AsyncInterfaces, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.Bcl.AsyncInterfaces, and replace with new package Microsoft.Bcl.AsyncInterfaces 8.0.0",
+            "protectedSnippet": "Microsoft.Bcl.AsyncInterfaces, 9.0.4\n\nRecommendation:\n\nRemove Microsoft.Bcl.AsyncInterfaces, and replace with new package Microsoft.Bcl.AsyncInterfaces 8.0.0",
+            "label": "Microsoft.Bcl.AsyncInterfaces 9.0.4",
+            "properties": {
+              "PackageId": "Microsoft.Bcl.AsyncInterfaces",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "8.0.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "39f9b4f0-1b47-4e47-95ef-e24a1fd75d19",
+          "ruleId": "NuGet.0001",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft-WindowsAPICodePack-Core, 1.1.3.3\n\nRecommendation:\n\nMicrosoft-WindowsAPICodePack-Core, 1.1.5",
+              "protected": "Microsoft-WindowsAPICodePack-Core, 1.1.3.3\n\nRecommendation:\n\nMicrosoft-WindowsAPICodePack-Core, 1.1.5"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "Microsoft-WindowsAPICodePack-Core, 1.1.3.3\n\nRecommendation:\n\nMicrosoft-WindowsAPICodePack-Core, 1.1.5",
+            "protectedSnippet": "Microsoft-WindowsAPICodePack-Core, 1.1.3.3\n\nRecommendation:\n\nMicrosoft-WindowsAPICodePack-Core, 1.1.5",
+            "label": "Microsoft-WindowsAPICodePack-Core 1.1.3.3",
+            "properties": {
+              "PackageId": "Microsoft-WindowsAPICodePack-Core",
+              "PackageVersion": "1.1.3.3",
+              "PackageNewVersion": "1.1.5",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "c86dc007-5118-4f62-b01f-55efbff59a8c",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Buffers, 4.5.1\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "System.Buffers, 4.5.1\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.Buffers, 4.5.1\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "System.Buffers, 4.5.1\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "System.Buffers 4.5.1",
+            "properties": {
+              "PackageId": "System.Buffers",
+              "PackageVersion": "4.5.1",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "a578aa5c-f45f-495e-b55c-8b5867d5a27e",
+          "ruleId": "NuGet.0002",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.IO.Pipelines, 9.0.4\n\nRecommendation:\n\nRemove System.IO.Pipelines, and replace with new package System.IO.Pipelines 8.0.0",
+              "protected": "System.IO.Pipelines, 9.0.4\n\nRecommendation:\n\nRemove System.IO.Pipelines, and replace with new package System.IO.Pipelines 8.0.0"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.IO.Pipelines, 9.0.4\n\nRecommendation:\n\nRemove System.IO.Pipelines, and replace with new package System.IO.Pipelines 8.0.0",
+            "protectedSnippet": "System.IO.Pipelines, 9.0.4\n\nRecommendation:\n\nRemove System.IO.Pipelines, and replace with new package System.IO.Pipelines 8.0.0",
+            "label": "System.IO.Pipelines 9.0.4",
+            "properties": {
+              "PackageId": "System.IO.Pipelines",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "8.0.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "36d0cbd1-573d-4880-935c-bc704aa46088",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Memory, 4.5.5\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "System.Memory, 4.5.5\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.Memory, 4.5.5\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "System.Memory, 4.5.5\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "System.Memory 4.5.5",
+            "properties": {
+              "PackageId": "System.Memory",
+              "PackageVersion": "4.5.5",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "02f62796-aa98-46d8-b7fd-ad5290710811",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Numerics.Vectors, 4.5.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "System.Numerics.Vectors, 4.5.0\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.Numerics.Vectors, 4.5.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "System.Numerics.Vectors, 4.5.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "System.Numerics.Vectors 4.5.0",
+            "properties": {
+              "PackageId": "System.Numerics.Vectors",
+              "PackageVersion": "4.5.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "3f2f0639-af4c-4f87-8bda-d8728f0a745f",
+          "ruleId": "NuGet.0002",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Runtime.CompilerServices.Unsafe, 6.0.0\n\nRecommendation:\n\nRemove System.Runtime.CompilerServices.Unsafe, and replace with new package System.Runtime.CompilerServices.Unsafe 6.1.2",
+              "protected": "System.Runtime.CompilerServices.Unsafe, 6.0.0\n\nRecommendation:\n\nRemove System.Runtime.CompilerServices.Unsafe, and replace with new package System.Runtime.CompilerServices.Unsafe 6.1.2"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.Runtime.CompilerServices.Unsafe, 6.0.0\n\nRecommendation:\n\nRemove System.Runtime.CompilerServices.Unsafe, and replace with new package System.Runtime.CompilerServices.Unsafe 6.1.2",
+            "protectedSnippet": "System.Runtime.CompilerServices.Unsafe, 6.0.0\n\nRecommendation:\n\nRemove System.Runtime.CompilerServices.Unsafe, and replace with new package System.Runtime.CompilerServices.Unsafe 6.1.2",
+            "label": "System.Runtime.CompilerServices.Unsafe 6.0.0",
+            "properties": {
+              "PackageId": "System.Runtime.CompilerServices.Unsafe",
+              "PackageVersion": "6.0.0",
+              "PackageNewVersion": "6.1.2",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "51cdabcf-ba55-471b-9c0b-daccbf2473c8",
+          "ruleId": "NuGet.0002",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Text.Encodings.Web, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Encodings.Web, and replace with new package System.Text.Encodings.Web 8.0.0",
+              "protected": "System.Text.Encodings.Web, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Encodings.Web, and replace with new package System.Text.Encodings.Web 8.0.0"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.Text.Encodings.Web, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Encodings.Web, and replace with new package System.Text.Encodings.Web 8.0.0",
+            "protectedSnippet": "System.Text.Encodings.Web, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Encodings.Web, and replace with new package System.Text.Encodings.Web 8.0.0",
+            "label": "System.Text.Encodings.Web 9.0.4",
+            "properties": {
+              "PackageId": "System.Text.Encodings.Web",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "8.0.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "1ee7edc3-c6c2-4880-a768-2e176c912a4f",
+          "ruleId": "NuGet.0002",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Text.Json, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 8.0.6",
+              "protected": "System.Text.Json, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 8.0.6"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.Text.Json, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 8.0.6",
+            "protectedSnippet": "System.Text.Json, 9.0.4\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 8.0.6",
+            "label": "System.Text.Json 9.0.4",
+            "properties": {
+              "PackageId": "System.Text.Json",
+              "PackageVersion": "9.0.4",
+              "PackageNewVersion": "8.0.6",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "9f7407b5-52fb-403b-ad2f-4137edd2a7fe",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Threading.Tasks.Extensions, 4.5.4\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "System.Threading.Tasks.Extensions, 4.5.4\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.Threading.Tasks.Extensions, 4.5.4\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "System.Threading.Tasks.Extensions, 4.5.4\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "System.Threading.Tasks.Extensions 4.5.4",
+            "properties": {
+              "PackageId": "System.Threading.Tasks.Extensions",
+              "PackageVersion": "4.5.4",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "b81df143-4c58-4737-bf49-cf9b7838ef9e",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.ValueTuple, 4.5.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "System.ValueTuple, 4.5.0\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "System.ValueTuple, 4.5.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "System.ValueTuple, 4.5.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "System.ValueTuple 4.5.0",
+            "properties": {
+              "PackageId": "System.ValueTuple",
+              "PackageVersion": "4.5.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "2017f1b7-0ada-45ba-95b4-fd24e30d5337",
+          "ruleId": "Project.0001",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj"
+          }
+        },
+        {
+          "incidentId": "f0636883-a0b2-40aa-8103-b1bbc7a88306",
+          "ruleId": "Project.0002",
+          "projectPath": "MainApplication\\MainApplication\\MainApplication.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+              "protected": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows"
+            },
+            "kind": "File",
+            "path": "MainApplication\\MainApplication\\MainApplication.csproj",
+            "snippet": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+            "protectedSnippet": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+            "properties": {
+              "CurrentTargetFramework": ".NETFramework,Version=v4.8",
+              "RecommendedTargetFramework": "net8.0-windows"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "Printing\\Printing\\Printing.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 2,
+      "properties": {
+        "appName": "Printing",
+        "projectKind": "ClassicWpf",
+        "frameworks": [
+          "net48"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": false,
+        "numberOfFiles": 10,
+        "numberOfCodeFiles": 9,
+        "linesTotal": 932,
+        "linesOfCode": 799,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "480b7b1e-30ae-45d9-a7ec-8eac338d1783",
+          "ruleId": "Project.0001",
+          "projectPath": "Printing\\Printing\\Printing.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "Printing\\Printing\\Printing.csproj"
+          }
+        },
+        {
+          "incidentId": "4d9c0156-fa67-4352-83bf-651f3c6cfdf4",
+          "ruleId": "Project.0002",
+          "projectPath": "Printing\\Printing\\Printing.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+              "protected": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows"
+            },
+            "kind": "File",
+            "path": "Printing\\Printing\\Printing.csproj",
+            "snippet": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+            "protectedSnippet": "Current target framework: .NETFramework,Version=v4.8\nRecommended target framework: net8.0-windows",
+            "properties": {
+              "CurrentTargetFramework": ".NETFramework,Version=v4.8",
+              "RecommendedTargetFramework": "net8.0-windows"
+            }
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "Project.0001": {
+      "id": "Project.0001",
+      "isFeature": false,
+      "description": "Project file needs to be converted to SDK-style. Modern .NET framework projects require a change in the project file format and use SDK corresponding to project flavor and functionality.",
+      "label": "Project file needs to be converted to SDK-style",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0002": {
+      "id": "Api.0002",
+      "isFeature": false,
+      "description": "API is source incompatible for selected .NET version: requires code changes to compile successfully when targeting a new version, such as removing obsolete APIs or changing method signatures.",
+      "label": "Source incompatible for selected .NET version",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0001": {
+      "id": "Api.0001",
+      "isFeature": false,
+      "description": "API is binary incompatible for selected .NET version: affects existing binaries, often requiring recompilation, because the API has changed in a way that prevents older binaries from loading or executing.",
+      "label": "Binary incompatible for selected .NET version",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "LegacyConfiguration": {
+      "id": "LegacyConfiguration",
+      "isFeature": false,
+      "description": "Legacy XML-based configuration system (app.config/web.config) that has been replaced by a more flexible configuration model in .NET Core. The old system was rigid and XML-based. Migrate to Microsoft.Extensions.Configuration with JSON/environment variables; use System.Configuration.ConfigurationManager NuGet package as interim bridge if needed.",
+      "label": "Legacy Configuration System",
+      "severity": "Mandatory",
+      "effort": 2,
+      "links": [
+        {
+          "title": "Configuration in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2341702",
+          "isCustom": false
+        }
+      ]
+    },
+    "GdiDrawing": {
+      "id": "GdiDrawing",
+      "isFeature": false,
+      "description": "System.Drawing APIs for 2D graphics, imaging, and printing that are available via NuGet package System.Drawing.Common. Note: Not recommended for server scenarios due to Windows dependencies; consider cross-platform alternatives like SkiaSharp or ImageSharp for new code.",
+      "label": "GDI\u002B / System.Drawing",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "System.Drawing.Common only supported on Windows",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2341701",
+          "isCustom": false
+        }
+      ]
+    },
+    "Wpf": {
+      "id": "Wpf",
+      "isFeature": false,
+      "description": "WPF APIs for building Windows desktop applications with XAML-based UI that are available in .NET on Windows. WPF provides rich desktop UI capabilities with data binding and styling. Enable Windows Desktop support: Option 1 (Recommended): Target net9.0-windows; Option 2: Add \u003CUseWindowsDesktop\u003Etrue\u003C/UseWindowsDesktop\u003E.",
+      "label": "WPF (Windows Presentation Foundation)",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "WPF on .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2342008",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0002": {
+      "id": "NuGet.0002",
+      "isFeature": false,
+      "description": "NuGet package upgrade is recommended for selected target framework.\n\nStandard .NET packages are recommended to have versions matching version of .NET that project targets.\n\nSome other packages also are known to work better for selected target frameworks.",
+      "label": "NuGet package upgrade is recommended",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262530",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0001": {
+      "id": "NuGet.0001",
+      "isFeature": false,
+      "description": "NuGet package is incompatible with selected target framework.\n\nPackage needs to be upgraded to a version supporting selected project target framework. If there no new package versions supporting new target framework, different package needs to be used and all code needs to be upgraded to new API.",
+      "label": "NuGet package is incompatible",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262529",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0003": {
+      "id": "NuGet.0003",
+      "isFeature": false,
+      "description": "NuGet package functionality is included with framework reference.\n\nPackage needs to be removed.",
+      "label": "NuGet package functionality is included with framework reference",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262609",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
