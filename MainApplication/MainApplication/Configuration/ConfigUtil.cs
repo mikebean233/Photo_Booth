@@ -13,29 +13,33 @@ namespace MainApplication.Configuration
         {
             TryInit();
 
-            // 2) Load config
-            var currentConfig = Config.FromJson(File.ReadAllText(_appSettingsFilePath));
+            var currentConfig = LoadCurrentConfig();
 
-            // 3) If config is invalid prompt user for new config via dialog then save result
             if (!currentConfig.Valid)
             {
+                return ConfigFromDialog(currentConfig);
+            }
+            return currentConfig;
+        }
+        public static Config ConfigFromDialog(Config currentConfig) {
                 var dialog = new Setup(currentConfig);
-                
-                dialog.ShowDialog();
-                
-                if ( dialog.SubmitClicked )
-                    SaveConfig(dialog.Input );
 
-                if ( dialog.Input.Valid )
+                dialog.ShowDialog();
+
+                if (dialog.SubmitClicked)
+                    SaveConfig(dialog.Input);
+
+                if (dialog.Input.Valid)
                     return dialog.Input;
-                
-                // Invalid config
+
                 Console.Error.WriteLine($"Exiting because of invalid config: {dialog.Input.ToJson()}");
                 Environment.Exit(1);
-            }
-
-            // 4) return
+        
             return currentConfig;
+        }
+
+        private static Config LoadCurrentConfig() {
+            return Config.FromJson(File.ReadAllText(_appSettingsFilePath));
         }
 
         private static void TryInit()
