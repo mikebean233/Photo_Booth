@@ -514,5 +514,15 @@ namespace MainApplication
                 if (_buttonActions.ContainsKey(pressedButton))
                     _buttonActions[pressedButton].BeginInvoke(null, null);
         }
+
+        private void Exit(object sender, RoutedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void UpdateConfig(object sender, RoutedEventArgs e)
+        {
+            _config.Apply(ConfigUtil.ConfigFromDialog(_config));
+        }
     }
 }

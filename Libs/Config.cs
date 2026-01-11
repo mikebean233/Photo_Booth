@@ -2,6 +2,9 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Libs
 {
@@ -11,26 +14,40 @@ namespace Libs
         int copyCount = -1,
         string outputDir = "",
         string backgroundImagesDir = "",
-        string printTemplatePath = "") : INotifyPropertyChanged, IDataErrorInfo
-    {
+        string printTemplatePath = "",
+        bool useGDIPrinting = false,
+        int printDPI = 300
+    ) : INotifyPropertyChanged, IDataErrorInfo {
         public string PrinterName { get; set; } = printerName;
         public int RemainingPrints { get; set; } = remainingPrints;
         public int CopyCount { get; set; } = copyCount;
         public string OutputDir { get; set; } = outputDir;
         public string BackgroundImagesDir { get; set; } = backgroundImagesDir;
         public string PrintTemplatePath { get; set; } = printTemplatePath;
+        public bool UseGDIPrinting { get; set; } = useGDIPrinting;
+        public int PrintDPI { get; set; } = printDPI;
         [JsonIgnore]
-        public bool Valid => IsValid();
+        public bool Valid { get{ return IsValid(); } }
         [JsonIgnore]
         public string? Error => ConcatErrors();
         public event PropertyChangedEventHandler? PropertyChanged;
-
-
-
+        
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true
         };
+
+        public void Apply(Config other)
+        {
+            PrinterName = other.PrinterName;
+            RemainingPrints = other.RemainingPrints;
+            CopyCount = other.CopyCount;
+            OutputDir = other.OutputDir;
+            BackgroundImagesDir = other.BackgroundImagesDir;
+            PrintTemplatePath = other.PrintTemplatePath;
+            UseGDIPrinting = other.UseGDIPrinting;
+            PrintDPI = other.PrintDPI;
+        }
 
         private bool IsValid() => ConcatErrors() == null;
 
@@ -43,7 +60,8 @@ namespace Libs
                 this[nameof(CopyCount)],
                 this[nameof(OutputDir)],
                 this[nameof(BackgroundImagesDir)],
-                this[nameof(PrintTemplatePath)]
+                this[nameof(PrintTemplatePath)],
+                this[nameof(PrintDPI)]
             };
             var nonNullErrors = output.Where(x => x != null);
 
@@ -79,6 +97,7 @@ namespace Libs
             return true;
         }
 
+        
         public string? this[string columnName]
         {
             get
@@ -109,6 +128,12 @@ namespace Libs
                     {
                         nameof(PrintTemplatePath),
                         () => !File.Exists(PrintTemplatePath) ? $"The file {PrintTemplatePath} does not exist" : null
+                    },
+                    {
+                        nameof(PrintDPI),
+                        () => PrintDPI < 100 || PrintDPI > 1200
+                            ? "Print DPI must be at least 100 and less than 1200"
+                            : null
                     }
                 };
 

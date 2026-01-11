@@ -7,6 +7,8 @@ using System.Windows.Xps;
 using System.Threading;
 using System.Windows.Xps.Packaging;
 using Libs;
+using System.Drawing.Printing;
+using System.Windows.Media.Imaging;
 
 namespace Printing
 {
@@ -182,16 +184,33 @@ namespace Printing
                     else
                     {
                         FixedPage page = (_thisPrintBatch.Template.Clone() as PrintTemplate).Render();
-                        _thisPrinter.UserPrintTicket.PageBorderless = PageBorderless.Borderless;
-                        _thisPrinter.UserPrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.PhotoBest;
-                        _thisPrinter.UserPrintTicket.PageMediaSize = new PageMediaSize(4, 6);
-                        _thisPrinter.Commit();
-                        XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(_thisPrinter);
+                        if (_config.UseGDIPrinting)
+                        {
+                            var printDocument = new PrintDocument();
+                            printDocument.PrinterSettings.PrinterName = _thisPrinter.Name;
+                            printDocument.PrintPage += (s, e) =>
+                            {
+                                using (var bmp = page.ToBMP(_config))
+                                {
+                                    e.Graphics.PageUnit = System.Drawing.GraphicsUnit.Pixel;
+                                    e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                                    e.Graphics.DrawImage(bmp, 0, 0, bmp.Width, bmp.Height);
+                                }
+                            };
 
-                        writer.Write(page);
+                            printDocument.Print();
+                        }
+                        else {
+                            // Original print implemenation (doesn't provide as much control over the print quality as GDI)
+                            _thisPrinter.UserPrintTicket.PageBorderless = PageBorderless.Borderless;
+                            _thisPrinter.UserPrintTicket.PhotoPrintingIntent = PhotoPrintingIntent.None;
+                            _thisPrinter.UserPrintTicket.PageMediaSize = new PageMediaSize(4, 6);
+                            _thisPrinter.Commit();
+                            XpsDocumentWriter writer = PrintQueue.CreateXpsDocumentWriter(_thisPrinter);
+
+                            writer.Write(page);
+                        }
                         SaveRenderedTemplate(page);
-
-                        // Pretend we know that this print worked and tell our current print batch that it did.
                         _thisPrintBatch.RegisterSucessfullPrint();
 
                         _config.RemainingPrints--;

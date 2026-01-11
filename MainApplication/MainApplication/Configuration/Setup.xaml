@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MainApplication.Configuration"
         mc:Ignorable="d"
-        Title="Setup" Height="270" Width="700" ResizeMode="NoResize">
+        Title="Setup" Height="330" Width="700" ResizeMode="NoResize">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Style.Triggers>
@@ -22,6 +22,8 @@
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -69,8 +71,15 @@
             <TextBlock Text="Browse"/>
         </Button>
 
+        <!-- Print DPI -->
+        <TextBlock Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Text="Print DPI:"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Width="50" HorizontalAlignment="Left" Margin="5" Text="{Binding PrintDPI, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
+
+        <!-- Use GDI Prints -->
+        <TextBlock Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" Text="Use GDI For Prints:"/>
+        <CheckBox Grid.Row="7" Grid.Column="1" Margin="5" Name="CheckBoxGDIPrints" Tag="Print Template File" IsChecked="{Binding UseGDIPrinting, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"/>
 
         <!-- Submit Button -->
-        <Button Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Name="ButtonSubmit" Click="PickerButtonClick" HorizontalAlignment="Right" Width="100" Margin="5" Content="Submit"/>
+        <Button Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Click="PickerButtonClick" Name="ButtonSubmit" HorizontalAlignment="Left" Width="100" Margin="405,5,0,5" Content="Submit"/>
     </Grid>
 </Window>
