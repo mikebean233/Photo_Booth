@@ -304,6 +304,10 @@ namespace MainApplication
         
         private void NextBackgroundImage()
         {
+            if (_currentState == COUNTDOWN)
+            {
+                return;
+            }
             _backgroundIterator.MoveNext();
             SetBackgroundImage();
             Dispatcher.Invoke(UpdateCarousel);
@@ -311,6 +315,10 @@ namespace MainApplication
 
         private void PrevBackgroundImage()
         {
+            if (_currentState == COUNTDOWN)
+            {
+                return;
+            }
             _backgroundIterator.MovePrev();
             SetBackgroundImage();
             Dispatcher.Invoke(UpdateCarousel);
