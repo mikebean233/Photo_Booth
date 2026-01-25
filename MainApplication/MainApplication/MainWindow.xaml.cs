@@ -111,8 +111,8 @@ namespace MainApplication
 
                 // Setup button actions
                 _buttonActions.Add(0, TakePicture); // pin 2
-                _buttonActions.Add(1, NextBackgroundImage); // pin 3
-                _buttonActions.Add(2, PrevBackgroundImage); // pin 4
+                _buttonActions.Add(1, PrevBackgroundImage); // pin 3
+                _buttonActions.Add(2, NextBackgroundImage); // pin 4
                 _buttonActions.Add(3, IncreaseDepthThreshold); // pin 5
                 _buttonActions.Add(4, DecreaseDepthThreshold); // pin 6
 
