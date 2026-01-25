@@ -67,7 +67,7 @@ namespace MainApplication.Configuration
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 Multiselect = false,
                 Title = title,
-                Filter = "*.png|*.gif"
+                Filter = "|*.png;*.gif"
             };
             
             var result = dialog.ShowDialog();
