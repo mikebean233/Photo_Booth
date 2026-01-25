@@ -104,7 +104,10 @@ namespace Libs
             {
                 var validations = new Dictionary<string, Func<string?>>
                 {
-                    { nameof(PrinterName), () => string.IsNullOrWhiteSpace(PrinterName) ? "Required" : null },
+                    { nameof(PrinterName), () => 
+                        string.IsNullOrWhiteSpace(PrinterName) ? "Required" 
+                        : PrintFinder.FindPrinter(PrinterName) == null ? $"Printer '{PrinterName}' not found": null
+                    },
                     {
                         nameof(RemainingPrints),
                         () => RemainingPrints <= 0 ? "There must be at least one print left in the printer" : null
