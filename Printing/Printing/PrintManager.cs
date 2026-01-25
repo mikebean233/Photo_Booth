@@ -9,6 +9,7 @@ using System.Windows.Xps.Packaging;
 using Libs;
 using System.Drawing.Printing;
 using System.Windows.Media.Imaging;
+using System.Windows;
 
 namespace Printing
 {
@@ -38,7 +39,16 @@ namespace Printing
             Thread printWorker = new Thread(() =>
             {
                 SetPrinterSearchString(name);
-                FindPrinter();
+
+                _thisPrinter = PrintFinder.FindPrinter(_config.PrinterName);
+                
+                if(_thisPrinter == null)
+                {
+                    String message = "Could not find printer with name containing: " + _printerNameString;
+                    MessageBox.Show(message, "Printer Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
+                    throw new Exception(message);
+                }
+
                 _thisPrinter.Refresh();
 
                 while (!_killSignal.WaitOne(0))
@@ -73,27 +83,6 @@ namespace Printing
         {
             name = name ?? "";
             _printerNameString = name.ToLower();
-        }
-
-        private void FindPrinter()
-        {
-            // Don't allow choosing another printer
-            if (_thisPrinter != null)
-                return;
-
-            PrintServer printServer = new LocalPrintServer();
-
-            foreach (PrintQueue printQueue in printServer.GetPrintQueues())
-            {
-                if (printQueue.Name.ToLower().Contains(_printerNameString))
-                {
-                    _thisPrinter = printQueue;
-                    break;
-                }
-            }
-            if (_thisPrinter == null)
-                throw new Exception(String.Format("Cannot find printer that matches name of \"{0}\"", _printerNameString)); 
-
         }
 
         public void SetPrintErrorInformer(Action<String> informer)
