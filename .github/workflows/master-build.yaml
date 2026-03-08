@@ -7,13 +7,13 @@ on:
 
 jobs:
   build:
-    name: Build Setup Project and Release
+    name: Build and Release
     runs-on: windows-latest
 
     env:
       SOLUTION_FILE: PhotoBooth.sln
       MAIN_PROJECT: MainApplication\MainApplication\MainApplication.csproj
-      SETUP_PROJECT_PATH: MainApplication\Setup\Setup.vdproj
+      WIX_PROJECT: MainApplication\Setup\PhotoBooth.wixproj
 
     steps:
     - name: Checkout code
@@ -31,27 +31,15 @@ jobs:
       run: |
         msbuild ${{ env.MAIN_PROJECT }} /t:Rebuild /p:Configuration=Release /p:Platform=x64
 
-    - name: Install VS Installer Projects extension
-      shell: powershell
+    - name: Build WiX installer
       run: |
-        $vsInstallPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -prerelease -property installationPath
-        $vsixInstaller = Join-Path $vsInstallPath "Common7\IDE\VSIXInstaller.exe"
-        Invoke-WebRequest -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/VisualStudioClient/vsextensions/MicrosoftVisualStudio2022InstallerProjects/2.0.0/vspackage" -OutFile "$env:TEMP\InstallerProjects.vsix"
-        & $vsixInstaller /quiet "$env:TEMP\InstallerProjects.vsix"
-        Start-Sleep -Seconds 10
-
-    - name: Build Setup project with devenv
-      shell: powershell
-      run: |
-        $vsInstallPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -prerelease -property installationPath
-        $devenv = Join-Path $vsInstallPath "Common7\IDE\devenv.com"
-        & $devenv ${{ env.SOLUTION_FILE }} /Build Release /Project ${{ env.SETUP_PROJECT_PATH }}
-        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        dotnet build ${{ env.WIX_PROJECT }} -c Release
 
     - name: Find MSI file
       id: find-msi
+      shell: powershell
       run: |
-        $msi = Get-ChildItem -Recurse -Filter *.msi | Select-Object -First 1
+        $msi = Get-ChildItem -Recurse -Filter "PhotoBooth-Setup.msi" | Select-Object -First 1
         if (!$msi) {
           Write-Error "No MSI file found"
           exit 1
