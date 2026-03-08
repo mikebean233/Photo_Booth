@@ -12,12 +12,14 @@ jobs:
 
     env:
       SOLUTION_FILE: PhotoBooth.sln
+      MAIN_PROJECT: MainApplication\MainApplication\MainApplication.csproj
       SETUP_PROJECT_PATH: MainApplication\Setup\Setup.vdproj
-      OUTPUT_DIR: build\output
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
@@ -25,9 +27,26 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore ${{ env.SOLUTION_FILE }}
 
-    - name: Build main solution (including Setup project)
+    - name: Build main application
       run: |
-        msbuild ${{ env.SOLUTION_FILE }} /t:Rebuild /p:Configuration=Release
+        msbuild ${{ env.MAIN_PROJECT }} /t:Rebuild /p:Configuration=Release /p:Platform=x64
+
+    - name: Install VS Installer Projects extension
+      shell: powershell
+      run: |
+        $vsInstallPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -prerelease -property installationPath
+        $vsixInstaller = Join-Path $vsInstallPath "Common7\IDE\VSIXInstaller.exe"
+        Invoke-WebRequest -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/VisualStudioClient/vsextensions/MicrosoftVisualStudio2022InstallerProjects/2.0.0/vspackage" -OutFile "$env:TEMP\InstallerProjects.vsix"
+        & $vsixInstaller /quiet "$env:TEMP\InstallerProjects.vsix"
+        Start-Sleep -Seconds 10
+
+    - name: Build Setup project with devenv
+      shell: powershell
+      run: |
+        $vsInstallPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -prerelease -property installationPath
+        $devenv = Join-Path $vsInstallPath "Common7\IDE\devenv.com"
+        & $devenv ${{ env.SOLUTION_FILE }} /Build Release /Project ${{ env.SETUP_PROJECT_PATH }}
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
     - name: Find MSI file
       id: find-msi
@@ -44,7 +63,7 @@ jobs:
       id: versioning
       shell: bash
       run: |
-        LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+        LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
         echo "Latest tag: $LATEST_TAG"
 
         VERSION=${LATEST_TAG#v}
