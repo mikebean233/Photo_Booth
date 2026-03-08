@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="PhotoBooth"
+           Manufacturer="Peterson Labs"
+           Version="1.0.0"
+           UpgradeCode="FBAC7212-669B-494B-B396-C6F323D92C64"
+           Scope="perMachine"
+           InstallerVersion="500">
+
+    <!-- Silently remove any older version before installing -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <!-- Embed all files in the MSI (single-file installer) -->
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Require .NET Framework 4.7.2 (release registry value >= 461808) -->
+    <Property Id="NETFRAMEWORK472">
+      <RegistrySearch Id="NetFramework472"
+                      Root="HKLM"
+                      Key="SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"
+                      Name="Release"
+                      Type="integer" />
+    </Property>
+    <Condition Message="This application requires .NET Framework 4.7.2 or later. Please install it from https://go.microsoft.com/fwlink/?LinkId=863262 and run setup again.">
+      <![CDATA[Installed OR (NETFRAMEWORK472 >= 461808)]]>
+    </Condition>
+
+    <!-- Application icon (shown in Add/Remove Programs) -->
+    <Icon Id="CameraIcon" SourceFile="$(var.AssetsDir)/camera.ico" />
+    <Property Id="ARPPRODUCTICON" Value="CameraIcon" />
+
+    <Feature Id="ProductFeature" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentGroupRef Id="Shortcuts" />
+      <ComponentRef Id="RegistryEntriesComp" />
+    </Feature>
+
+    <!-- Silent install — no UI dialogs required -->
+    <!-- Add <UIRef Id="WixUI_Minimal" /> here if you want a basic install dialog -->
+
+  </Package>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Directory layout
+       C:\Program Files\Peterson Labs\PhotoBooth\
+       ═══════════════════════════════════════════════════════ -->
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="ManufacturerFolder" Name="Peterson Labs">
+          <Directory Id="INSTALLFOLDER" Name="PhotoBooth" />
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="AppMenuFolder" Name="PhotoBooth" />
+      </Directory>
+      <Directory Id="DesktopFolder" />
+    </Directory>
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Application files
+       Harvest everything from the MSBuild Release output dir,
+       excluding .pdb debug symbols.
+       ═══════════════════════════════════════════════════════ -->
+  <Fragment>
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(var.BinDir)/*"
+             Exclude="$(var.BinDir)/*.pdb" />
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Shortcuts
+       ═══════════════════════════════════════════════════════ -->
+  <Fragment>
+    <ComponentGroup Id="Shortcuts">
+
+      <!-- Start Menu shortcut -->
+      <Component Id="StartMenuShortcutComp" Directory="AppMenuFolder" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890">
+        <Shortcut Id="AppStartMenuShortcut"
+                  Name="PhotoBooth"
+                  Target="[INSTALLFOLDER]MainApplication.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="CameraIcon"
+                  IconIndex="0" />
+        <RemoveFolder Id="RemoveAppMenuFolder" Directory="AppMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\Peterson Labs\PhotoBooth"
+                       Name="StartMenuInstalled"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+      <!-- Desktop shortcut -->
+      <Component Id="DesktopShortcutComp" Directory="DesktopFolder" Guid="B2C3D4E5-F6A7-8901-BCDE-F12345678901">
+        <Shortcut Id="AppDesktopShortcut"
+                  Name="PhotoBooth"
+                  Target="[INSTALLFOLDER]MainApplication.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="CameraIcon"
+                  IconIndex="0" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\Peterson Labs\PhotoBooth"
+                       Name="DesktopInstalled"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Registry entries
+       Mirrors the original .vdproj entries under HKLM and HKCU.
+       ═══════════════════════════════════════════════════════ -->
+  <Fragment>
+    <Component Id="RegistryEntriesComp" Directory="INSTALLFOLDER" Guid="C3D4E5F6-A7B8-9012-CDEF-123456789012">
+      <RegistryValue Root="HKLM"
+                     Key="Software\Peterson Labs"
+                     Name="PhotoBoothInstallPath"
+                     Value="[INSTALLFOLDER]"
+                     Type="string"
+                     KeyPath="yes" />
+      <RegistryValue Root="HKCU"
+                     Key="Software\Peterson Labs"
+                     Name="PhotoBoothInstallPath"
+                     Value="[INSTALLFOLDER]"
+                     Type="string" />
+    </Component>
+  </Fragment>
+
+</Wix>

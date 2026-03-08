@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="WixToolset.Sdk/4.0.5">
+
+  <PropertyGroup>
+    <OutputName>PhotoBooth-Setup</OutputName>
+    <OutputType>Package</OutputType>
+    <Platform>x64</Platform>
+    <!--
+      BinDir    = MSBuild Release output (MainApplication.exe + all dependency DLLs)
+      AssetsDir = Source assets not copied by MSBuild (camera.ico)
+    -->
+    <DefineConstants>
+      BinDir=../MainApplication/bin/x64/Release;
+      AssetsDir=../MainApplication/Resources
+    </DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.5" />
+  </ItemGroup>
+
+</Project>
