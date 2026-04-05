@@ -27,6 +27,7 @@ namespace Printing
         private ManualResetEvent _doPrintSignal;
         private ManualResetEvent _killSignal;
         private Config _config;
+        private RibbonMonitor _ribbonMonitor;
 
         #region Construction
         private PrintManager(String name, Config config)
@@ -50,6 +51,8 @@ namespace Printing
                 }
 
                 _thisPrinter.Refresh();
+                _ribbonMonitor = new RibbonMonitor(_thisPrinter.FullName);
+                SyncRemainingPrintsFromPrinter();
 
                 while (!_killSignal.WaitOne(0))
                 {
@@ -75,6 +78,7 @@ namespace Printing
         public void Cleanup()
         {
             _killSignal.Set();
+            _ribbonMonitor?.Dispose();
         }
 
 
@@ -89,6 +93,8 @@ namespace Printing
         {
             _printErrorInformer = informer;
         }
+
+        public RibbonMonitor RibbonMonitor { get { return _ribbonMonitor; } }
 
         #endregion
 
@@ -202,7 +208,7 @@ namespace Printing
                         SaveRenderedTemplate(page);
                         _thisPrintBatch.RegisterSucessfullPrint();
 
-                        _config.RemainingPrints--;
+                        SyncRemainingPrintsFromPrinter(decrementFallback: true);
 
                         // Print the next page (eventually this should run out of batches or a print error will happen...)
                         Print();
@@ -265,10 +271,15 @@ namespace Printing
             {
                 statusReport = statusReport + "The printer is out of memory. ";
             }
+            SyncRemainingPrintsFromPrinter();
             if ((pq.QueueStatus & PrintQueueStatus.PaperOut) == PrintQueueStatus.PaperOut || _config.RemainingPrints <= 0)
             {
                 _config.RemainingPrints = 0;
                 statusReport = statusReport + "The printer is out of paper. ";
+            }
+            else if (_ribbonMonitor != null && _ribbonMonitor.IsLowOnRibbon())
+            {
+                statusReport = statusReport + $"Warning: only {_config.RemainingPrints} prints remaining on ribbon. ";
             }
             if ((pq.QueueStatus & PrintQueueStatus.OutputBinFull) == PrintQueueStatus.OutputBinFull)
             {
@@ -303,6 +314,19 @@ namespace Printing
         }
 
         #endregion
+
+        /// <summary>
+        /// Sync the remaining prints count from the printer via Bidi if available,
+        /// otherwise fall back to decrementing the manual counter.
+        /// </summary>
+        private void SyncRemainingPrintsFromPrinter(bool decrementFallback = false)
+        {
+            int? actual = _ribbonMonitor?.GetRemainingPrints();
+            if (actual.HasValue)
+                _config.RemainingPrints = actual.Value;
+            else if (decrementFallback)
+                _config.RemainingPrints--;
+        }
 
         private void InformClientOfPrintProblems(String problemDescription)
         {

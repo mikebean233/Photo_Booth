@@ -283,8 +283,8 @@ namespace MainApplication
         private void DefaultPrintErrorHandler(String errorMessage)
         {
             _havePrintError = true;
-            PrinterErrorDialog errorDialog = new PrinterErrorDialog(errorMessage);
-            
+            PrinterErrorDialog errorDialog = new PrinterErrorDialog(errorMessage, _printManager.RibbonMonitor);
+
             errorDialog.BringIntoView();
             errorDialog.ShowDialog();
 

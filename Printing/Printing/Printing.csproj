@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="NullPrintTemplate.cs" />
     <Compile Include="PrintManager.cs" />
+    <Compile Include="RibbonMonitor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
