@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Printing;
 
 namespace MainApplication
 {
@@ -25,13 +26,13 @@ namespace MainApplication
 
         private int _printCount;
         public int PrintCount {get{return _printCount;} }
-        
+
         public void ValidateInput()
         {
             Button_Ok.IsEnabled = _printCount > 0;
         }
-        
-        public PrinterErrorDialog(String printErrors)
+
+        public PrinterErrorDialog(String printErrors, RibbonMonitor ribbonMonitor = null)
         {
             InitializeComponent();
             Window.Topmost = true;
@@ -43,6 +44,18 @@ namespace MainApplication
             Label_printCount.Visibility = _needPrintCount ? Visibility.Visible : Visibility.Collapsed;
             Window.Title = _needPrintCount ? "OUT OF PAPER" : "Print Error";
             Window.Activate();
+
+            // Auto-fill the remaining count from the printer if Bidi is available
+            // (the operator may have already swapped in a fresh ribbon)
+            if (_needPrintCount && ribbonMonitor != null)
+            {
+                int? count = ribbonMonitor.GetRemainingPrints();
+                if (count.HasValue && count.Value > 0)
+                {
+                    _printCount = count.Value;
+                    TextBox_printCount.Text = count.Value.ToString();
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
